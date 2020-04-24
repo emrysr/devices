@@ -1,0 +1,334 @@
+:root {
+    --color-secondary: #fe4365;
+    --color-dark: #333;
+    --border-radius: .9rem;
+    --sidebar-width: 90vw;
+    --ease-in-cubic: cubic-bezier(0.55, 0.06, 0.68, 0.19);
+    --ease-in-quad: cubic-bezier(0.55, 0.09, 0.68, 0.53);
+}
+* {
+    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+}
+
+body {
+    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
+    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
+    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
+    background-color:#E4E4E4;
+    background-image:linear-gradient(top, #A7A7A7 0%, #E4E4E4 51%);
+    font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
+    font-size:16px;
+    line-height: 1.34;
+    height:100vh;
+    margin:0px;
+    padding:0px;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-right, 0px);
+    width:100%;
+}
+
+@keyframes fadeInOut {
+    from { opacity: 1.0; }
+    50% { opacity: 0.4; }
+    to { opacity: 1.0; }
+}
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; height: 0 }
+    to   { opacity: 1; height: 10rem }
+}
+.blink {
+    animation:fadeInOut 3s infinite;
+}
+.fade {
+    animation:fadeOut .8s var(--ease-in-cubic) forwards;
+}
+.fade.in {
+    animation:fadeIn .3s var(--ease-in-cubic) forwards;
+}
+
+.slide {
+    right: calc( -1 * var(--sidebar-width)) !important;
+    transition: right .3s var(--ease-in-cubic);
+}
+.slide.in {
+    right: 0!important;
+}
+
+
+
+.app {
+    overflow-x: hidden;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+}
+.app main {
+    z-index: 1;
+}
+h1,h2,h3{
+    margin-bottom: .3em;
+}
+.brand a{
+    text-decoration: none;
+    color: inherit;
+}
+section {
+    display: none;
+    margin-bottom: 2em;
+}
+section article {
+    padding: 0 1rem;
+}
+section footer {
+    position: absolute;
+    bottom: 0;
+    font-size: 1.4rem;
+    width: 100%;
+}
+section footer nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+section footer nav a.button {
+    font-size: inherit;
+    flex-grow: 1;
+    text-align: center;
+}
+section footer nav a.button {
+    background: var(--color-secondary);
+}
+section footer nav a.button.dark {
+    background: var(--color-dark);
+}
+section footer nav a.button:hover {
+    background: var(--color-dark)
+}
+
+
+nav {
+    display: flex;
+    flex-direction: column;
+}
+nav a{
+    border: 1px solid #ccc;
+    padding: 1em;
+    text-decoration: none;
+    color: var(--color-dark);
+    border-radius: 0;
+    font-size: 1.1rem;
+    display: inline-block;
+    border-bottom-width: 0;
+    background: #E9E9E9;
+}
+nav.list a{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+nav.list a:hover {
+    background: #EFEFEF;
+}
+nav.list a:last-of-type {
+    border-bottom-width: 1px;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+}
+nav.list a:first-of-type {
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.button,
+nav.menu a{
+    border: 0px solid #ccc;
+    padding: .6em;
+    text-decoration: none;
+    color: white;
+    background: var(--color-dark);
+    font-size: .85rem;
+    display: inline-block;
+}
+.button:hover,
+nav.menu a:hover{
+    text-decoration: none;
+    color: white;
+}
+.button.btn-fw {
+    width: 2.5em;
+    text-align: center;
+}
+.button.btn-block {
+    display: block;
+    text-align: center;
+}
+nav a.button.cancel {
+    background: #999;
+}
+nav.menu a:hover {
+    background: #666;
+}
+.app > header {
+    padding: 0 0 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.app > header .button {
+    font-size: 1.5rem;
+}
+.app > header .brand {
+    margin: 0;
+}
+.app > header a[href="#sidebar"] {
+    background: transparent;
+    color: var(--color-dark);
+}
+main {
+    margin-top: 2em;
+}
+aside {
+    display: none;
+}
+#sidebar {
+    position: absolute;
+    display: flex;
+    top: 0;
+    right: calc(-1 * var(--sidebar-width));
+    width: var(--sidebar-width);
+    height: 100vh;
+    color: #EFEFEF;
+    flex-direction: column;
+    justify-content: space-between;
+    box-sizing: border-box;
+    font-size: 1.4rem;
+    background: var(--color-dark);
+    z-index:2;
+}
+#sidebar > * {
+    z-index: 3
+}
+#sidebar:before {
+    position: fixed;
+    content: "";
+    height: 100vh;
+    right: 0;
+    top: 0;
+    z-index: 2;
+}
+
+#sidebar:before {
+    width: 0;
+    background: var(--color-dark);
+    opacity: 0;
+    left: 0;
+    transition: opacity .3s var(--ease-in-quad) ;
+}
+#sidebar.in:before {
+    width: var(--sidebar-width);
+    opacity: .2;
+}
+
+#sidebar > header,
+#sidebar dl,
+#sidebar .text {
+    padding: 0 2rem;
+}
+#sidebar .text {
+    color: #ddd;
+    font-size: .8em;
+    margin-top: 2em;
+}
+#sidebar .text p a{
+    color: inherit;
+    text-decoration: underline;
+}
+#sidebar > *:first-child {
+    padding-top: .1rem;
+}
+#sidebar h1 {
+    font-size: 1.3em;
+    margin-top: .3em;
+    font-weight: normal;
+}
+#sidebar header [href="#sidebar"]{
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 2em;
+    width: 1.5em;
+    padding: 0;
+    background: transparent;
+}
+#sidebar footer .button {
+    font-size: inherit;
+    background: var(--color-secondary);
+}
+
+.button [href="#sidebar"]{
+    font-weight: bold
+}
+.badge {
+    border-radius: .5em;
+    background: #ccc;
+    padding: .3em .5em;
+}
+.text-larger {
+    font-size: larger;
+}
+.text-muted {
+    color: #999;
+}
+.jumbotron {
+    padding: 1.8rem 2rem 2rem 2rem;
+    text-align: center;
+    color: #E9E9E9;
+    position: relative;
+    background: var(--color-secondary);
+
+}
+.jumbotron h2{
+    font-size:2rem;
+    font-weight:normal;
+    margin:0;
+    padding:0;
+    overflow:visible;
+    text-align:center;
+}
+.jumbotron p{
+    font-size:1.3rem;
+    font-weight:normal;
+    margin:0;
+    padding:0;
+    overflow:visible;
+    text-align:center;
+    font-weight: lighter;
+    color: white;
+}
+
+dl {
+    margin: 0;
+    padding: 0;
+}
+dt {
+    border-left: .2em solid var(--color-secondary);
+    padding-left: .4em;
+    color: #757575;
+}
+dt+dd {
+    clear: both;
+    padding: 0;
+    margin: 0;
+    margin-bottom: .3em;
+    padding-left: .6em;
+    color: white;
+}
+
+footer nav.list {
+    margin: 0;
+}
+footer nav.list > * {
+    border-radius: 0;
+}

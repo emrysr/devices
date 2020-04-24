@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <link rel="stylesheet" type="text/css" href="css/reboot.css">
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <title>EmonCMS</title>
+    </head>
+    <body>
+        <div class="app">
+            <aside id="sidebar" class="slide">
+                <header>
+                    <h1>Settings</h1>
+                    <a href="#sidebar" class="button btn-fw">×</a>
+                </header>
+
+                <article>
+                    <dl>
+                        <dt>Connected</dt><dd>Yes</dd>
+                        <dt>WiFi</dt><dd>BTHomeHub2112</dd>
+                        <dt>IP</dt><dd>192.168.1.2</dd>
+                        <dt>Version</dt><dd>v0.1.0</dd>
+                    </dl>
+                    <dl>
+                        <dt><label for="language">Language:</label></dt>
+                        <dd>
+                            <select id="language" name="language">
+                                <option>English</option>
+                                <option>Español</option>
+                                <option>Cymraeg</option>
+                            </select>
+                        </dd>
+                    </dl>
+                    <div class="text">
+                        <p>This app is part of the OpenEnergyMonitor project: <a data-weblink href="https://openenergymonitor.org">http://openenergymonitor.org</a></p>
+                        <p><small>The source code is available on <a data-weblink href="https://github.com/emoncms/pair">GitHub</a></small></p>
+                    </div>
+                </article>
+                <footer>
+                    <nav>
+                        <a href="#sidebar" class="button btn-block">Close</a>
+                    </nav>
+                </footer>
+            </aside>
+
+
+
+            <header>
+                <h1 class="brand"><a href="#">EmonCMS</a></h1>
+                <a href="#sidebar" class="button btn-fw">☰</a>
+            </header>
+
+            <aside id="welcome" class="jumbotron fade in">
+                <h2>Welcome</h2>
+                <p>You can use this app to find and add new EmonCMS devices.</p>
+            </aside>
+
+            <main>
+                <section id="scan">
+                    <article>
+                        <h2>Found Devices:</h2>
+                        <nav class="list">
+                            <a data-weblink href="http://192.168.1.185/emoncms">🔌 SmartPlug1221 <small class="badge">192.168.1.185</small></a>
+                            <a data-weblink href="http://192.168.1.185/emoncms">🚗 OpenEVSE 33A2 <small class="badge">192.168.1.185</small></a>
+                            <a data-weblink href="http://192.168.1.185/emoncms">🔌 SmartPlug2112 <small class="badge">192.168.1.185</small></a>
+                            <a data-weblink href="http://192.168.1.185/emoncms">💻 EmonCMS <small class="badge">192.168.1.185</small></a>
+                        </nav>
+                    </article>
+                    <footer>
+                        <nav>
+                            <a href="#hotspots" class="button">➕ Add New Device</a>
+                        </nav>
+                    </footer>
+                </section>
+
+                <section id="hotspots">
+                    <article>
+                        <h2>Choose a Device:</h2>
+                        <p>Select the device you'd like to add from the list</p>
+                        <nav class="list">
+                            <a href="#wifi" data-name="SmartPlug3321">🔌 SmartPlug3321 <small class="badge">SmartPlug</small></a>
+                            <a href="#wifi" data-name="OpenEVSE321">🚗 OpenEVSE321 <small class="badge">OpenEVSE</small></a>
+                        </nav>
+                    </article>
+                    <footer>
+                        <nav>
+                            <a href="#scan" class="button cancel">Cancel</a>
+                        </nav>
+                    </footer>
+                </section>
+
+                <section id="wifi">
+                    <article>
+                        <h2>Select the SSID</h2>
+                        <p>Choose the WiFi connection you want your device to connect to...</p>
+                        <nav class="list">
+                            <a href="#auth" data-ssid="WIFI 1"><span>📶 WIFI 1</span> <progress value=8 min=0 max=10>Strong</progress></a>
+                            <a href="#auth" data-ssid="WIFI 2"><span>📶 WIFI 2</span> <progress value=4 min=0 max=10>Good</progress></a>
+                            <a href="#auth" data-ssid="WIFI 3"><span>📶 WIFI 3</span> <progress value=2 min=0 max=10>Fair</progress></a>
+                            <a href="#auth" data-ssid="WIFI 4"><span>📶 WIFI 4</span> <progress value=1 min=0 max=10>Weak</progress></a>
+                        </nav>
+                    </article>
+                    <footer>
+                        <nav>
+                            <a href="#scan" class="button cancel">Cancel</a>
+                        </nav>
+                    </footer>
+                </section>
+
+                <section id="auth">
+                    <article>
+                        <h2>WIFI Connection</h2>
+                        <p>Please enter your passkey for <em class="badge ssid">your device</em></p>
+                        <form>
+                            <label for="psk">Passkey</label>
+                            <input name="psk" id="psk">
+                        </form>
+                    </article>
+                    <footer>
+                        <nav>
+                            <a href="#wifi" class="button cancel">Back</a>
+                            <a href="#saved" class="button">Save</a>
+                        </nav>
+                    </footer>
+                </section>
+
+                <section id="saved">
+                    <div class="jumbotron">
+                        <h2>Saved ✔</h2>
+                        <p>Please wait a few seconds for your device to reboot</p>
+                    </div>
+                    <footer>
+                        <nav>
+                            <a href="#scan" class="button dark">Back to device list</a>
+                        </nav>
+                    </footer>
+                </section>
+
+            </main>
+        </div>
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>
