@@ -13,12 +13,12 @@ This app will discover these hotspots and connect your device to your wifi witho
 ```bash
 $ git clone [this repo]
 $ cd [this repo directory]
+$ cordova platform add android
 $ cordova run android device
 ```
 
 # cordova requirements
 ```bash
-$ cordova platform add android
 $ cordova plugin add cordova-plugin-zeroconf
 $ cordova plugin add https://github.com/tripflex/wifiwizard2
 ```
