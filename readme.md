@@ -14,7 +14,7 @@ This app will discover these hotspots and connect your device to your wifi witho
 $ git clone [this repo]
 $ cd [this repo directory]
 $ cordova platform add android
-$ cordova run android device
+$ cordova run android --device
 ```
 
 # cordova requirements
