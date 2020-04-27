@@ -1,10 +1,13 @@
 :root {
-    --color-secondary: #fe4365;
+    --color-primary: #ea510e;
     --color-dark: #333;
     --border-radius: .9rem;
     --sidebar-width: 90vw;
     --ease-in-cubic: cubic-bezier(0.55, 0.06, 0.68, 0.19);
     --ease-in-quad: cubic-bezier(0.55, 0.09, 0.68, 0.53);
+    --bg1: #E4E4E4;
+    --bg2: #A7A7A7;
+    --bg-light: #EFEFEF;
 }
 * {
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
@@ -14,8 +17,8 @@ body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
-    background-color:#E4E4E4;
-    background-image:linear-gradient(top, #A7A7A7 0%, #E4E4E4 51%);
+    background-color:var(--bg1);
+    background-image:linear-gradient(top, var(--bg2) 0%, var(--bg1) 51%);
     font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
     font-size:16px;
     line-height: 1.34;
@@ -37,7 +40,7 @@ body {
 }
 @keyframes fadeIn {
     from { opacity: 0; height: 0 }
-    to   { opacity: 1; height: 10rem }
+    to   { opacity: 1; height: 13rem }
 }
 .blink {
     animation:fadeInOut 3s infinite;
@@ -66,9 +69,7 @@ body {
     height: 100vh;
     padding: 0;
 }
-.app main {
-    z-index: 1;
-}
+
 h1,h2,h3{
     margin-bottom: .3em;
 }
@@ -77,14 +78,14 @@ h1,h2,h3{
     color: inherit;
 }
 section {
-    display: none;
     margin-bottom: 2em;
+    padding-bottom: 3rem;
 }
 section article {
     padding: 0 1rem;
 }
 section footer {
-    position: absolute;
+    position: fixed;
     bottom: 0;
     font-size: 1.4rem;
     width: 100%;
@@ -100,7 +101,7 @@ section footer nav a.button {
     text-align: center;
 }
 section footer nav a.button {
-    background: var(--color-secondary);
+    background: var(--color-primary);
 }
 section footer nav a.button.dark {
     background: var(--color-dark);
@@ -109,6 +110,18 @@ section footer nav a.button:hover {
     background: var(--color-dark)
 }
 
+.list progress {
+    height: .75rem;
+    width: 3.5rem;
+    margin-left: 1em;
+}
+.list .current {
+    color: var(--bg1);
+    background-color: #3273dc;
+}
+.list .current .badge{
+    color: var(--bg1);
+}
 
 nav {
     display: flex;
@@ -131,7 +144,8 @@ nav.list a{
     align-items: baseline;
 }
 nav.list a:hover {
-    background: #EFEFEF;
+    background: var(--bg-light);
+    text-decoration: none;
 }
 nav.list a:last-of-type {
     border-bottom-width: 1px;
@@ -139,6 +153,9 @@ nav.list a:last-of-type {
 }
 nav.list a:first-of-type {
     border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+nav.list a:last-of-type:first-of-type {
+    border-radius: var(--border-radius);
 }
 
 .button,
@@ -167,6 +184,27 @@ nav.menu a:hover{
 nav a.button.cancel {
     background: #999;
 }
+input[type="text"],
+input[type="password"] {
+    font-size: 1.3em;
+    padding:.3em;
+}
+.input-group {
+    display: flex;
+    padding-bottom: .4em;
+}
+.input-group button{
+    height:100%;
+    background: #ccc;
+    color: var(--color-dark);
+    padding: .4em 1em;
+}
+.input-group button:hover,
+.input-group button.active{
+    background: #999;
+    color: #666;
+}
+
 nav.menu a:hover {
     background: #666;
 }
@@ -187,13 +225,12 @@ nav.menu a:hover {
     color: var(--color-dark);
 }
 main {
-    margin-top: 2em;
+    margin-top: 0em;
+    z-index: 1;
 }
-aside {
-    display: none;
-}
+
 #sidebar {
-    position: absolute;
+    position: fixed;
     display: flex;
     top: 0;
     right: calc(-1 * var(--sidebar-width));
@@ -264,16 +301,24 @@ aside {
 }
 #sidebar footer .button {
     font-size: inherit;
-    background: var(--color-secondary);
+    background: var(--color-primary);
 }
-
+#sidebar article {
+    overflow-y: auto;
+}
 .button [href="#sidebar"]{
     font-weight: bold
 }
 .badge {
     border-radius: .5em;
-    background: #ccc;
+    /* background: #ccc; */
+    border: 1px solid #ccc;
     padding: .3em .5em;
+    margin-left: .3em;
+    display: inline-block;
+}
+.badge:empty {
+    display: none;
 }
 .text-larger {
     font-size: larger;
@@ -281,13 +326,16 @@ aside {
 .text-muted {
     color: #999;
 }
+.text-light {
+    font-weight: lighter;
+}
 .jumbotron {
     padding: 1.8rem 2rem 2rem 2rem;
     text-align: center;
     color: #E9E9E9;
     position: relative;
-    background: var(--color-secondary);
-
+    background: var(--color-primary);
+    margin-bottom: 1em;
 }
 .jumbotron h2{
     font-size:2rem;
@@ -308,12 +356,37 @@ aside {
     color: white;
 }
 
+section header {
+    padding: 1rem 2rem;
+    background: var(--color-primary);
+    color: #E9E9E9;
+    margin-bottom: 1em;
+}
+section header > h1, 
+section header > h2, 
+section header > h3 {
+    /* font-size:2rem; */
+    /* font-weight:normal; */
+    margin:0;
+    padding:0;
+}
+section header p{
+    font-size:1.3rem;
+    font-weight:normal;
+    margin:0;
+    padding:0;
+    overflow:visible;
+    font-weight: lighter;
+    color: white;
+}
+
+
 dl {
     margin: 0;
     padding: 0;
 }
 dt {
-    border-left: .2em solid var(--color-secondary);
+    border-left: .2em solid var(--color-primary);
     padding-left: .4em;
     color: #757575;
 }
@@ -331,4 +404,21 @@ footer nav.list {
 }
 footer nav.list > * {
     border-radius: 0;
+}
+.d-none {
+    display: none !important;
+}
+
+svg.icon {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+    vertical-align: -0.15em;
+}
+.icon-outline {
+    color: white;
+    filter: grayscale(100%) url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><filter id='f'><feColorMatrix type='matrix' values='1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 1 0'/></filter></svg>#f");
 }

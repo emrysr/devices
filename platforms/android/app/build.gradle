@@ -293,6 +293,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     // SUB-PROJECT DEPENDENCIES START
     implementation(project(path: ":CordovaLib"))
+    implementation "org.jmdns:jmdns:3.5.5"
     // SUB-PROJECT DEPENDENCIES END
 }
 

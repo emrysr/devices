@@ -6,5 +6,37 @@
     },
     "is_top_level": true,
     "variables": {}
+  },
+  "cordova-plugin-zeroconf": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-zeroconf"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-add-swift-support": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-add-swift-support@^2.0.2"
+    },
+    "is_top_level": false,
+    "variables": {}
+  },
+  "wifiwizard2": {
+    "source": {
+      "type": "registry",
+      "id": "https://github.com/tripflex/wifiwizard2"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "es6-promise-plugin": {
+    "source": {
+      "type": "registry",
+      "id": "es6-promise-plugin@4.1.0"
+    },
+    "is_top_level": false,
+    "variables": {}
   }
 }

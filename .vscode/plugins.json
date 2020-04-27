@@ -1,1 +1,1 @@
-{"plugins":["cordova-plugin-whitelist"]}
+{"plugins":["cordova-plugin-whitelist","cordova-plugin-zeroconf","cordova-plugin-add-swift-support","wifiwizard2","es6-promise-plugin"]}
