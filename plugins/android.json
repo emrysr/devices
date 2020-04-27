@@ -8,21 +8,21 @@
   },
   "installed_plugins": {
     "cordova-plugin-whitelist": {
-      "PACKAGE_NAME": "org.openenergymonitor.pair"
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
     "cordova-plugin-zeroconf": {
-      "PACKAGE_NAME": "org.openenergymonitor.pair"
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
     "wifiwizard2": {
-      "PACKAGE_NAME": "org.openenergymonitor.pair"
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
     }
   },
   "dependent_plugins": {
     "cordova-plugin-add-swift-support": {
-      "PACKAGE_NAME": "org.openenergymonitor.pair"
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
     "es6-promise-plugin": {
-      "PACKAGE_NAME": "org.openenergymonitor.pair"
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
     }
   }
 }

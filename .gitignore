@@ -88,5 +88,6 @@ lint/tmp/
 
 
 # my own settings
-platform/
+platforms/
+plugins/
 node_modules/

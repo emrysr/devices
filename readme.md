@@ -29,6 +29,9 @@ if you have problems compiling try to remove then add the platform
 $ cordova platform remove android
 $ cordova platform add android
 ```
+or `$ rm -rf [repo dir]/platforms && cordova platform add android`y
+
+
 
 # todo
 - connect to device's hotspot
