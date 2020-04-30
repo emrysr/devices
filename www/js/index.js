@@ -483,9 +483,9 @@ var app = {
             console.error("app.saveSettings():", error);
         });
     },
-    turnOffAccessPoint: function(ssid) {
+    rebootDevice: function(ssid) {
         // send request to device
-        var url = "http://192.168.4.1/apoff";
+        var url = "http://192.168.4.1/restart";
         return fetch(url)
             .then(response => {
                 console.log("response received from ", url);
@@ -494,8 +494,8 @@ var app = {
                 throw response;
             })
             .then(()=> {
-                console.log("Device Access Point turned off");
-                app.find(`#auth .log #apoff_${ssid}`).classList.add("done");
+                console.log("Device Restart Requested");
+                app.find(`#auth .log #restart_${ssid}`).classList.add("done");
             });
     },
     /**
@@ -821,13 +821,13 @@ var Controller = function() {
                     app.find("#auth .log").innerHTML+= `
                     <li id="connect_${selectedHotspot}">Connecting to ${selectedHotspot}</li>
                     <li id="save_${deviceConnectionSSID}">Saving Settings</li>
-                    <li id="apoff_${selectedHotspot}">Turning off Access Point</li>
-                    <li id="connect_${currentSSID}">Connecting to ${currentSSID}</li>
+                    <li id="restart_${selectedHotspot}">Restarting Device</li>
+                    <li id="connect_${currentSSID}">Reconnecting to ${currentSSID}</li>
                     `;
 
                     app.connect(selectedHotspot)
                         .then(()=> app.saveSettings(deviceConnectionSSID, deviceConnectionPsk))
-                        .then(()=> app.turnOffAccessPoint(selectedHotspot))
+                        .then(()=> app.rebootDevice(selectedHotspot))
                         .then(()=> app.connect(currentSSID))
                         .then(()=> {
                             link.innerText = "Saved";
