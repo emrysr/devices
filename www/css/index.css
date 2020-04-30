@@ -1,13 +1,15 @@
 :root {
     --color-primary: #ea510e;
     --color-dark: #333;
+    --color-grey: #757575;
+    --color-light: #EFEFEF;
     --border-radius: .9rem;
     --sidebar-width: 90vw;
     --ease-in-cubic: cubic-bezier(0.55, 0.06, 0.68, 0.19);
     --ease-in-quad: cubic-bezier(0.55, 0.09, 0.68, 0.53);
+    --ease-out-back: cubic-bezier(0.18, 0.89, 0.32, 1.28);
     --bg1: #E4E4E4;
     --bg2: #A7A7A7;
-    --bg-light: #EFEFEF;
 }
 * {
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
@@ -29,38 +31,14 @@ body {
     width:100%;
 }
 
-@keyframes fadeInOut {
+@keyframes pulse {
     from { opacity: 1.0; }
-    50% { opacity: 0.4; }
-    to { opacity: 1.0; }
-}
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to   { opacity: 0; }
-}
-@keyframes fadeIn {
-    from { opacity: 0; height: 0 }
-    to   { opacity: 1; height: 13rem }
+    50%  { opacity: 0.4; }
+    to   { opacity: 1.0; }
 }
 .blink {
-    animation:fadeInOut 3s infinite;
+    animation: pulse 3s var(--ease-in-quad) infinite;
 }
-.fade {
-    animation:fadeOut .8s var(--ease-in-cubic) forwards;
-}
-.fade.in {
-    animation:fadeIn .3s var(--ease-in-cubic) forwards;
-}
-
-.slide {
-    right: calc( -1 * var(--sidebar-width)) !important;
-    transition: right .3s var(--ease-in-cubic);
-}
-.slide.in {
-    right: 0!important;
-}
-
-
 
 .app {
     overflow-x: hidden;
@@ -68,7 +46,80 @@ body {
     width: 100vw;
     height: 100vh;
     padding: 0;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-start;
 }
+.app > header {
+    flex: inherit;
+}
+.app > * {
+    overflow: hidden;
+    transition: flex .3s ease-in-out;
+    height: auto;
+    flex: 1;
+}
+
+/* initally hide fades */
+.app > *.fade {
+    flex: 0;
+    margin: 0;
+    padding: 0;
+}
+/* show fades with class ".in" */
+.app > *.fade.in {
+    flex: 1;
+}
+
+
+
+/* welcome screen */
+
+.app #welcome {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.app #welcome.fade {
+    transition: all .3s var(--ease-in-cubic);
+}
+.app #welcome.fade.in {
+    transition: flex .8s var(--ease-out-back),
+                padding .6s ease-in,
+                margin .6s var(--ease-in-quad);
+}
+.app #welcome.fade.in {
+    flex: .7;
+}
+
+/* close overlay button */
+[data-close] {
+    color: inherit;
+    font-size: 180%;
+    position: absolute;
+    top: .2rem;
+    right: .8rem;
+    opacity: .6;
+    transition: opacity .3s ease-in-out;
+}
+[data-close]:hover {
+    color: inherit;
+    text-decoration: none;
+    opacity: 1;
+}
+
+
+/* sidebar slide */
+.slide {
+    right: calc( -1 * var(--sidebar-width)) !important;
+    transition: right .3s var(--ease-in-cubic);
+}
+.slide.in {
+    right: 0!important;
+    transform-origin: top;
+}
+
+
 
 h1,h2,h3{
     margin-bottom: .3em;
@@ -78,8 +129,7 @@ h1,h2,h3{
     color: inherit;
 }
 section {
-    margin-bottom: 2em;
-    padding-bottom: 3rem;
+    padding-bottom: 1rem;
 }
 section article {
     padding: 0 1rem;
@@ -111,18 +161,33 @@ section footer nav a.button:hover {
 }
 
 .list progress {
-    height: .75rem;
+    height: .8rem;
     width: 3.5rem;
-    margin-left: 1em;
+    appearance: none;
+    background: #ffeeee !important;
 }
+.list progress[value]::-webkit-progress-bar {
+    background-color: white;
+}
+.list progress::-webkit-progress-value {
+    background: var(--color-primary);
+}
+.list .current progress::-webkit-progress-value {
+    background: #6b9be8;
+}
+
 .list .current {
     color: var(--bg1);
     background-color: #3273dc;
 }
+.list a.current:hover {
+    background: #2a5eb3;
+    color: white;
+    text-decoration: none;
+}
 .list .current .badge{
     color: var(--bg1);
 }
-
 nav {
     display: flex;
     flex-direction: column;
@@ -144,7 +209,8 @@ nav.list a{
     align-items: baseline;
 }
 nav.list a:hover {
-    background: var(--bg-light);
+    background: var(--color-light);
+    color: var(--color-primary);
     text-decoration: none;
 }
 nav.list a:last-of-type {
@@ -224,11 +290,35 @@ nav.menu a:hover {
     background: transparent;
     color: var(--color-dark);
 }
-main {
+.app main {
     margin-top: 0em;
     z-index: 1;
+    overflow-y: auto;
 }
-
+.app main > * {
+    z-index: 0;
+}
+.app main #loader {
+    position: absolute;
+    width: 100vw;
+    bottom: 3.6rem;
+    pointer-events: none;
+}
+.tip-title {
+    margin-bottom: .2em;
+    font-weight: bold;
+}
+.tip-title:first-child:first-letter {
+    float: left;
+    font-size: 1.8rem;
+    line-height: 1.1;
+    margin: -0.1em 0.5em 0.2em 0.2em;
+    padding: 0.1em 0.4em 0em 0.4em;
+    border-radius: 50%;
+    font-weight: normal;
+    background: var(--color-light);
+    color: var(--color-primary);
+}
 #sidebar {
     position: fixed;
     display: flex;
@@ -269,18 +359,29 @@ main {
 }
 
 #sidebar > header,
-#sidebar dl,
-#sidebar .text {
+#sidebar > article{
     padding: 0 2rem;
 }
-#sidebar .text {
-    color: #ddd;
+#sidebar blockquote{
+    border-left: .2em solid var(--color-grey);
+    padding-left: .4em;
+    color: var(--bg2);
     font-size: .8em;
     margin-top: 2em;
 }
-#sidebar .text p a{
-    color: inherit;
+#sidebar blockquote a{
+    color: var(--color-light);
+    opacity: .9;
     text-decoration: underline;
+}
+#sidebar blockquote small {
+    color: var(--color-grey);
+}
+#sidebar blockquote small a{
+    opacity: .7
+}
+#sidebar blockquote a:hover {
+    opacity: 1;
 }
 #sidebar > *:first-child {
     padding-top: .1rem;
@@ -303,11 +404,66 @@ main {
     font-size: inherit;
     background: var(--color-primary);
 }
+
+#sidebar dd,
+#sidebar dd > * {
+    font-size: .9rem;
+}
+#sidebar dd select {
+    font-size: 1.1rem;
+    margin: .4rem 0;
+}
+#sidebar dt label {
+    margin-bottom: 0;
+}
+#sidebar dl {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border-left: .3rem solid var(--color-primary);
+    padding-left: .4rem;
+}
+#sidebar dt, #sidebar dd {
+    padding: 0;
+    margin: .1rem 0;
+}
+#sidebar dt {
+    flex-basis: 50%;
+    text-align: right;
+    padding-right: .5rem;
+    color: #838383;
+}
+#sidebar dd {
+    flex-basis: 50%;
+    flex-grow: 1;
+}
+#sidebar dd .badge{
+    vertical-align: baseline;
+    margin-top: .2rem;
+    margin-left: 0;
+}
+#sidebar .button {
+    background-color: var(--color-primary);
+    color: var(--color-light);
+}
+#sidebar .button:active {
+    background-color: var(--color-grey);
+    color: var(--color-light);
+}
 #sidebar article {
     overflow-y: auto;
 }
+
 .button [href="#sidebar"]{
     font-weight: bold
+}
+
+main blockquote {
+    font-size: .9rem;
+    padding-left: .8em;
+    border-left: .3em solid var(--color-primary);
 }
 .badge {
     border-radius: .5em;
@@ -329,6 +485,7 @@ main {
 .text-light {
     font-weight: lighter;
 }
+.jumbotron.in,
 .jumbotron {
     padding: 1.8rem 2rem 2rem 2rem;
     text-align: center;
@@ -337,6 +494,7 @@ main {
     background: var(--color-primary);
     margin-bottom: 1em;
 }
+
 .jumbotron h2{
     font-size:2rem;
     font-weight:normal;
@@ -356,14 +514,15 @@ main {
     color: white;
 }
 
+
 section header {
     padding: 1rem 2rem;
     background: var(--color-primary);
     color: #E9E9E9;
     margin-bottom: 1em;
 }
-section header > h1, 
-section header > h2, 
+section header > h1,
+section header > h2,
 section header > h3 {
     /* font-size:2rem; */
     /* font-weight:normal; */
@@ -380,23 +539,33 @@ section header p{
     color: white;
 }
 
-
-dl {
-    margin: 0;
-    padding: 0;
+ul.log {
+    margin-top: 2em;
+    padding-left: 2em;
 }
-dt {
-    border-left: .2em solid var(--color-primary);
-    padding-left: .4em;
-    color: #757575;
+ul.log li {
+    list-style-type: none;
+    color: var(--color-dark);
 }
-dt+dd {
-    clear: both;
-    padding: 0;
-    margin: 0;
-    margin-bottom: .3em;
-    padding-left: .6em;
-    color: white;
+ul.log li:before {
+    content: "⚪";
+    margin-right: .4em;
+    vertical-align: middle;
+}
+ul.log li.done {
+    color: #155c15;
+    font-weight: bold
+}
+ul.log li.done:before {
+    content: "✔";
+    border: 1px solid #838783;
+    border-radius: 50%;
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    line-height: 1rem;
+    font-size: 1.7rem;
+    animation: fadeIn .3s var(--ease-in-cubic) forwards;
 }
 
 footer nav.list {

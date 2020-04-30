@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;"> -->
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
@@ -10,7 +10,7 @@
         <title>EmonCMS</title>
     </head>
     <body>
-        <div class="app">
+        <div class="app container">
 
             <!-- fixed top header -->
             <header>
@@ -20,9 +20,10 @@
 
 
             <!-- only shown on first load -->
-            <aside id="welcome" class="jumbotron fade in">
+            <aside id="welcome" class="jumbotron fade">
+                <a href="#close" data-close>×</a>
                 <h2>Welcome</h2>
-                <p>You can use this app to find and add new EmonCMS devices.</p>
+                <p>You can use this app to find and<br> add new EmonCMS devices.</p>
                 <h2 style="display: flex; justify-content: space-around;margin:.5em;">
                     <svg class="icon"><use xlink:href="#icon-smartplug"></use></svg>
                     <svg class="icon"><use xlink:href="#icon-smartmeter"></use></svg>
@@ -40,7 +41,7 @@
             -->
             <main>
                 <section id="devices">
-                    <header id="devices_title">
+                    <header id="devices_title" class="d-none">
                         <h2>Devices</h2>
                         <p>Select a device to view its admin screen or add a new device</p>
                     </header>
@@ -58,7 +59,7 @@
 
                 <section id="add-device" class="d-none">
                     <header>
-                        <h2>Choose a new Device</h2>
+                        <h2><span class="icon-outline">➕</span> Add a new Device</h2>
                         <p>Select the device you'd like to add:</p>
                     </header>
                     <article>
@@ -75,7 +76,7 @@
                 <section id="accesspoints" class="d-none">
                     <header>
                         <h2>Choose a WiFi connection</h2>
-                        <p>How should your new device connect?</p>
+                        <p>How should <strong id="selectedDevice">your new device</strong> connect?</p>
                         <p><small><em>Your current connection is highlighted.</em></small></p>
                     </header>
                     <article>
@@ -92,14 +93,14 @@
                 <section id="auth" class="d-none">
                     <header>
                         <h2>WIFI Connection password</h2>
-                        <p>Please enter the password for<br> "<strong class="ssid">your device</strong>"</p>
+                        <p>Please enter the password for<br> <strong class="ssid">your wifi connection</strong></p>
                     </header>
                     <article>
                         <form>
                             <input type="hidden" name="ssid" id="ssid_input" class="ssid" value="">
                             <label for="psk">Password</label>
                             <div class="input-group">
-                                <input name="psk" id="psk" type="text">
+                                <input name="psk" id="psk" type="text" autocorrect="off" autocapitalize="none">
                                 <div>
                                     <button type="button" data-show-password="#psk" class="button active" title="Hide Password">
                                         <span class="icon-outline">👁️‍🗨️</span>
@@ -110,8 +111,18 @@
                                 <input type="checkbox" value="yes" checked" id="save-psk" name="save-psk">
                                 <label for="save-psk"> Save for next time?</label>
                             </div>
+
+                            <blockquote id="password-confirm" style="margin-top:2em">
+                                <p class="tip-title">
+                                    ℹ Please ensure the password is correct
+                                </p>
+                                <p class="text-light" style="font-style: italic;">
+                                    If the password is incorrectly set the device cannot be re-configured over the network.<br>
+                                    If this happens reset and add it as a new device.</p>
+                            </blockquote>
+                            
                         </form>
-                        <div class="log text-light" style="margin-top: 2em; text-align:center;"></div>
+                        <ul class="log text-light"></ul>
                     </article>
                     <footer>
                         <nav>
@@ -148,6 +159,9 @@
                         </nav>
                     </footer>
                 </section>
+
+                <p id="loader" style="text-align: center" class="text-muted blink"></p>
+
             </main>
 
 
@@ -162,13 +176,13 @@
 
                 <article>
                     <dl>
-                        <dt>Connected</dt><dd id="connected"></dd>
-                        <dt>WiFi</dt><dd id="currentSSID"></dd>
-                        <dt>IP</dt><dd id="currentIP"></dd>
-                        <dt>Version</dt><dd>v0.1.0</dd>
+                        <dt>Connected</dt><dd><span id="connected" class="badge"></span></dd>
+                        <dt>WiFi</dt><dd><span id="currentSSID" class="badge"></span></dd>
+                        <dt>IP Address</dt><dd><span id="currentIP" class="badge"></span></dd>
+                        <dt>Version</dt><dd><span class="badge">v0.1.0</span></dd>
                     </dl>
                     <dl>
-                        <dt><label for="language">Language:</label></dt>
+                        <dt><label for="language">Language</label></dt>
                         <dd>
                             <select id="language" name="language">
                                 <option>English</option>
@@ -179,25 +193,26 @@
                     </dl>
                     <!-- to try differnet UI colours -->
                     <dl>
-                        <dt><label for="colour">Colour (dev):</label></dt>
+                        <dt><label for="colour">Theme</label></dt>
                         <dd>
                             <!-- <input type="color" id="colour" name="colour"> -->
                             <select id="colour" name="colour">
-                                <option value="#4365fe">BLUE #4365fe</option>
-                                <option value="#757449">GREEN #757449</option>
-                                <option value="#708D91">BLUE GRAY #708D91</option>
-                                <option value="#D31996">PURPLE #D31996</option>
-                                <option value="#fe4365">PINK #fe4365</option>
-                                <option value="#ea510e">ORANGE #ea510e</option>
+                                <option value="#1d8dbc">Blue</option>
+                                <Option value="#757449">Green</option>
+                                <Option value="#708d91">Blue Gray</option>
+                                <Option value="#d31996">Pink</option>
+                                <Option value="#fe4365">Red</option>
+                                <Option value="#ea510e">Orange</option>
                             </select>
                         </dd>
+                        <dt>Welcome</dt>
+                        <dd><a href="#welcome" class="button">Show</a></dd>
                     </dl>
-                    <div class="text">
-                        <p>This app is part of the OpenEnergyMonitor project: <a data-weblink href="https://openenergymonitor.org">http://openenergymonitor.org</a></p>
-                        <p><small>The source code is available on <a data-weblink href="https://github.com/emoncms/pair">GitHub</a></small></p>
-                        <p><small>icons by <a data-weblink href="https://icomoon.io/">icomoon.io</a> and Smart meter by Justin Blake from the <a data-weblink href="https://thenounproject.com/">Noun Project</a></small></p>
-                        <p>Re-show <a href="#welcome">welcome screen</a></p>
-                    </div>
+                    <blockquote>
+                        <p>This app is part of the OpenEnergyMonitor project: <a data-weblink href="https://openenergymonitor.org">http://openenergymonitor.org</a><br></p>
+                        <small>The source code is available on <a data-weblink href="https://github.com/emoncms/pair">GitHub</a></small><br>
+                        <small>icons by <a data-weblink href="https://openenergymonitor.org">http://openenergymonitor.org</a>, <a data-weblink href="https://icomoon.io/">icomoon.io</a> and Smart meter by Justin Blake from the <a data-weblink href="https://thenounproject.com/">Noun Project</a></small>
+                    </blockquote>
                 </article>
                 <footer>
                     <nav>
@@ -206,7 +221,6 @@
                 </footer>
             </aside>
 
-            <p id="loader" style="text-align: center" class="text-muted blink"></p>
 
 
         </div><!-- end of .app container -->

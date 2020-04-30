@@ -2,71 +2,139 @@
 var controller = null;
 
 var app = {
-
-    devices: [],
-    deviceScanTimeout: 10000,
-    deviceScanRepeat: 3000,
-    deviceScanRepeatObj: false,
-    wifiScanTimeout: 2000,
-    wifiScanRepeat: 20000,
-    wifiScanRepeatObj: false,
-    online: false,
-    currentSSID: false,
-    currentIP: false,
-    accessPoints: [],
     scan_retries: 0,
     scan_counter: 0,
-    defaultView: "#devices",
-    device_ssid_pattern: /^(smartplug|wifirelay).*$/g,
-
+    settings: {
+        defaultView: "#devices",
+        deviceScanTimeout: 10000,
+        deviceScanRepeat: 3000,
+        wifiScanTimeout: 2000,
+        wifiScanRepeat: 20000,
+        wifiScanRepeatObj: false,
+        device_ssid_pattern: /^(smartplug|wifirelay).*$/g,
+    },
+    state: {
+        devices: [],
+        accessPoints: [],
+        online: false,
+        currentSSID: false,
+        currentIP: false,
+        selectedHotspot: false,
+        deviceConnectionSSID: false,
+        deviceConnectionPsk: false,
+        deviceScanRepeatObj: false,
+    },
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
     },
     
     onDeviceReady: function() {
+        // handle all view/tab changes
         controller = new Controller();
+        // show welcome page
+        this.firstPage();
+        // add mobile system events
+        document.addEventListener("reload", this.onReload.bind(this), false);//window.location.reload(true);
+        document.addEventListener("connect", this.onConnect.bind(this), false);
+        document.addEventListener("offline", this.onOffline.bind(this), false);
+        document.addEventListener("online", this.onOnline.bind(this), false);
+        // get network status
+        app.getStatus();
+    },
+
+    firstPage: function() {
+        controller.hideAll();
         // default view
-        controller.show(["#welcome", app.defaultView]);
+        var defaultView = app.getSettings("defaultView");
+        controller.show("#welcome");
+        controller.show(defaultView);
+        // remove view title when welcome page in view
+        controller.hide(defaultView + "_title");
+
         // scan for devices to show on default view
+        app.find("#welcome").classList.add("in");
         app.getNetworkDevices();
-        
+    },
+    onReload: function(event) {
+        app.getStatus();
+    },
+    onConnect: function(event) {
+        app.getStatus();
+    },
+    onOffline: function(event) {
+        app.getStatus();
+    },
+    onOnline: function(event) {
+        app.getStatus();
+    },
+    getStatus: function() {
         // collect current wifi state to show in settings
-        this.setIsConnected(this.getWifiEnabled());
-        this.getCurrentSSID().then(app.setCurrentSSID);
-        WifiWizard2.getWifiIP().then(app.setCurrentIP)
+        app.getWifiEnabled().then(status=> app.setIsConnected(status));
+        app.getCurrentSSID().then(ssid=> app.setCurrentSSID(ssid));
+        WifiWizard2.getWifiIP()
+            .then(ip=> app.setCurrentIP(ip))
             .catch(()=>{
                 app.setCurrentIP("");
                 app.setIsConnected(false);
             });
-
     },
+    getSettings: function(key) {
+        if(app.settings.hasOwnProperty(key)) {
+            return app.settings[key];
+        } else {
+            return undefined;
+        }
+    },
+    /**
+     * get app settings value
+     * @param {String} key name of property value to return
+     * @returns {*} property value or undefined
+     */
+    getState: function(key) {
+        if(app.state.hasOwnProperty(key)) {
+            return app.state[key];
+        } else {
+            return undefined;
+        }
+    },
+    setState: function(key, value) {
+        try {
+            app.state[key] = value;
+            return value;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+
     setIsConnected: function(isOnline) {
         if(!isOnline) controller.show("disconnected");
-        app.online = isOnline;
+        app.setState("online", isOnline);
         app.find("#connected").innerText = isOnline ? 'YES': 'NO';
     },
+    /**
+     * get the currently connected SSID. save to app.state and update view
+     */
     getCurrentSSID: function() {
         return WifiWizard2.getConnectedSSID()
             .then(function(ssid) {
-                // app.info(`connected to "${ssid}"`);
-                app.currentSSID = ssid;
+                app.setCurrentSSID(ssid);
                 return ssid;
             })
             .catch(function(reason) { 
-                app.error(reason);
+                console.error(reason);
             });
     },
     setCurrentSSID: function(ssid) {
-        app.currentSSID = ssid;
+        app.setState("currentSSID", ssid);
         app.find("#currentSSID").innerText = ssid;
     },
     setCurrentIP: function(ip) {
-        app.currentIP = ip;
+        app.setState("currentIP", ip);
         app.find("#currentIP").innerText = ip;
     },
     onExternalLinkClick: function(event) {
         event.preventDefault();
-        var url = event.target.href;
+        var url = getClosest(event.target, "a").href;
         if(url) window.open(url,'_blank', 'location=yes');
     },
     /**
@@ -83,9 +151,8 @@ var app = {
             .finally(() => {
                 // repeat the scan after delay - only if in "device scan" tab
                 if(controller.state==="#devices") {
-                    app.deviceScanRepeatObj = setTimeout(function(){
-                        app.getNetworkDevices();
-                    }, app.deviceScanRepeat);
+                    var t = setTimeout(() => {app.getNetworkDevices()}, app.getSettings("deviceScanRepeat"));
+                    app.setState("deviceScanRepeatObj", t);
                 }
                 app.stopLoader();
             });
@@ -102,11 +169,10 @@ var app = {
      * @returns {Promise} 
      */
     getAccessPoints: function() {
-        // console.log("Scanning for Wifi Access Points...");
         return WifiWizard2.scan();
     },
     setAccessPoints: function(acccessPoints) {
-        app.accessPoints = acccessPoints;
+        app.setState("accessPoints", acccessPoints);
         return acccessPoints;
     },
     /**
@@ -116,10 +182,11 @@ var app = {
      */
     getDeviceHotspots: function(acccessPoints) {
         return acccessPoints.reduce((accumulator, currentValue) => {
+            // console.log(currentValue.SSID, currentValue.capabilities);
             if(currentValue.SSID) {
-                var found = currentValue.SSID.match(app.device_ssid_pattern);
+                var found = currentValue.SSID.match(app.getSettings("device_ssid_pattern"));
                 if (found) {
-                    accumulator.push(found[0]);
+                    accumulator.push(currentValue);
                 }
             }
             return accumulator;
@@ -129,8 +196,8 @@ var app = {
         const list = app.find("#add-device .list");
         var _devices = hotspots.length === 1 ? "Device": "Devices";
         list.innerHTML = `<p>Found ${hotspots.length} ${_devices}</p>`;
-        hotspots.forEach(name=>{
-            var type, icon,
+        hotspots.forEach(hotspot=> {
+            var name = hotspot.SSID, type, icon,
             [type,icon] = app.getDeviceType(name);
             var html = `<a href="#accesspoints" data-name="${name}"><span><svg class="icon"><use xlink:href="#icon-${icon}"></use></svg> ${name}</span> <small class="badge">${type}</small></a>`,
                 item = document.createElement('div');
@@ -141,7 +208,7 @@ var app = {
     },
     /**
      * get the list of access points
-     * store results in `app.accessPoints`
+     * store results in `app.state.accessPoints`
      * on error retry after short delay
      */
     getWifiHotspots: function() {
@@ -150,19 +217,21 @@ var app = {
                 app.showWifiNetworks();
                 app.scan_counter++;
                 app.scan_retries = 0;
-                console.log(`Scan ${app.scan_counter} complete. (${app.accessPoints.length} items)`);
+                console.log(`Scan ${app.scan_counter} complete. (${app.getState("accessPoints").length} items)`);
                 
                 // re-scan after delay
                 if(controller.state==="#accesspoints") {
-                    app.wifiScanRepeatObj = setTimeout(function(){
+                    var t = setTimeout(function() {
                         app.getWifiHotspots();
-                    }, app.wifiScanRepeat)
+                    }, app.getSettings("wifiScanRepeat"));
+                    // save a ref to the timeout to allow cancel
+                    app.setState("wifiScanRepeatObj", t);
                 }
             })
             .catch(function(reason){ 
                 // error running scan. clear auto refresh, wait and retry
                 console.error(app.scan_retries + ". " + reason);
-                WifiWizard2.timeout(wifiScanTimeout)
+                WifiWizard2.timeout(app.getSettings("wifiScanTimeout"))
                     .then(function() {
                         app.scan_retries++;
                         if (app.scan_retries > app.max_retries) {
@@ -227,8 +296,7 @@ var app = {
     zeroconfScan: function() {
         var zeroconf = cordova.plugins.zeroconf;
         // todo: add to devices instead of clearing out and starting agian
-        app.devices = []; 
-
+        app.setState("devices", []);
         return new Promise((resolve, reject) => {
             zeroconf.reInit(function() {
                 zeroconf.registerAddressFamily = 'ipv4';
@@ -238,15 +306,15 @@ var app = {
                 zeroconf.watch('_http._tcp.', 'local.', app.parseDevices);
     
                 setTimeout(function() {
-                    if(app.devices.length > 0) {
-                        zeroconf.close(
-                            ()=>resolve(app.devices),
-                            ()=>reject("Unable to close zeroconf browser")
-                        );
-                    } else {
-                        reject("No devices found");
-                    }
-                }, app.deviceScanTimeout);
+                        if(app.getState("devices").length > 0) {
+                            zeroconf.close(
+                                ()=>resolve(app.getState("devices")),
+                                ()=>reject("Unable to close zeroconf browser")
+                            );
+                        } else {
+                            reject("No devices found");
+                        }
+                },  app.getSettings("deviceScanTimeout"));
             });
         });
     },
@@ -270,8 +338,10 @@ var app = {
                 url: url
             }
             if(ip && app.deviceIsUnique(ip)) {
-                app.devices.push(device);
-                app.displayDevices(app.devices);
+                let devices = app.getState("devices") || [];
+                devices.push(device);
+                app.setState("devices", devices);
+                app.displayDevices(devices);
             }
         }
     },
@@ -281,9 +351,9 @@ var app = {
      * @param {HTMLElement} list container to display the entries in
      */
     displayAccessPoints: function(accessPoints, list) {
-        // filtered access points to not show device hotspots (only standard wifi connections)
+        // filtered access points to NOT show device hotspots (only standard wifi connections)
         var filtered = accessPoints.reduce((accumulator, currentValue) => {
-            var found = currentValue.SSID.match(app.device_ssid_pattern);
+            var found = currentValue.SSID.match(app.getSettings("device_ssid_pattern"));
             if (!found) {
                 accumulator.push(currentValue);
             }
@@ -296,22 +366,122 @@ var app = {
         // show each wifi connection as individual link
         filtered.forEach(ap => {
             var item = document.createElement('div');
-            var wps = "";
-            if (ap.capabilities) {
-                wps = ap.capabilities.match('WPS') ? ' WPS': '';
-            }
-            var strength = "", rating = "";
+            var wpa, ess, wps, strength = "", rating = "";
+            [wpa, ess, wps] = app.getApCapabilities(ap);
             [strength, rating] = app.getApStrengthAndRating(ap);
 
             var title = ap.SSID === "" ? `<span class="text-muted">${ap.BSSID}</span>`: ap.SSID;
-            var css = ap.SSID === app.currentSSID ? 'current': '';
-            item.innerHTML = `<a href="#auth" data-ssid="${ap.SSID}" class="${css}">
+            var css = ap.SSID === app.getState("currentSSID") ? 'current': '';
+            item.innerHTML = `<a href="#auth" data-ssid="${ap.SSID}" data-wpa="${wpa}" class="${css}">
                                 <span>${title}<small class="badge text-muted">${wps}</small></span>
                                 <progress max="5" value="${rating}">
                                     ${ap.level}dBm
                                 </progress>
                               </a>`;
             list.append(item.firstElementChild);
+        });
+    },
+    /**
+     * get wpa,ess and wps status for access point
+     * 
+     * The access point object's capabilities property :-
+     *      "...Describes the authentication, key management, and encryption 
+     *          schemes supported by the access point..." - WiFiWizard2 docs
+     * Access point capabilites are returned as a formatted string
+     *  3 examples: ["WPA2-PSK-CCMP", "ESS", "WPS"]
+     *              ["WPA2-EAP-CCMP+TKIP", "WPA-EAP-CCMP+TKIP", "ESS"]
+     *              ["ESS"]
+     * @see https://github.com/tripflex/WifiWizard2/blob/master/README.md WiFiWizard2 docs
+     * 
+     * @param {Object} ap AccessPoint object as returned by WiFiWizard2 plugin
+     * @returns {string[]} "WPA","ESS","WPS" or empty strings if not set
+     */
+    getApCapabilities: function(ap) {
+        var capabilities = {
+            wpa: false,
+            ess: false,
+            wps: false 
+        }
+        ap.capabilities.match(/(?:\[([\w-+]*)\])/g).reduce((accumulator, currentValue) => {
+            accumulator.push(currentValue.replace(/[\[\]]/g, ""));
+            return accumulator;
+        }, [])
+        .forEach(capability=> {
+            if(/^WPA/i.test(capability)) {
+                capabilities.wpa = true;
+            }
+            if(/^ESS/i.test(capability)) {
+                capabilities.ess = true;
+            }
+            if(/^WPS/i.test(capability)) {
+                capabilities.wps = true;
+            }
+        });
+        return [
+            capabilities.wpa?'WPA':'',
+            capabilities.ess?'ESS':'',
+            capabilities.wps?'WPS':''
+        ];
+    },
+    /**
+     * 
+     * @param {String} ssid SSID of wifi ap - REQUIRED
+     * @param {String} password password for connection - not needed for open network
+     * @param {String} algorithm "WPA"|"WEP" - not needed for open network
+     * @returns {Promise} WifiWIzard2.connect() promise
+     */
+    connect: function(ssid, password, algorithm) {
+        function success() {
+            console.log(`Connected to ${ssid}`);
+            app.find(`#auth .log #connect_${ssid}`).classList.add("done");
+        }
+        var bindAll = true;
+        if(!password) {
+            // connect without password
+            return WifiWizard2.connect(ssid, bindAll)
+            .then(()=>success());
+        } else {
+            return WifiWizard2.connect(ssid, bindAll, password, algorithm)
+            .then(()=>success());
+        }
+    },
+    /**
+     * pass settings to EmonESP device using the api
+     * default ip address for device once connected to hotspot is:
+     *  192.168.4.1
+     * @param {String} ssid the name of the wifi connection
+     * @param {String} psk the wifi connection passkey
+     * @returns {Promise} 
+     * 
+     * {@see https://github.com/openenergymonitor/EmonESP/blob/master/src/web_server.cpp#L753 EmonESP api endpoint}
+     * {@see https://github.com/openenergymonitor/EmonESP/blob/master/src/web_server.cpp#L159 EmonESP save ssid function}
+     */
+    saveSettings: function(ssid, password) {
+        return new Promise((resolve, reject) => {
+            if(ssid === "") reject("SSID cannot be empty");
+            // send details to device
+            var url = `http://192.168.4.1/savenetwork?ssid=${ssid}&pass=${password}`;
+            return fetch(url)
+                .then(response => {
+                    console.log("response received from ", url);
+                    // return the response body as text if 200 OK, else throw error
+                    if (response.ok) return "saved";
+                    throw response;
+                })
+                .then(()=> new Promise((r) => setTimeout(r, 1000)))
+                .then(()=> {
+                    console.log(`Saved settings on ${ssid}`);
+                    app.find(`#auth .log #save_${ssid}`).classList.add("done");
+                    resolve("saved");
+                })
+                .catch(error => {
+                    if (error instanceof Error) return error;
+                    reject(`HTTP ${error.status} ${error.statusText}`);
+                });
+
+        })
+        .catch(error=> {
+            console.error("app.saveSettings():", error);
         });
     },
     /**
@@ -348,14 +518,28 @@ var app = {
         var storage = window.localStorage;
         return JSON.parse(storage.getItem(key));
     },
-    saved_success: function(link) {
-        controller.hideAll();
-        controller.show("#saved");
-        link.innerText = link.dataset.originalText;
-        link.classList.remove("blink");
-        controller.state = "#saved";
-        app.find("#psk").value = "";
-        app
+    /**
+     * device settings successfully saved
+     */
+    saved_success: function(button) {
+        // move to next view
+        setTimeout(function() {
+            app.find("#psk").value = "";
+            controller.hideAll();
+            controller.show("#saved");
+            button.innerText = button.dataset.originalText;
+        }, 2000)
+    },
+    /**
+     * device settings problem saving
+     */
+    not_saved: function(button) {
+        setTimeout(function() {
+            app.find("#psk").value = "";
+            controller.hideAll();
+            controller.show("#not_saved");
+            button.innerText = button.dataset.originalText;
+        }, 2000)
     },
     /**
      * Return strength and rating for given ap.level value
@@ -390,9 +574,11 @@ var app = {
      * @returns {Boolean} true if ip address is not already in list
      */
     deviceIsUnique: function(ip) {
-        app.devices.forEach(device => {
+        var devices = app.getState("devices");
+        for(d in devices) {
+            var device = devices[d];
             if (device.ip === ip) return false;
-        });
+        }
         return true;
     },
     showError: function(error) {
@@ -434,7 +620,7 @@ var app = {
 var Controller = function() {
     var controller = {
         self: null,
-        state: app.defaultView,
+        state: app.getSettings('defaultView'),
         initialize: function() {
             self = this;
             this.bindEvents();
@@ -443,7 +629,6 @@ var Controller = function() {
             self.views = [
                 "#welcome",
                 "#devices",
-                "#devices_title", // hides this if welcome screen shown
                 "#accesspoints",
                 "#add-device",
                 "#auth",
@@ -462,6 +647,7 @@ var Controller = function() {
                 item.addEventListener('click', this.onClick);
             });
             app.find("[data-show-password]").addEventListener('click', app.togglePasswordVisible)
+
         },
         /**
          * Main navigation handler (similar to front controller in php)
@@ -485,6 +671,15 @@ var Controller = function() {
                 app.onExternalLinkClick(event);
                 return;
             }
+            // close overlay clicked
+            if(link.hasAttribute('data-close')) {
+                getClosest(link, ".fade").classList.remove("in");
+                console.log('state', controller.state)
+                if(controller.state === "#devices") {
+                    app.find("#devices_title").classList.remove('d-none');
+                }
+                return;
+            }
 
             // console.log(`link clicked: "${link.innerText}", links to "${link.hash}"`);
             var href = link.hash;
@@ -503,9 +698,9 @@ var Controller = function() {
             }
             // set to default if view not found
             if(!view) {
-                view = app.defaultView;
+                view = app.getSettings("defaultView");
             } else if(!document.querySelector(view)) {
-                view = app.defaultView;
+                view = app.getSettings("defaultView");
             }
             // change to new view by default
             // or fire off functions specific to requested view
@@ -515,7 +710,6 @@ var Controller = function() {
                     setTimeout(function() {
                         self.hideAll();
                         self.show('#accesspoints');
-                        // console.log(`moving from: "${self.state}", to: "${view}"`);
                         link.classList.remove('blink');
                     }, 2000);
                 break;
@@ -527,42 +721,67 @@ var Controller = function() {
                     self.show(view);
                 break;
                 case "#add-device":
-                    app.getAccessPoints()
-                        .then(app.setAccessPoints)
-                        .then(app.getDeviceHotspots)
-                        .then(app.showDeviceHotspots)
-                        .finally(()=>app.stopLoader);
                     self.hideAll();
                     self.show(view);
+                    app.getAccessPoints()
+                        .then(accessPoints=> app.setAccessPoints(accessPoints))
+                        .then(accessPoints=> app.getDeviceHotspots(accessPoints))
+                        .then(hotspots=> app.showDeviceHotspots(hotspots))
+                        .catch(function(error) {
+                            console.error(view, error);
+                        })
+                        .finally(()=> app.stopLoader);
                     app.startLoader("Searching for new devices in range...");
                 break;
                 case "#accesspoints":
                     self.hideAll();
+                    if(link.dataset.name) {
+                        app.setState("selectedHotspot", link.dataset.name);
+                    }
+                    app.find("#selectedDevice").innerText = app.getState("selectedHotspot");
+                    
                     app.stopLoader();
-                    app.displayAccessPoints(app.accessPoints, app.find("#accesspoints .list"));
                     self.show(view);
+                    // show the list of access points to choose from
+                    app.displayAccessPoints(app.getState("accessPoints"), app.find("#accesspoints .list"));
                 break;
                 case "#auth":
+                    app.stopLoader();
                     self.hideAll();
                     self.show(view);
                     
                     // recall saved password
-                    var passwordList = app.load('ssid');
+                    var passwordList = app.load('ssid') || {};
                     if(passwordList.hasOwnProperty(link.dataset.ssid)) {
                         app.find("#psk").value = passwordList[link.dataset.ssid];
+                        app.find("#save-psk").checked = true;
                     }
-                    
-                    app.stopLoader();
+                    // clear the log view
                     app.find("#auth .log").innerHTML = "";
+
                     // display selected ssid and set value in hidden form field
                     app.find("#auth .ssid").innerText = link.dataset.ssid;
                     app.find("#auth #ssid_input").innerText = link.dataset.ssid;
+                    
                     // pass ssid to next view (if button clicked)
                     app.find("#auth #save_auth").dataset.ssid = link.dataset.ssid;
+                    app.setState("deviceConnectionSSID", link.dataset.ssid);
+
                 break;
                 case "#saved":
                     // saving data before showing success message
                     // todo: connect to device hotspot and save settings
+                    app.setState("deviceConnectionPsk", app.find("#psk").value);
+
+                    // fixed in during testing
+                    app.getState("selectedHotspot")
+
+
+                    const deviceConnectionSSID = app.getState("deviceConnectionSSID");
+                    const deviceConnectionPsk = app.getState("deviceConnectionPsk");
+
+                    const selectedHotspot = app.getState("selectedHotspot");
+                    const currentSSID = app.getState("currentSSID");
 
                     // use save button as ajax loader
                     link.dataset.originalText = link.innerText;
@@ -570,46 +789,49 @@ var Controller = function() {
                     link.classList.add('blink');
 
                     // save passkey locally
-                    if(app.find("#save-psk").checked && link.dataset.ssid) {
-                        var psk = app.find("#psk").value;
-                        var passwordList = app.load('ssid');
-                        passwordList[link.dataset.ssid] = psk;
-                        app.save('ssid', passwordList);
+                    // @todo: this will be saved in plain text to allow us to send it to the device.
+                    //        research browser local storage security.
+                    var passwordList = app.load('ssid') || {};
+                    if(app.find("#save-psk").checked && deviceConnectionSSID) {
+                        passwordList[deviceConnectionSSID] = deviceConnectionPsk;
+                    } else {
+                        delete passwordList[deviceConnectionSSID];
                     }
+                    // save altered passwword list
+                    app.save('ssid', passwordList);
 
-                    // FAKE AJAX RESPONSE-------------------
-                    var log = app.find("#auth .log");
-                    setTimeout(function() {
-                        log.innerHTML+="<p>Switching WiFi...";
-                    }, 300);
-                    setTimeout(function() {
-                        log.innerHTML+="<p>Connected.";
-                    }, 1700);
-                    setTimeout(function() {
-                        log.innerHTML+="<p>Saving Settings...";
-                    }, 1800);
-                    setTimeout(function() {
-                        log.innerHTML+="<p>Saved.";
-                    }, 2800);
-                    setTimeout(function() {
-                        log.innerHTML+="<p>Reconnecting WiFI...";
-                    }, 3500);
-                    setTimeout(function() {
-                        log.innerHTML+="<p>Connected.";
-                    }, 5500);
+                    // connect to device hotspot and save settings before reconnecting back to current wifi
+                    controller.hide("#password-confirm");
 
-                    // todo: send ssid and psk to device via api
-                    setTimeout(function() {
-                        app.saved_success(link)
-                    }, 7000);
+                    // add grayed out items "todo". once done class "done" is added
+                    app.find("#auth .log").innerHTML+= `
+                    <li id="connect_${selectedHotspot}">Connecting to ${selectedHotspot}</li>
+                    <li id="save_${deviceConnectionSSID}">Saving Settings</li>
+                    <li id="connect_${currentSSID}">Connecting to ${currentSSID}</li>
+                    `;
+
+                    app.connect(selectedHotspot)
+                        .then(()=> app.saveSettings(deviceConnectionSSID, deviceConnectionPsk))
+                        .then(()=> app.connect(currentSSID))
+                        .then(()=> {
+                            link.innerText = "Saved";
+                            link.classList.remove("blink");
+                            app.saved_success(link)
+                            console.log('/#saved',"Saved");
+                        })
+                        .catch(error=> {
+                            link.innerText = "Not Saved";
+                            link.classList.remove("blink");
+                            app.not_saved(link);
+                            console.error('/#saved Error:',error);
+                        })
                 break;
 
                 case "#welcome":
-                    self.hideAll();
                     if(getClosest(link, "#sidebar")!==null) {
                         self.toggleSidebar();
                     }
-                    self.show(["#welcome", app.defaultView]);
+                    app.firstPage();
                     break;
 
                 default:
@@ -619,7 +841,12 @@ var Controller = function() {
             // clear current page intervals or timeouts before changing
             self.clearViewTimeouts(self.state);
             // set current controller state - aka. "what page am I on?"
-            self.state = view;
+            if(view==="#welcome") {
+                // no view called "#welcome"... set it to default view
+                self.state = app.getSettings("defaultView");
+            } else {
+                self.state = view;
+            }
 
         },
         /**
@@ -629,11 +856,11 @@ var Controller = function() {
         clearViewTimeouts: function(state) {
             switch(state) {
                 case "#scan":
-                    clearTimeout(app.deviceScanRepeatObj);
+                    clearTimeout(app.getState("deviceScanRepeatObj"));
                     break;
                 case "#accesspoints":
                     // todo: clear wifi scan timeouts
-                    // clearTimeout(app.wifiScanRepeatObj);
+                    // clearTimeout(app.getState("wifiScanRepeatObj"));
                     break;
             }
         },
@@ -716,7 +943,7 @@ var getClosest = function (elem, selector) {
 var Dev = function() {
     var _ = {
         initialize: function () {
-            console.log("DEV SCRIPTS INITIALIZED")
+            console.info("DEV SCRIPTS INITIALIZED----------------")
             var input = document.getElementById("colour");
             if(input) {
                 var colour = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim();
@@ -726,15 +953,14 @@ var Dev = function() {
             }
         },
         onColourChange: function(event) {
-            console.log('input event caught')
             this.changeAccentColour(event.target.value);
         },
         changeAccentColour: function(colour){
-            console.log('new colour set', colour);
             document.documentElement.style.setProperty('--color-primary', colour);
         }
     }
     _.initialize();
     return _;
 }
+// create instatnce of dev scripts (and run init)
 var _dev = new Dev();
