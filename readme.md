@@ -34,6 +34,6 @@ or `$ rm -rf [repo dir]/platforms && cordova platform add android`y
 
 
 # todo
-- connect to device's hotspot
-- send ssid and psk to device via api
-- revert back to current ssid
+- store discovered devices as local storage
+- add to discovered devices instead of clearing list each time. the zeroconf scan doesn't always return the same results - some devices ar lost until the next scan?
+- `onOffline()` and `onOnline()` are not called correctly. need to improve the "I'm offline" event handling to store the `currentSSID` and `currentIP` correctly
