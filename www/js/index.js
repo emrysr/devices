@@ -453,8 +453,8 @@ var app = {
      * @param {String} psk the wifi connection passkey
      * @returns {Promise} 
      * 
-     * {@see https://github.com/openenergymonitor/EmonESP/blob/master/src/web_server.cpp#L753 EmonESP api endpoint}
-     * {@see https://github.com/openenergymonitor/EmonESP/blob/master/src/web_server.cpp#L159 EmonESP save ssid function}
+     * {@see https://github.com/openenergymonitor/EmonESP/blob/master/src/web_server.cpp#L753 EmonESP api endpoints}
+     * {@see https://github.com/openenergymonitor/EmonESP/blob/master/src/web_server.cpp#L159 EmonESP `handleSaveNetwork()` function}
      */
     saveSettings: function(ssid, password) {
         return new Promise((resolve, reject) => {
@@ -468,7 +468,6 @@ var app = {
                     if (response.ok) return "saved";
                     throw response;
                 })
-                .then(()=> new Promise((r) => setTimeout(r, 1000)))
                 .then(()=> {
                     console.log(`Saved settings on ${ssid}`);
                     app.find(`#auth .log #save_${ssid}`).classList.add("done");
@@ -483,6 +482,21 @@ var app = {
         .catch(error=> {
             console.error("app.saveSettings():", error);
         });
+    },
+    turnOffAccessPoint: function(ssid) {
+        // send request to device
+        var url = "http://192.168.4.1/apoff";
+        return fetch(url)
+            .then(response => {
+                console.log("response received from ", url);
+                // return the response body as text if 200 OK, else throw error
+                if (response.ok) return "saved";
+                throw response;
+            })
+            .then(()=> {
+                console.log("Device Access Point turned off");
+                app.find(`#auth .log #apoff_${ssid}`).classList.add("done");
+            });
     },
     /**
      * return type and icon for given name
@@ -807,11 +821,13 @@ var Controller = function() {
                     app.find("#auth .log").innerHTML+= `
                     <li id="connect_${selectedHotspot}">Connecting to ${selectedHotspot}</li>
                     <li id="save_${deviceConnectionSSID}">Saving Settings</li>
+                    <li id="apoff_${selectedHotspot}">Turning off Access Point</li>
                     <li id="connect_${currentSSID}">Connecting to ${currentSSID}</li>
                     `;
 
                     app.connect(selectedHotspot)
                         .then(()=> app.saveSettings(deviceConnectionSSID, deviceConnectionPsk))
+                        .then(()=> app.turnOffAccessPoint(selectedHotspot))
                         .then(()=> app.connect(currentSSID))
                         .then(()=> {
                             link.innerText = "Saved";
