@@ -14,7 +14,7 @@
 
             <!-- fixed top header -->
             <header>
-                <h1 class="brand"><a href="#welcome">EmonCMS</a></h1>
+                <h1 class="brand"><a href="#welcome">Emon Devices</a></h1>
                 <a href="#sidebar" class="button btn-fw">☰</a>
             </header>
 
@@ -40,19 +40,22 @@
                 js then reveals required content
             -->
             <main>
+
+                <div id="loader-animation" class="fade"></div>
+
                 <section id="devices">
                     <header id="devices_title" class="d-none">
                         <h2>Devices</h2>
                         <p>Select a device to view its admin screen or add a new device</p>
                     </header>
                     <article>
-                        <nav class="list">
-                        </nav>
+                        <nav class="list"><p>Searching...</p></nav>
+                        <p class="loader-text text-muted blink"></p>
                     </article>
                     <footer>
                         <nav>
                             <a href="#add-device" class="button"><span class="icon-outline">➕</span> Add New Device</a>
-                            <a href="#add-device-reload" class="button d-none">Re-Scan</a>
+                            <a href="#devices" class="button d-none cancel" data-reload style="background-color: var(--color-dark);">Scan</a>
                         </nav>
                     </footer>
                 </section>
@@ -63,12 +66,40 @@
                         <p>Select the device you'd like to add:</p>
                     </header>
                     <article>
-                        <nav class="list"></nav>
+                        <nav class="list"><p>Searching...</p></nav>
+                        <p class="loader-text text-muted blink"></p>
                     </article>
                     <footer>
                         <nav>
                             <a href="#devices" class="button cancel">Cancel</a>
-                            <a href="#add-device-reload" class="button d-none">Re-Scan</a>
+                            <a href="#add-device" class="button d-none" data-reload>Re-Scan</a>
+                        </nav>
+                    </footer>
+                </section>
+
+                <section id="add-device-failed" class="d-none">
+                    <header>
+                        <h2><span class="icon-outline">➕</span> Add a new Device</h2>
+                        <p>Select the device you'd like to add:</p>
+                    </header>
+                    <article>
+                        <p></p>
+
+                        <blockquote id="password-confirm" style="margin-top:2em">
+                            <h2 class="tip-title">
+                              ❗ No new device found!
+                            </h2>
+                            <p style="padding-bottom: 0">This app will connect to the new device via WiFi.</p>
+                            <p class="text-light" style="font-style: italic;">
+                               If you're having troubles connecting, try being within a few meters of the new device before running a re-scan.
+                            </p>
+                        </blockquote>
+
+                    </article>
+                    <footer>
+                        <nav>
+                            <a href="#devices" class="button cancel">Cancel</a>
+                            <a href="#add-device" class="button">Re-Scan</a>
                         </nav>
                     </footer>
                 </section>
@@ -80,7 +111,8 @@
                         <p><small><em>Your current connection is highlighted.</em></small></p>
                     </header>
                     <article>
-                        <nav class="list"></nav>
+                        <nav class="list"><p>Searching...</p></nav>
+                        <p class="loader-text text-muted blink"></p>
                     </article>
                     <footer>
                         <nav>
@@ -96,7 +128,7 @@
                         <p>Please enter the password for<br> <strong class="ssid">your wifi connection</strong></p>
                     </header>
                     <article>
-                        <form>
+                        <form style="margin-top: 2em;">
                             <input type="hidden" name="ssid" id="ssid_input" class="ssid" value="">
                             <label for="psk">Password</label>
                             <div class="input-group">
@@ -109,7 +141,7 @@
                             </div>
                             <div class="input-group">
                                 <input type="checkbox" value="yes" checked" id="save-psk" name="save-psk">
-                                <label for="save-psk"> Save for next time?</label>
+                                <label for="save-psk" style="margin-left: .3em"> Save for next time?</label>
                             </div>
 
                             <blockquote id="password-confirm" style="margin-top:2em">
@@ -175,9 +207,6 @@
                         </nav>
                     </footer>
                 </section>
-
-                <p id="loader" style="text-align: center" class="text-muted blink"></p>
-
             </main>
 
 
@@ -223,6 +252,9 @@
                         </dd>
                         <dt>Welcome</dt>
                         <dd><a href="#welcome" class="button">Show</a></dd>
+                        <dt>Cache</dt>
+                        <dd><a href="#clear-cache" class="button">Clear</a></dd>
+                        
                     </dl>
                     <blockquote>
                         <p>This app is part of the OpenEnergyMonitor project: <a data-weblink href="https://openenergymonitor.org">http://openenergymonitor.org</a><br></p>
@@ -280,6 +312,10 @@
                     <symbol id="icon-edmi-am" viewBox="0 0 32 32">
                         <!-- <title>smartmeter</title> -->
                         <path d="m 16.993099,3.7611044 c -7.7127769,0 -13.9873707,6.2745926 -13.9873707,13.9873716 0,7.712777 6.2745938,13.987371 13.9873707,13.987371 7.712779,0 13.987374,-6.274594 13.987374,-13.987371 0,-7.712779 -6.274595,-13.9873716 -13.987374,-13.9873716 z m 0,2.1684876 c 6.515801,0 11.818312,5.303083 11.818312,11.818884 0,6.5158 -5.302511,11.818311 -11.818312,11.818311 -6.5158,0 -11.8183103,-5.302511 -11.8183103,-11.818311 0,-6.515801 5.3025103,-11.818884 11.8183103,-11.818884 z m 0,0.9655555 c -5.984885,0 -10.8533284,4.8684425 -10.8533284,10.8533285 0,5.984885 4.8684434,10.853329 10.8533284,10.853329 5.984886,0 10.853329,-4.868444 10.853329,-10.853329 0,-5.984886 -4.868443,-10.8533285 -10.853329,-10.8533285 z m -1.708645,1.8726272 h 3.41729 c 0.267067,0 0.482778,0.2157105 0.482778,0.4827785 0,0.2670657 -0.215711,0.4827774 -0.482778,0.4827774 h -3.41729 c -0.267064,0 -0.482777,-0.2157117 -0.482777,-0.4827774 0,-0.267068 0.215713,-0.4827785 0.482777,-0.4827785 z M 9.6184092,12.017638 H 24.367789 v 4.392018 H 9.6184092 Z m 0.9649818,0.965556 v 2.461479 h 2.46148 v -2.461479 z m 3.468892,0 v 2.461479 h 2.451731 v -2.461479 z m 3.429902,0 v 2.461479 h 2.45173 v -2.461479 z m 3.459142,0 v 2.461479 h 2.461482 v -2.461479 z m -10.840714,4.974562 h 7.223895 c 0.267067,0 0.482779,0.215135 0.482779,0.482206 0,0.267065 -0.215712,0.482776 -0.482779,0.482776 h -7.223895 c -0.2670664,0 -0.4822038,-0.215711 -0.4822038,-0.482776 0,-0.267071 0.2151374,-0.482206 0.4822038,-0.482206 z m 11.506398,0 c 1.521963,0 2.760778,1.238816 2.760778,2.760778 0,1.521963 -1.238815,2.760779 -2.760778,2.760779 -1.521963,0 -2.760779,-1.238816 -2.760779,-2.760779 0,-1.521962 1.238816,-2.760778 2.760779,-2.760778 z m 0,0.964982 c -0.991044,0 -1.795222,0.804751 -1.795222,1.795796 0,0.991046 0.804178,1.795223 1.795222,1.795223 0.991045,0 1.795798,-0.804177 1.795798,-1.795223 0,-0.991045 -0.804753,-1.795796 -1.795798,-1.795796 z m -11.506398,1.313019 h 7.223895 c 0.267067,0 0.482779,0.215709 0.482779,0.482777 0,0.267067 -0.215712,0.482206 -0.482779,0.482206 h -7.223895 c -0.2670664,0 -0.4822038,-0.215139 -0.4822038,-0.482206 0,-0.267068 0.2151374,-0.482777 0.4822038,-0.482777 z m 0,2.278 h 7.223895 c 0.267067,0 0.482779,0.21571 0.482779,0.482778 0,0.267068 -0.215712,0.482778 -0.482779,0.482778 h -7.223895 c -0.2670664,0 -0.4822038,-0.21571 -0.4822038,-0.482778 0,-0.267068 0.2151374,-0.482778 0.4822038,-0.482778 z m 5.183841,3.249864 h 3.41729 c 0.267067,0 0.482778,0.215711 0.482778,0.482777 0,0.267068 -0.215711,0.482778 -0.482778,0.482778 h -3.41729 c -0.267064,0 -0.482777,-0.21571 -0.482777,-0.482778 0,-0.267066 0.215713,-0.482777 0.482777,-0.482777 z"></path>
+                    </symbol>
+                    <symbol id="icon-device" viewBox="0 0 32 32">
+                        <!-- <title>device</title> -->
+                        <path d="M 19.767269,0.61701658 C 13.753166,4.8024629 7.7390624,8.9879095 1.7249593,13.173356 7.2846543,15.678801 12.844349,18.184247 18.404044,20.689693 22.685281,15.72343 26.966357,10.75703 31.247704,5.790861 27.420892,4.0662463 23.594081,2.3416314 19.767269,0.61701658 Z M 31.492134,6.7349893 c -4.193371,4.8637857 -8.38674,9.7275717 -12.58011,14.5913577 -0.02859,3.251308 -0.05719,6.502618 -0.08578,9.753926 4.2025,-5.942789 8.405001,-11.885579 12.607499,-17.828369 0.01947,-2.172305 0.03893,-4.3446096 0.05839,-6.5169147 z M 1.3105143,13.863236 c -0.029972,3.434933 -0.059945,6.869865 -0.089917,10.304798 5.599486,2.523188 11.1989717,5.046374 16.7984577,7.569562 0.03066,-3.434588 0.06133,-6.869175 0.09198,-10.303762 C 12.510929,18.910158 6.9107221,16.386696 1.3105143,13.863236 Z m 1.3167155,5.917985 c 1.7435688,0.784947 3.5029289,1.537379 5.2255209,2.367298 -0.039134,1.095804 0.035325,2.244147 -0.07183,3.309875 C 6.0519529,24.643799 4.3221155,23.831035 2.5936909,23.015296 2.5448786,21.95738 2.5438787,20.808848 2.6272298,19.781221 Z"></path>
                     </symbol>
                 </svg>
             </defs>

@@ -60,13 +60,22 @@ body {
     flex: 1;
 }
 
-/* initally hide fades */
+.app .fade {
+    opacity: 0;
+    transition: opacity .3s var(--ease-in-quad);
+}
+.app .fade.in {
+    opacity: 1;
+}
+
+/* initally hide section fades */
 .app > *.fade {
     flex: 0;
     margin: 0;
     padding: 0;
+    opacity: 1;
 }
-/* show fades with class ".in" */
+/* show section fades with class ".in" */
 .app > *.fade.in {
     flex: 1;
 }
@@ -160,6 +169,10 @@ section footer nav a.button:hover {
     background: var(--color-dark)
 }
 
+.app p {
+    margin: 0;
+    padding: 1em 0;
+}
 .list progress {
     height: .8rem;
     width: 3.5rem;
@@ -274,26 +287,33 @@ input[type="password"] {
 nav.menu a:hover {
     background: #666;
 }
+
+
 .app > header {
     padding: 0 0 0 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--color-primary);
 }
 .app > header .button {
     font-size: 1.5rem;
 }
 .app > header .brand {
     margin: 0;
+    font-size: 1.6rem;
 }
 .app > header a[href="#sidebar"] {
     background: transparent;
-    color: var(--color-dark);
+    color: var(--color-primary);
 }
+
+
 .app main {
     margin-top: 0em;
     z-index: 1;
     overflow-y: auto;
+    position: relative;
 }
 .app main > * {
     z-index: 0;
@@ -304,20 +324,45 @@ nav.menu a:hover {
     bottom: 3.6rem;
     pointer-events: none;
 }
+.app main #loader-animation {
+    position: absolute;
+    right: 0.8rem;
+    top: .8rem;
+    border: 1em solid white;
+    border-color: var(--color-primary);
+    border-top-color: var(--bg1);
+    width: 5em;
+    height: 5em;
+    animation: spin 1.6s cubic-bezier(.8,.2,.2,.8) infinite;
+    font-size: 0.3rem;
+    border-radius: 50%;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+
+
 .tip-title {
     margin-bottom: .2em;
     font-weight: bold;
 }
 .tip-title:first-child:first-letter {
+    font-family: emoji;
     float: left;
     font-size: 1.8rem;
     line-height: 1.1;
-    margin: -0.1em 0.5em 0.2em 0.2em;
-    padding: 0.1em 0.4em 0em 0.4em;
+    margin: -.1rem .5rem .2rem .2rem;
+    padding: .1rem .3rem 0 .3rem;
     border-radius: 50%;
     font-weight: normal;
     background: var(--color-light);
     color: var(--color-primary);
+}
+#auth .tip-title:first-child:first-letter {
+    margin: -0.1em 0.5em 0.2em 0.2em;
+    padding: 0.1em 0.4em 0em 0.4em;
 }
 #sidebar {
     position: fixed;
@@ -460,10 +505,16 @@ nav.menu a:hover {
     font-weight: bold
 }
 
-main blockquote {
+.app main blockquote {
     font-size: .9rem;
     padding-left: .8em;
     border-left: .3em solid var(--color-primary);
+}
+.app main blockquote p{
+    padding-bottom: .3em;
+}
+.app main blockquote p:last-child {
+    padding-bottom: 0;
 }
 .badge {
     border-radius: .5em;
@@ -485,6 +536,9 @@ main blockquote {
 .text-light {
     font-weight: lighter;
 }
+.text-primary {
+    color: var(--color-primary);
+}
 .jumbotron.in,
 .jumbotron {
     padding: 1.8rem 2rem 2rem 2rem;
@@ -492,7 +546,6 @@ main blockquote {
     color: #E9E9E9;
     position: relative;
     background: var(--color-primary);
-    margin-bottom: 1em;
 }
 
 .jumbotron h2{
@@ -519,7 +572,6 @@ section header {
     padding: 1rem 2rem;
     background: var(--color-primary);
     color: #E9E9E9;
-    margin-bottom: 1em;
 }
 section header > h1,
 section header > h2,
@@ -533,7 +585,7 @@ section header p{
     font-size:1.3rem;
     font-weight:normal;
     margin:0;
-    padding:0;
+    padding: .3em 0 0 0!important;
     overflow:visible;
     font-weight: lighter;
     color: white;

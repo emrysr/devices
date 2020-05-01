@@ -132,7 +132,7 @@ $ avahi-publish-service "Dev Laptop" _http._tcp. 80 v=10.2.0 platform=emoncms pa
 - add to discovered devices instead of clearing list each time. the zeroconf scan doesn't always return the same results - some devices ar lost until the next scan?
 - `onOffline()` and `onOnline()` are not called correctly. need to improve the "I'm offline" event handling to store the `currentSSID` and `currentIP` correctly
 - tidy up code
-
+- translations
 
 
 

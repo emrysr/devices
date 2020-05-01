@@ -6,23 +6,30 @@ var app = {
     scan_counter: 0,
     settings: {
         defaultView: "#devices",
-        deviceScanTimeout: 10000,
-        deviceScanRepeat: 3000,
+        deviceScanTimeout: 3000,
+        deviceScanRepeat: 2000,
+        deviceApScanRepeat: 5000,
+        deviceApScanMaxRetries: 8,
         wifiScanTimeout: 2000,
         wifiScanRepeat: 20000,
         wifiScanRepeatObj: false,
-        device_ssid_pattern: /^(smartplug|wifirelay).*$/g,
+        device_ssid_pattern: /^(smartplug|wifirelay|hpmon|openevse|meterreader).*$/g,
     },
     state: {
         devices: [],
         accessPoints: [],
+        hotspots: [],
         online: false,
         currentSSID: false,
         currentIP: false,
         selectedHotspot: false,
+        deviceListCleanInterval: false,
         deviceConnectionSSID: false,
         deviceConnectionPsk: false,
         deviceScanRepeatObj: false,
+        deviceScanCancelled: false,
+        deviceApScanRepeatObj: false,
+        deviceApScanRetries: 0
     },
     initialize: function() {
         document.addEventListener('deviceready', this.onDeviceReady.bind(this), false);
@@ -31,8 +38,7 @@ var app = {
     onDeviceReady: function() {
         // handle all view/tab changes
         controller = new Controller();
-        // show welcome page
-        this.firstPage();
+
         // add mobile system events
         document.addEventListener("reload", this.onReload.bind(this), false);//window.location.reload(true);
         document.addEventListener("connect", this.onConnect.bind(this), false);
@@ -40,20 +46,35 @@ var app = {
         document.addEventListener("online", this.onOnline.bind(this), false);
         // get network status
         app.getStatus();
+        // load stored devices
+        app.setState("devices", app.loadList("devices"));
+        app.setState("accessPoints", app.getLatestAccessPoints(app.loadList("accessPoints")));
+
+        // show welcome page
+        this.firstPage();
     },
 
     firstPage: function() {
         controller.hideAll();
         // default view
         var defaultView = app.getSettings("defaultView");
-        controller.show("#welcome");
+        if(!app.load("welcome_seen")) {
+            controller.show("#welcome");
+            // remove view title when welcome page in view
+            controller.hide(defaultView + "_title");
+        } else {
+            controller.show(defaultView + "_title");
+        }
         controller.show(defaultView);
-        // remove view title when welcome page in view
-        controller.hide(defaultView + "_title");
 
         // scan for devices to show on default view
         app.find("#welcome").classList.add("in");
+        // display any cached entries
+        app.displayDevices();
+        // scan for new devices
         app.getNetworkDevices();
+
+        app.save("welcome_seen", true);
     },
     onReload: function(event) {
         app.getStatus();
@@ -98,6 +119,7 @@ var app = {
         }
     },
     setState: function(key, value) {
+        // console.log("setting ",key, "to ", value);
         try {
             app.state[key] = value;
             return value;
@@ -145,13 +167,13 @@ var app = {
     },
     getNetworkDevices: function () {
         app.startLoader("Searching for devices on the network...");
-        app.zeroconfScan()
-            .then(app.displayDevices)
-            .catch(app.showError)
+        app.zeroconfScan().catch(app.showError)
             .finally(() => {
                 // repeat the scan after delay - only if in "device scan" tab
-                if(controller.state==="#devices") {
-                    var t = setTimeout(() => {app.getNetworkDevices()}, app.getSettings("deviceScanRepeat"));
+                if(controller.state === "#devices" && !app.getState("deviceScanCancelled")) {
+                    var t = setTimeout(function() {
+                                app.getNetworkDevices()
+                            }, app.getSettings("deviceScanRepeat"));
                     app.setState("deviceScanRepeatObj", t);
                 }
                 app.stopLoader();
@@ -165,23 +187,175 @@ var app = {
         return WifiWizard2.listNetworks();
     },
     /**
+     * scan wifi, save results, filter results to only show device hotspots and
+     */
+    checkForNewDevices: function() {
+        app.startLoader("Searching for new devices in range...");
+        app.getAccessPoints()
+            .then(accessPoints=> app.setAccessPoints(accessPoints))
+            .then(accessPoints=> app.getDeviceHotspots(accessPoints))
+            .then(hotspots=> app.showDeviceHotspots(hotspots))
+            .then(()=> {
+                // ALL DONE. REPEAT IF NOT HIT MAX REPEATS
+                // repeat the scan after delay - only if in "device scan" tab
+                if(controller.state === "#add-device") {
+                    // increment counter
+                    app.setState("deviceApScanRetries", app.getState("deviceApScanRetries") + 1);
+                    // test if counter reached max
+                    if(app.getState("deviceApScanRetries") <= app.getSettings("deviceApScanMaxRetries")) {
+                        WifiWizard2.timeout(app.getSettings("deviceApScanRepeat"))
+                        .then(function() {
+                            app.checkForNewDevices();
+                        });
+                    } else {
+                        app.stopLoader();
+                        console.error("Max AP scan retries reached!", app.getSettings("deviceApScanMaxRetries"));
+                        self.show("#add-device [data-reload]");
+                        app.setState("deviceApScanRetries", 0);
+                        if(app.getState("hotspots").length === 0) {
+                            controller.changeView("#add-device-failed");
+                        }
+                    }
+                }
+            })
+            .catch(function(error) {
+                // SCAN_FAILED 
+                // - seems to ba a fault with the wifi. wait longer (x3) between retries
+                if(error === "SCAN_FAILED") {
+                    // increment counter
+                    app.setState("deviceApScanRetries", app.getState("deviceApScanRetries") + 1);
+                    // test if counter reached max
+                    if(app.getState("deviceApScanRetries") <= app.getSettings("deviceApScanMaxRetries")) {
+                        WifiWizard2.timeout(app.getSettings("deviceApScanRepeat")*3)
+                        .then(function() {
+                            app.checkForNewDevices();
+                        });
+                    }
+                }
+                console.error(error, app.getState("deviceApScanRetries"));
+            });
+    },
+    
+    /**
      * request a scan and return a promise
      * @returns {Promise} 
      */
     getAccessPoints: function() {
         return WifiWizard2.scan();
     },
-    setAccessPoints: function(acccessPoints) {
-        app.setState("accessPoints", acccessPoints);
-        return acccessPoints;
+    /**
+     * checks that SSID is unique before adding to the list
+     * adds lastSeen property to aid in caching
+     * 
+     * @param {Object} accessPoints list of found accesspoints from WiFiWizard2.scan();
+     */
+    setAccessPoints: function(accessPoints) {
+        var accessPoints = accessPoints.reduce((_accesspoints, ap) => {
+            if (app.apIsUnique(ap)) {
+                var strength, rating;
+                [strength, rating] = app.getApStrengthAndRating(ap);
+                ap.strength = strength;
+                ap.rating = rating;
+                ap.lastSeen = new Date().valueOf();
+                _accesspoints.push(ap);
+            }
+            return _accesspoints;
+        }, []);
+
+        var accessPoints = app.getLatestAccessPoints(accessPoints);
+        app.setState("accessPoints", accessPoints);
+        // app.save() returns undefined on success;
+        if (typeof app.save("accessPoints", accessPoints) !== "undefined") {
+            console.error("Error saving accessPoints");
+        }
+        return accessPoints;
+    },
+    /**
+     * will check the lastSeen prop to test validity
+     * @param {Array} accessPoints accesspoints to add to current list
+     * @returns {Array} filtered list
+     */
+    getLatestAccessPoints: function(accessPoints) {
+        var updated = app.getState("accessPoints").concat(accessPoints||[]);
+        return updated.reduce((accessPoints, ap) => {
+            // 15mins TTL
+            if ((new Date().valueOf() - ap.lastSeen) / 1000 / 60 < 15) {
+                accessPoints.push(ap);
+            }
+            return accessPoints;
+        }, []);
+    },
+    /**
+     * merge new devices with old devices 
+     * aka "array merge recursive"
+     * add list2 entries if not already in list1 or newer
+     * @param {Array} list1 list to base the merge on
+     * @param {Array} list2 list to merge to existing devices list
+     * @returns {Array} merged list1 (cached devices) and list2 (new devices)
+     */
+    merge: function(list1, list2) {
+        // return list1 if both are identical
+        if(JSON.stringify(list1)===JSON.stringify(list2)) return list1;
+        
+        // test list2 values against list1 values
+        var list2 = list2.reduce((devices, device) => {
+            if(app.deviceIsUnique(device, list1)) {
+                devices.push(device);
+            } else {
+                if(app.deviceIsNewer(device, list1)) {
+                    devices.push(device);
+                } else {
+                    var old_device = app.findDevice(device.ip);
+                    old_device.lastSeen = new Date().valueOf();
+                    devices.push(old_device);
+                }
+            }
+            return devices;
+        }, []);
+
+        // test list1 values against list2 values. return new list with overlaps removed
+        var list1 = list1.reduce((devices, device)=> {
+            if(app.deviceIsUnique(device, list2)) {
+                devices.push(device);
+            }
+            return devices;
+        }, [])
+        
+
+
+        
+        // join reduced list2 to reduced list1
+        return list1.concat(list2);
+    },
+    /**
+     * get matching device from devices list
+     * @param {String} ip ipv4 address
+     * @returns {Array<Object>} empty if not found.
+     */
+    findDevice: function (ip) {
+        return app.getState("devices").reduce((devices, device)=> {
+            if(device.ip === ip) {
+                devices.push(device);
+            }
+            return devices;
+        }, []);
+    },
+    removeExpired: function(_devices) {
+        return _devices.reduce((list, item) => {
+            // 15seconds TTL
+            if ((new Date().valueOf() - item.lastSeen) / 1000 < 15) {
+                list.push(item);
+            }
+            return list;
+        }, []);
     },
     /**
      * return filtered list of accespoints based on name
      * match known list of accesspoints names
      * @param {Array} acccessPoints list of objects with access point details
      */
-    getDeviceHotspots: function(acccessPoints) {
-        return acccessPoints.reduce((accumulator, currentValue) => {
+    getDeviceHotspots: function(accessPoints) {
+        var hotspots = accessPoints.reduce((accumulator, currentValue) => {
             // console.log(currentValue.SSID, currentValue.capabilities);
             if(currentValue.SSID) {
                 var found = currentValue.SSID.match(app.getSettings("device_ssid_pattern"));
@@ -191,6 +365,8 @@ var app = {
             }
             return accumulator;
         }, []);
+        app.setState("hotspots", hotspots);
+        return hotspots;
     },
     showDeviceHotspots: function(hotspots) {
         const list = app.find("#add-device .list");
@@ -199,7 +375,15 @@ var app = {
         hotspots.forEach(hotspot=> {
             var name = hotspot.SSID, type, icon,
             [type,icon] = app.getDeviceType(name);
-            var html = `<a href="#accesspoints" data-name="${name}"><span><svg class="icon"><use xlink:href="#icon-${icon}"></use></svg> ${name}</span> <small class="badge">${type}</small></a>`,
+            var html = `<a href="#accesspoints" data-name="${name}">
+                <span>
+                    <svg class="icon"><use xlink:href="#icon-${icon}"></use></svg> 
+                    ${name}
+                    ${hotspot.rating < 3 ? '<small class="text-muted">('+hotspot.strength+')</small>': ''}
+                </span> 
+                <small class="badge">${type}</small>
+            </a>
+            `,
                 item = document.createElement('div');
 
             item.innerHTML = html;
@@ -249,18 +433,32 @@ var app = {
     showReloadButton: function(buttonIsVisible) {
         app.find("#reload").classList.toggle("d-none", !buttonIsVisible);
     },
-    displayDevices: function(results) {
+    displayDevices: function() {
+        var results = app.getState("devices") || [];
+        // clear out old entries
+        results = app.removeExpired(results);
+        // sort by name [a-z]
+        results.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
         var list = app.find("#devices nav.list");
+
         var _devices = results.length === 1 ? "Device": "Devices";
         list.innerHTML = `<p>Found ${results.length} ${_devices}</p>`;
+
         results.forEach(result => {
             var type, icon,
             [type,icon] = app.getDeviceType(result.name);
             var url = result.url,
                 ip = result.ip,
                 name = result.name,
-                html = `<a data-weblink href="${url}" title="${type}"><span><svg class="icon"><use xlink:href="#icon-${icon}"></use></svg> ${name}</span> <small class="badge">${ip}</small></a>`,
-                item = document.createElement('div');
+                item = document.createElement('div'),
+                html = `<a data-weblink href="${url}" title="${type}">
+                            <span>
+                                <svg class="icon"><use xlink:href="#icon-${icon}"></use></svg> 
+                                ${name}
+                            </span> 
+                            <small class="badge">${ip}</small>
+                        </a>`;
 
             item.innerHTML = html;
             list.appendChild(item.firstElementChild);
@@ -295,16 +493,21 @@ var app = {
     },
     zeroconfScan: function() {
         var zeroconf = cordova.plugins.zeroconf;
-        // todo: add to devices instead of clearing out and starting agian
-        app.setState("devices", []);
         return new Promise((resolve, reject) => {
             zeroconf.reInit(function() {
                 zeroconf.registerAddressFamily = 'ipv4';
                 zeroconf.watchAddressFamily = 'ipv4';
     
-                zeroconf.watch('_workstation._tcp.', 'local.', app.parseDevices);
-                zeroconf.watch('_http._tcp.', 'local.', app.parseDevices);
-    
+                zeroconf.watch('_workstation._tcp.', 'local.', result=> {
+                    app.saveDevice(app.parseDevice(result));
+                    app.displayDevices();
+                });
+                zeroconf.watch('_http._tcp.', 'local.', result=> {
+                    app.saveDevice(app.parseDevice(result));
+                    app.displayDevices();
+                });
+                
+                // top scan after `deviceScanTimeout`
                 setTimeout(function() {
                         if(app.getState("devices").length > 0) {
                             zeroconf.close(
@@ -318,31 +521,34 @@ var app = {
             });
         });
     },
-    parseDevices: function(result) {
+    /**
+     * return processed device object
+     * @param {Object} result as returned by zeroconf
+     */
+    parseDevice: function(result) {
         var action = result.action;
         var service = result.service;
         if (action == 'resolved') {
-            var ip = service.ipv4Addresses[0];
-            var name = service.name.match(/(.*) \[.*\]*/) || [];
-            var protocol = service.txtRecord.https ? 'https://': 'http://';
-            var platform = service.txtRecord.platform || '';
-            var version = service.txtRecord.v || '';
-            var path = service.txtRecord.path || '';
-            var url = protocol + ip + path;
+            var ip = service.ipv4Addresses[0],
+                name = service.name.match(/(.*) \[.*\]*/) || [],
+                protocol = service.txtRecord.https ? 'https://': 'http://',
+                platform = service.txtRecord.platform || '',
+                version = service.txtRecord.v || '',
+                path = service.txtRecord.path || '',
+                url = protocol + ip + path;
+
             var device = {
                 name: name[1] || service.name,
                 ip: ip,
                 platform: platform,
                 version: version,
                 path: path,
-                url: url
+                url: url,
+                lastSeen: new Date().valueOf()
             }
-            if(ip && app.deviceIsUnique(ip)) {
-                let devices = app.getState("devices") || [];
-                devices.push(device);
-                app.setState("devices", devices);
-                app.displayDevices(devices);
-            }
+            return device;
+        } else {
+            return false;
         }
     },
     /**
@@ -366,15 +572,13 @@ var app = {
         // show each wifi connection as individual link
         filtered.forEach(ap => {
             var item = document.createElement('div');
-            var wpa, ess, wps, strength = "", rating = "";
+            var wpa, ess, wps;
             [wpa, ess, wps] = app.getApCapabilities(ap);
-            [strength, rating] = app.getApStrengthAndRating(ap);
-
             var title = ap.SSID === "" ? `<span class="text-muted">${ap.BSSID}</span>`: ap.SSID;
             var css = ap.SSID === app.getState("currentSSID") ? 'current': '';
             item.innerHTML = `<a href="#auth" data-ssid="${ap.SSID}" data-wpa="${wpa}" class="${css}">
                                 <span>${title}<small class="badge text-muted">${wps}</small></span>
-                                <progress max="5" value="${rating}">
+                                <progress max="5" value="${ap.rating}" title="${ap.strength}">
                                     ${ap.level}dBm
                                 </progress>
                               </a>`;
@@ -432,7 +636,7 @@ var app = {
      */
     connect: function(ssid, password, algorithm) {
         function success() {
-            console.log(`Connected to ${ssid}`);
+            // console.log(`Connected to ${ssid}`);
             app.find(`#auth .log #connect_${ssid}`).classList.add("done");
         }
         var bindAll = true;
@@ -458,18 +662,21 @@ var app = {
      */
     saveSettings: function(ssid, password) {
         return new Promise((resolve, reject) => {
+            setTimeout(function(){
+                reject("Timed out");
+            }, 6000);
             if(ssid === "") reject("SSID cannot be empty");
             // send details to device
             var url = `http://192.168.4.1/savenetwork?ssid=${ssid}&pass=${password}`;
             return fetch(url)
                 .then(response => {
-                    console.log("response received from ", url);
+                    // console.log("response received from ", url);
                     // return the response body as text if 200 OK, else throw error
                     if (response.ok) return "saved";
                     throw response;
                 })
                 .then(()=> {
-                    console.log(`Saved settings on ${ssid}`);
+                    // console.log(`Saved settings on ${ssid}`);
                     app.find(`#auth .log #save_${ssid}`).classList.add("done");
                     resolve("saved");
                 })
@@ -488,7 +695,7 @@ var app = {
         var url = "http://192.168.4.1/restart";
         return fetch(url)
             .then(response => {
-                console.log("response received from ", url);
+                // console.log("response received from ", url);
                 // return the response body as text if 200 OK, else throw error
                 if (response.ok) return "saved";
                 throw response;
@@ -504,9 +711,31 @@ var app = {
      * @param {String} name name of ssid or device
      */
     getDeviceType: function(name) {
-        // todo: change icon based on name
-        var icon = "smartplug", // smartplug|smartmeter|openevse|hpmon|edmi-am|emonth
-            type = "Smart-Plug";
+        var icon, // icon class name ... smartplug|smartmeter|openevse|hpmon|edmi-am|emonth
+            type; // text label
+
+        if(/^(smartplug).*$/g.test(name)) {
+            icon = "smartplug";
+            type = "Smart Plug";
+        } else if(/^(wifirelay).*$/g.test(name)) {
+            icon = "wifirelay";
+            type = "WiFi Relay";
+        } else if(/^(hpmon).*$/g.test(name)) {
+            icon = "hpmon";
+            type = "Heat Pump";
+        } else if(/^(openevse).*$/g.test(name)) {
+            icon = "openevse";
+            type = "Car Charger";
+        } else if(/^(meterreader).*$/g.test(name)) {
+            icon = "edmi-am";
+            type = "Smart Meter";
+        } else if(/^(emonpi).*$/g.test(name)) {
+            icon = "smartmeter";
+            type = "Emon Pi";
+        } else {
+            icon = "device";
+            type = "Device"
+        }
         return [type, icon];
     },
     /**
@@ -526,11 +755,19 @@ var app = {
     /**
      * Return saved item from localStorage
      * @param {String} key name of item
-     * @return {*} null if not found
+     * @returns {*} null if not found
      */
     load: function(key) {
         var storage = window.localStorage;
         return JSON.parse(storage.getItem(key));
+    },
+    /**
+     * Return saved item
+     * @param {String} key name of item to load
+     * @returns {Array} defaults to empty array if undefined
+     */
+    loadList: function(key) {
+        return app.load(key) || [];
     },
     /**
      * device settings successfully saved
@@ -542,7 +779,7 @@ var app = {
             controller.hideAll();
             controller.show("#saved");
             button.innerText = button.dataset.originalText;
-        }, 2000)
+        }, 5000)
     },
     /**
      * device settings problem saving
@@ -553,7 +790,7 @@ var app = {
             controller.hideAll();
             controller.show("#not_saved");
             button.innerText = button.dataset.originalText;
-        }, 2000)
+        }, 4000)
     },
     /**
      * Return strength and rating for given ap.level value
@@ -562,7 +799,7 @@ var app = {
      * @see: "destructing assingment" https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
      */
     getApStrengthAndRating: function(ap) {
-        var strength = "Unusable";
+        var strength = "Very Weak";
         var rating = 1;
         if(ap.level > -81) {
             strength = "Not Good";
@@ -583,15 +820,81 @@ var app = {
         return [strength, rating]
     },
     /**
-     * checks ip address exists in `app.devices[]` objects {name:'1bc',ip:'1.1.1.1'}
-     * @param {String} ip ipv4 address eg: "1.1.1.1"
+     * Add device if not already present
+     * store all devices to localStorage
+     * @param {Object} device with ip,name,url etc
+     */
+    saveDevice: function(device) {
+        if(device && device.ip) {
+            var devices = app.merge(app.getState("devices"), [device]);
+            app.setState("devices", devices);
+            // app.save() returns undefined on success;
+            if (typeof app.save("devices", devices) !== "undefined") {
+                console.error("Error saving devices");
+            }
+        }
+    },
+
+    /**
+     * remove all items take user to start screen
+     */
+    clearCache: function() {
+        var state = "#devices";
+
+        app.save("devices", []);
+        app.setState("devices", []);
+        app.save("accessPoints", []);
+        app.setState("accessPoints", []);
+
+        app.setState("deviceScanCancelled", true);
+        // stop repeats
+        controller.clearViewTimeouts(state);
+        app.stopLoader();
+        // show message
+        app.find(state + " .list").innerHTML = "<p>Cached list of devices cleared</p>";
+        // change to devices view
+        controller.hideAll();
+        controller.show(state);
+        controller.show(state + " #devices_title");
+        // show reload button
+        controller.show(state + " [data-reload]");
+    },
+    /**
+     * checks ip address exists in `app.state.devices[]` objects {name:'hub34',ip:'10.0.0.222'}
+     * @param {Object} _device with ip,ssid,strength etc
+     * @param {Array.<Object>} [_devices] check against given list 
      * @returns {Boolean} true if ip address is not already in list
      */
-    deviceIsUnique: function(ip) {
-        var devices = app.getState("devices");
+    deviceIsUnique: function(_device, _devices) {
+        var ip = _device.ip;
+        var devices = _devices || app.getState("devices") || [];
         for(d in devices) {
             var device = devices[d];
             if (device.ip === ip) return false;
+        }
+        return true;
+    },
+    /**
+     * test to see if _device is newer than the one in _devices.
+     * @param {Object} _device a single device to check
+     * @param {Array.<Object>} _devices all the devices
+     * @returns {boolean} true = _device is newer or not in _devices
+     */
+    deviceIsNewer: function(_device, _devices) {
+        var devices = _devices || app.getState("devices") || [];
+        for(d in devices) {
+            let device = devices[d];
+            // return false if matching (by ip address) `device` is older than given `_device`
+            if (device.ip === _device.ip && device.lastSeen >= _device.lastSeen) return false;
+        }
+        // if no matching entries or diven `_device` lastSeen is greater
+        return true;
+    },
+    apIsUnique: function(ap) {
+        var accessPoints = app.getState("accessPoints");
+        for(n in accessPoints) {
+            var accessPoint = accessPoints[n];
+            if (ap.SSID === "" || accessPoint.SSID === ap.SSID) return false;
         }
         return true;
     },
@@ -619,16 +922,25 @@ var app = {
     },
 
     startLoader: function(action) {
+        app.find("#loader-animation").classList.add('in');
         app.setLoader(action || 'Loading...');
     },
     stopLoader: function() {
+        app.find("#loader-animation").classList.remove('in');
         app.setLoader('');
     },
     setLoader: function(text) {
-        app.find("#loader").innerHTML = text;
+        // commented out as not currently enough room in design.
+        app.find(".loader-text").innerHTMLl = "";
+        app.find(controller.state + " .loader-text").innerHTML = text;
     },
     
 };
+
+
+
+
+
 
 // view switcher
 var Controller = function() {
@@ -643,10 +955,12 @@ var Controller = function() {
             self.views = [
                 "#welcome",
                 "#devices",
-                "#accesspoints",
                 "#add-device",
+                "#add-device-failed",
+                "#accesspoints",
                 "#auth",
-                "#saved"
+                "#saved",
+                "#not_saved"
             ];
             self.hideAll();
         },
@@ -688,13 +1002,11 @@ var Controller = function() {
             // close overlay clicked
             if(link.hasAttribute('data-close')) {
                 getClosest(link, ".fade").classList.remove("in");
-                console.log('state', controller.state)
                 if(controller.state === "#devices") {
                     app.find("#devices_title").classList.remove('d-none');
                 }
                 return;
             }
-
             // console.log(`link clicked: "${link.innerText}", links to "${link.hash}"`);
             var href = link.hash;
 
@@ -704,10 +1016,18 @@ var Controller = function() {
          * Change UI to show new View/Tab/Page/Overlay
          * default to selector if available, else back to welcome screen
          * @param {String} view CSS selector for item to show
+         * @param {HTMLElement} link clicked element
          */
         changeView(view, link) {
             if(view === "#sidebar") {
                 self.toggleSidebar();
+                return;
+            }
+            if(view === "#clear-cache") {
+                if(getClosest(link, "#sidebar")!==null) {
+                    self.toggleSidebar();
+                }
+                app.clearCache();
                 return;
             }
             // set to default if view not found
@@ -730,22 +1050,19 @@ var Controller = function() {
                 case "#devices":
                     // todo: add zeroconf scan list
                     self.hideAll();
+                    // enable scanning
+                    app.setState("deviceScanCancelled", false);
+                    // scan for devices
                     app.getNetworkDevices();
                     self.show("#devices_title");
+                    self.hide(view + " [data-reload]");
                     self.show(view);
                 break;
                 case "#add-device":
                     self.hideAll();
                     self.show(view);
-                    app.getAccessPoints()
-                        .then(accessPoints=> app.setAccessPoints(accessPoints))
-                        .then(accessPoints=> app.getDeviceHotspots(accessPoints))
-                        .then(hotspots=> app.showDeviceHotspots(hotspots))
-                        .catch(function(error) {
-                            console.error(view, error);
-                        })
-                        .finally(()=> app.stopLoader);
-                    app.startLoader("Searching for new devices in range...");
+                    app.find(view + " [data-reload]").classList.add("d-none");
+                    app.checkForNewDevices();
                 break;
                 case "#accesspoints":
                     self.hideAll();
@@ -833,7 +1150,7 @@ var Controller = function() {
                             link.innerText = "Saved";
                             link.classList.remove("blink");
                             app.saved_success(link)
-                            console.log('/#saved',"Saved");
+                            // console.log('/#saved',"Saved");
                         })
                         .catch(error=> {
                             link.innerText = "Not Saved";
@@ -847,6 +1164,7 @@ var Controller = function() {
                     if(getClosest(link, "#sidebar")!==null) {
                         self.toggleSidebar();
                     }
+                    app.save("welcome_seen", false);
                     app.firstPage();
                     break;
 
@@ -868,15 +1186,19 @@ var Controller = function() {
         /**
          * called to stop wating timeouts once view is quit
          * timeouts should only be created for specific pages/view
+         * 
+         * called before changing to next page
+         * @param {String} CSS selector for current page (before moving to next)
          */
-        clearViewTimeouts: function(state) {
-            switch(state) {
-                case "#scan":
+        clearViewTimeouts: function(previous_view) {
+            switch(previous_view) {
+                case "#devices":
                     clearTimeout(app.getState("deviceScanRepeatObj"));
+                    clearInterval(app.getState("deviceListCleanInterval"));
                     break;
-                case "#accesspoints":
-                    // todo: clear wifi scan timeouts
-                    // clearTimeout(app.getState("wifiScanRepeatObj"));
+                case "#add-device":
+                    // var timeout = app.getState("deviceApScanRepeatObj");
+                    // clearTimeout(timeout);
                     break;
             }
         },
@@ -951,6 +1273,7 @@ var getClosest = function (elem, selector) {
     }
     return null;
 };
+
 
 
 /**
