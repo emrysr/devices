@@ -1133,7 +1133,10 @@ var Controller = function(defaultView) {
             ];
             self.hideAll();
         },
-
+        /**
+         * Creates event handlers for all `&lt;a&gt;` tags
+         * @alias Controller.bindEvents
+         */
         bindEvents: function() {
             // handle click events of every link in page
             controller.findAll('a').forEach(item=> {
@@ -1147,6 +1150,10 @@ var Controller = function(defaultView) {
                 item.addEventListener('click', app.togglePasswordVisible);
             });
         },
+        /**
+         * shows the welcome screen if not seen or shows `defaultView`
+         * @alias Controller.firstPage
+         */
         firstPage: function() {
             self.hideAll();
             // default view
@@ -1164,14 +1171,16 @@ var Controller = function(defaultView) {
             view.addClass(controller.find("#welcome"), "in");
             // display any cached entries
             view.displayDevices(controller.find("#devices nav.list"), Devices.getStoredDevices());
-            // scan for new devices
+            // begin scan for new devices. save results
             app.getNetworkDevices();
+            // store toggle value to localstorage so it is remembered between sessions
             app.save("welcome_seen", true);
         },
         /**
          * Main navigation handler (similar to front controller in php)
          * handles link clicks and shows/hides sections based on the link's href attr
          * @param {Event} event Mouse Click event
+         * @alias Controller.onClick
          */
         onClick: function(event) {
             logger.trace(`CLICK-${event.target.tagName} "${event.target.innerText}"`)
@@ -1200,14 +1209,23 @@ var Controller = function(defaultView) {
             }
             // app.log(`link clicked: "${link.innerText}", links to "${link.hash}"`);
             var href = link.hash;
-
+            
             self.changeView(href, link);
         },
         /**
+         * This is called to change a view. existing view still visible when this fires.
+         * 
          * Change UI to show new View/Tab/Page/Overlay
-         * default to selector if available, else back to welcome screen
+         * default to selector if available, else back to welcome screen<br>
+         * 
+         * *similar* to how a [front controller]{@link https://en.wikipedia.org/wiki/Front_controller} handles routing}
+         * 
          * @param {String} view CSS selector for item to show
          * @param {HTMLElement} link clicked element
+         * @alias Controller.changeView
+         * @todo rename to onViewChange to have a common naming style eg. onViewEnter,onViewExit etc
+         * @todo rename `link` param to button or elem - as not always an `&lt;a&gt;` tag
+         * @todo look to see if any of the code could be moved to a suitable Model type Object. this function is very long!?
          */
         changeView: function(view, link) {
             logger.trace(`Changing to ${view}`);
@@ -1220,6 +1238,8 @@ var Controller = function(defaultView) {
             } else {
                 self.state = view;
             }
+            // start or clear any timeouts as required for each view
+            // self.onViewEnter(view);
 
             // show sidebar (don't hide previous view)
             if(view === "#sidebar") {
@@ -1295,7 +1315,6 @@ var Controller = function(defaultView) {
                         controller.find("#psk").value = passwordList[link.dataset.ssid];
                         controller.find("#save-psk").checked = true;
                     }
-
 
                     // display selected ssid and set value in hidden form field
                     controller.find("#accesspoint_password .ssid").innerText = link.dataset.ssid;
@@ -1444,6 +1463,7 @@ var Controller = function(defaultView) {
          * 
          * called before changing to next page
          * @param {String} CSS selector for current page (before moving to next)
+         * @alias Controller.onViewExit
          */
         onViewExit: function(previous_view) {
             switch(previous_view) {
@@ -1465,14 +1485,16 @@ var Controller = function(defaultView) {
             }
         },
         /**
-         * 
+         * Uses css classes to toggle sidebar visibility
          * @param {Boolean} state true is open false is close
+         * @alias Controller.toggleSidebar
          */
         toggleSidebar: function(state) {
             controller.find('#sidebar').classList.toggle("in");
         },
         /**
-         * hide all views 
+         * hide all views listed in self.views
+         * @alias Controller.hideAll
          */
         hideAll: function() {
             self.views.forEach(selector=>{
@@ -1480,7 +1502,10 @@ var Controller = function(defaultView) {
             });
         },
         /**
+         * calls Controller.showOne() for individual or group of elements
          * @param {*} selector Array|String CSS selector to identify element(s)
+         * @see Controller.showOne
+         * @alias Controller.show
          */
         show: function(selector) {
             if(Array.isArray(selector)) {
@@ -1490,7 +1515,10 @@ var Controller = function(defaultView) {
             }
         },
         /**
+         * calls Controller.hideOne() for individual or group of elements
          * @param {*} selector Array|String CSS selector to identify element(s)
+         * @see Controller.hideOne
+         * @alias Controller.hide
          */
         hide: function(selector) {
             if(Array.isArray(selector)) {
@@ -1501,6 +1529,7 @@ var Controller = function(defaultView) {
         },
         /**
          * Hide single HTMLElement
+         * @alias Controller.hideOne
          * @param {String} selector CSS selector to identify single element
          */
         hideOne: function(selector) {
@@ -1508,7 +1537,9 @@ var Controller = function(defaultView) {
         },
         /**
          * Show single HTMLElement
+         * @alias Controller.showOne
          * @param {String} selector CSS selector to identify single element
+         * @todo move show/hide functions to View class
          */
         showOne: function(selector) {
             controller.find(selector).classList.remove('d-none');
@@ -1516,6 +1547,8 @@ var Controller = function(defaultView) {
         /**
          * @param {String} selector css query selector. only matches first
          * @returns {HTMLElement} DOM element, empty <DIV> if no match.
+         * @alias Controller.find
+         * @todo move to View class
          */
         find: function(selector) {
             return document.querySelector(selector) || document.createElement('div');
@@ -1523,6 +1556,7 @@ var Controller = function(defaultView) {
         /**
          * @param {String} selector css query selector. matches all
          * @returns {NodeList} itterable list of HTMLElements that match
+         * @alias Controller.findAll
          */
         findAll: function(selector) {
             var list = document.querySelectorAll(selector);
@@ -1532,18 +1566,31 @@ var Controller = function(defaultView) {
             }
             return list;
         },
+        /**
+         * Displays a loading animation
+         * @alias Controller.startLoader
+         * @param {String} action Text to show as action begins
+         */
         startLoader: function(action) {
             logger.trace(`Ajax loader started-----`);
             controller.find("#loader-animation").classList.add("in");
             controller.setLoader(action || 'Loading...');
         },
+        /**
+         * stops/hides the loading animation
+         * @alias Controller.stopLoader
+         */
         stopLoader: function() {
             logger.trace(`Ajax loader stopped-----`);
             controller.find("#loader-animation").classList.remove("in");
             controller.setLoader("");
         },
-        // show current loading state as text
-        // changed to only be used as element title. might re-work into design
+        /**
+         * Show current loading state as text.
+         * Changed to only be used as element title. might re-work into design
+         * @param {String} text text to show the user as loader begins or closes
+         * @alias Controller.setLoader
+         */
         setLoader: function(text) {
             app.setState("ajaxLoaderText", text);
             controller.find("#loader-animation").title = text;
@@ -1554,6 +1601,7 @@ var Controller = function(defaultView) {
          * svg icons must be inline in the html to enable xlink references
          * will not work with external files eg. <img> src .svg files
          * @param {String} name last part of icon id. eg #icon-xxxx
+         * @alias Controller.icon
          */
         icon: function(name){
             return `<svg class="icon"><use xlink:href="#icon-${name}"></use></svg>`
