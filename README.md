@@ -6,13 +6,16 @@ This app will discover these hotspots and connect your device to your wifi witho
 
 You can sign into your dashboard to allow your device to be controlled online as well as locally.
 
+Written with [Apache Cordova](https://cordova.apache.org/) - works on multiple devices, however main development done one Android.
+
+> If issues found on other platforms please create a [github issue](https://github.com/emrysr/devices/issues) :worried:
 
 
 ---------------------------------------------
 
  
 ## Screenshots
-Screenshots of the web based Energy Local Dashboard and this App running on Android
+Screenshots of the web based [Energy Local Dashboard](https://dashboard.energylocal.org.uk) and this App running on Android
 <table>
     <tr>
         <td>
