@@ -1,4 +1,4 @@
-## Pair your new device
+## EmonCMS Devices App - Pair your new device
 
 EmonCMS devices create wifi hotspots when not connected. Once connected to these hotspots you can configure the device to connect to your local wifi connection.
 
@@ -13,21 +13,25 @@ You can sign into your dashboard to allow your device to be controlled online as
  
 ## Screenshots
 Screenshots of the web based Energy Local Dashboard and this App running on Android
-<p style="display:inline-block">
-    <a href="dashboard-screenshot.png?raw=true" alt="Dashbaord Screenshot">
-        <img src="dashboard-screenshot.png?raw=true" width="450" alt="Screenshot of Dashboard">
-    </a>
-    <br>
-    <em>Dashboard showing device synced with the <a href="https://octopus.energy/agile/">Octopus Agile tariff</a> pricing</em>
-</p>
-<p style="display:inline-block">
-    <a href="app-screenshot.png?raw=true" alt="App Screenshot">
-        <img src="app-screenshot.png?raw=true" width="217" alt="Screenshot of App">
-    </a>
-    <br>
-    <em>App showing discovered devices</em>
-</p>
-
+<table>
+    <tr>
+        <td>
+            <a href="dashboard-screenshot.png?raw=true" alt="Dashbaord Screenshot">
+                <img src="dashboard-screenshot.png?raw=true" width="450" alt="Screenshot of Dashboard">
+            </a>
+            <br>
+            <em>Dashboard showing device synced with the <a href="https://octopus.energy/agile/">Octopus Agile tariff</a> pricing</em>
+        </td>
+        <td></td>
+        <td>
+            <a href="app-screenshot.png?raw=true" alt="App Screenshot">
+                <img src="app-screenshot.png?raw=true" width="217" alt="Screenshot of App">
+            </a>
+            <br>
+            <em>App showing discovered devices</em>
+        </td>
+    </tr>
+</table>
 
 > You can control your device using your [Energy Local Dashboard](https://dashboard.energylocal.org.uk) account
 
