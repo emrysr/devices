@@ -8,7 +8,7 @@ You can sign into your dashboard to allow your device to be controlled online as
 
 Written with [Apache Cordova](https://cordova.apache.org/) - works on multiple devices, however main development done one Android 9. Other devices and versions should be compatible with this Cordova App.
 
-> :information_source: If any issues found runnig the app on iPhones please create a [github issue](https://github.com/emrysr/devices/issues) :bug: to track problems and fixes
+> :information_source: If any issues found running the app on iPhones please create a [github issue](https://github.com/emrysr/devices/issues) :bug: to track problems and fixes
 
 
 ---------------------------------------------
