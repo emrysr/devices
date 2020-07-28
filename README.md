@@ -6,10 +6,23 @@ This app will discover these hotspots and connect your device to your wifi witho
 
 You can sign into your dashboard to allow your device to be controlled online as well as locally.
 
-> Control your device using your [Energy Local Dashboard](https://dashboard.energylocal.org.uk) account
+<figure>
+    <figcaption>Screenshots of the web based Energy Local Dashboard and this App running on Android</figcaption>
+    <figure style="display:inline-block">
+        <a href="dashboard-screenshot.png?raw=true" alt="Dashbaord Screenshot">
+            <img src="dashboard-screenshot.png?raw=true" width="450" alt="Screenshot of Dashboard">
+        </a>
+        <figcaption>Dashboard showing device synced with the <a href="https://octopus.energy/agile/">Octopus Agile tariff</a> pricing</figcaption>
+    </figure>
+    <figure style="display:inline-block">
+        <a href="app-screenshot.png?raw=true" alt="App Screenshot">
+            <img src="app-screenshot.png?raw=true" width="217" alt="Screenshot of App">
+        </a>
+        <figcaption>App showing discovered devices</figcaption>
+    </figure>
+</figure>
 
-[<img src="dashboard-screenshot.png?raw=true" width="623" alt="Dashboard"/>](dashboard-screenshot.png?raw=true)
-[<img src="app-screenshot.png?raw=true" width="300" alt="Andriod App"/>](app-screenshot.png?raw=true)
+> You can control your device using your [Energy Local Dashboard](https://dashboard.energylocal.org.uk) account
 
 
 ## quick run
