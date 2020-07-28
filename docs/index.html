@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+    
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h2>Pair your new device</h2>
+<p>EmonCMS devices create wifi hotspots when not connected. Once connected to these hotspots you can configure the device to connect to your local wifi connection.</p>
+<p>This app will discover these hotspots and connect your device to your wifi without manual configuration.</p>
+<p>You can sign into your dashboard to allow your device to be controlled online as well as locally.</p>
+<blockquote>
+<p>Control your device using your <a href="https://dashboard.energylocal.org.uk">Energy Local Dashboard</a> account</p>
+</blockquote>
+<p><a href="screenshot.png?raw=true"><img src="screenshot.png?raw=true" width="350"/></a></p>
+<h2>quick run</h2>
+<pre class="prettyprint source lang-bash"><code>$ git clone [this repo]
+$ cd [this repo directory]
+$ cordova platform add android
+$ cordova run android --device
+</code></pre>
+<h2>cordova requirements</h2>
+<pre class="prettyprint source lang-bash"><code>$ cordova plugin add cordova-plugin-zeroconf
+$ cordova plugin add https://github.com/tripflex/wifiwizard2
+$ cordova plugin add cordova-plugin-advanced-http
+</code></pre>
+<h2>problems</h2>
+<p>if you have problems compiling try to remove then add the platform</p>
+<pre class="prettyprint source lang-bash"><code>$ cordova platform remove android
+$ cordova platform add android
+</code></pre>
+<p>or <code>$ rm -rf [repo dir]/platforms &amp;&amp; cordova platform add android</code>y</p>
+<hr>
+<h2>Debugging API responses</h2>
+<p>If you're vs code to <a href="https://docs.microsoft.com/en-us/visualstudio/cross-platform/tools-for-cordova/run-your-app/simulate-in-browser?view=toolsforcordova-2017">live-preview your code in a browser</a> there are a few &quot;external&quot; api calls that require JSON responses.
+These are the examples I've been using to test with: (paste them into the &quot;Android in a browser simulator&quot; reponses for each call)</p>
+<h3>WifiWizard2.isWifiEnabled()</h3>
+<p>This just requires a success or fail response to test. I tested with both to see the result on the application.</p>
+<blockquote>
+<p>eg: &quot;true&quot; -&gt; click [SUCCESS]</p>
+</blockquote>
+<h3>WifiWizard2.getConnectedSSID()</h3>
+<p>You can respond with any <code>String</code>, however if you use your actual wifi connection name the &quot;current connection&quot; will be correctly hightlighted in the access point list</p>
+<blockquote>
+<p>eg: &quot;BTHub5-AAAA&quot; -&gt; click [SUCCESS]</p>
+</blockquote>
+<h3>WifiWizard2.getWifiIp()</h3>
+<p>You can respond with any <code>String</code>, however try entering in a similar IP address to your local network</p>
+<blockquote>
+<p>eg: &quot;192.168.1.222&quot; -&gt; click [SUCCESS]</p>
+</blockquote>
+<h3>WifiWizard2.scan()</h3>
+<p>This will simulate a wifi scan to see all available accesspoints (one device and one standard ap)</p>
+<pre class="prettyprint source lang-JSON"><code>[
+  {
+    &quot;level&quot;: -32,
+    &quot;SSID&quot;: &quot;smartplug5339&quot;,
+    &quot;BSSID&quot;: &quot;86:f3:eb:00:00:00&quot;,
+    &quot;frequency&quot;: 2412,
+    &quot;capabilities&quot;: &quot;[ESS]&quot;,
+    &quot;timestamp&quot;: 1893205094332,
+    &quot;channelWidth&quot;: 0,
+    &quot;centerFreq0&quot;: 0,
+    &quot;centerFreq1&quot;: 0
+  },
+  {
+    &quot;level&quot;: -62,
+    &quot;SSID&quot;: &quot;BTHub5-AAAA&quot;,
+    &quot;BSSID&quot;: &quot;08:36:c9:00:00:00&quot;,
+    &quot;frequency&quot;: 2427,
+    &quot;capabilities&quot;: &quot;[WPA2-PSK-CCMP][ESS][WPS]&quot;,
+    &quot;timestamp&quot;: 1893205094360,
+    &quot;channelWidth&quot;: 0,
+    &quot;centerFreq0&quot;: 0,
+    &quot;centerFreq1&quot;: 0
+  }
+]
+</code></pre>
+<p>-&gt; click [SUCCESS]</p>
+<h3>WifiWizar2d.add([SSID]])</h3>
+<pre><code>-&gt; click [SUCCESS]
+</code></pre>
+<h3>WifiWizar2.connect([SSID]])</h3>
+<pre><code>-&gt; click [SUCCESS]
+</code></pre>
+<blockquote>
+<p>WifiWizar2.connect() is the same as calling formatWifiConfig() then add() then enable()</p>
+</blockquote>
+<h3>CordovaHttpPlugin.post([host], [username], [password])</h3>
+<p>This returns error not data if there is an error</p>
+<pre class="prettyprint source lang-JSON"><code>{
+    &quot;status&quot;:200,
+    &quot;url&quot;:&quot;http://test.localhost&quot;,
+    &quot;data&quot;:&quot;{\&quot;success\&quot;: true,\&quot;userid\&quot;: 0,\&quot;apikey_write\&quot;: \&quot;e31da26bd2f9807930cad74adb9853a0\&quot;,\&quot;apikey_read\&quot;: \&quot;6c255f8156fe09694a9a316fb36db971\&quot;}&quot;,
+    &quot;headers&quot;:{}
+}
+</code></pre>
+<pre><code>-&gt; click [SUCCESS]
+</code></pre>
+<p>or an error</p>
+<pre class="prettyprint source lang-JSON"><code>{
+    &quot;status&quot;:404,
+    &quot;url&quot;:&quot;http://test.localhost&quot;,
+    &quot;error&quot;:&quot;{\&quot;success\&quot;: false, \&quot;message\&quot;: \&quot;Incorrect authentication\&quot;}&quot;,
+    &quot;headers&quot;:{}
+}
+</code></pre>
+<pre><code>-&gt; click [FAILURE]
+</code></pre>
+<h3>ZeroConf.reInit()</h3>
+<p>This just requires a success or fail response to test. Value is not important.
+-&gt; click [SUCCESS]</p>
+<h3>ZeroConf.watch()</h3>
+<p>This requires a specific JSON object with known properties:</p>
+<blockquote>
+<p>eg: <code>{&quot;action&quot;:&quot;resolved&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_workstation._tcp.&quot;,&quot;name&quot;:&quot;emonpi [b8:27:b8:27:b8:27]&quot;,&quot;port&quot;:9,&quot;hostname&quot;:&quot;&quot;,&quot;ipv4Addresses&quot;:[&quot;192.168.1.186&quot;],&quot;ipv6Addresses&quot;:[&quot;fe80::b03c:1111:1111:1111&quot;],&quot;txtRecord&quot;:{}}}</code>
+-&gt; click [SUCCESS]</p>
+</blockquote>
+<p>5 more different example responses:-</p>
+<pre class="prettyprint source lang-JSON"><code>{&quot;action&quot;:&quot;added&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_http._tcp.&quot;,&quot;name&quot;:&quot;smartplug5339&quot;,&quot;port&quot;:0,&quot;hostname&quot;:&quot;smartplug5339._http._tcp.local.&quot;,&quot;ipv4Addresses&quot;:[],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{&quot;smartplug5339._http._tcp.local.&quot;:&quot;true&quot;}}}
+{&quot;action&quot;:&quot;resolved&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_http._tcp.&quot;,&quot;name&quot;:&quot;smartplug5339&quot;,&quot;port&quot;:80,&quot;hostname&quot;:&quot;&quot;,&quot;ipv4Addresses&quot;:[&quot;192.168.1.78&quot;],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{}}}
+{&quot;action&quot;:&quot;added&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_http._tcp.&quot;,&quot;name&quot;:&quot;openevse-8970&quot;,&quot;port&quot;:0,&quot;hostname&quot;:&quot;openevse-8970._http._tcp.local.&quot;,&quot;ipv4Addresses&quot;:[],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{&quot;openevse-8970._http._tcp.local.&quot;:&quot;true&quot;}}}
+{&quot;action&quot;:&quot;resolved&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_http._tcp.&quot;,&quot;name&quot;:&quot;openevse-8970&quot;,&quot;port&quot;:80,&quot;hostname&quot;:&quot;&quot;,&quot;ipv4Addresses&quot;:[&quot;192.168.1.81&quot;],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{}}}
+{&quot;action&quot;:&quot;added&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_workstation._tcp.&quot;,&quot;name&quot;:&quot;emonpi [b8:27:b8:27:b8:27]&quot;,&quot;port&quot;:0,&quot;hostname&quot;:&quot;emonpi [b8:27:b8:27:b8:27]._workstation._tcp.local.&quot;,&quot;ipv4Addresses&quot;:[],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{&quot;emonpi [b8:27:b8:27:b8:27]._workstation._tcp.local.&quot;:&quot;true&quot;}}}
+</code></pre>
+<blockquote>
+<p>you could also use the <code>avahi-discover</code> terminal command to see your actual results and change the above examples to match</p>
+</blockquote>
+<h3>ZeroConf.close()</h3>
+<p>This just requires a success or fail response to test. Value is not important.
+-&gt; click [SUCCESS]</p>
+<blockquote>
+<p>there is a larger example in the <a href="https://github.com/emrysr/wifiscan">wifi-scan</a> repo I based this work on  - RAW: <a href="https://raw.githubusercontent.com/emrysr/wifiscan/master/WifiWizard2.scan.response.example.json">WifiWizard2.scan.response.example.json</a></p>
+</blockquote>
+<hr>
+<h2>Scripts to scan local network devices</h2>
+<h3>Avahi Utils</h3>
+<blockquote>
+<p>&quot;...service discovery on a local network via the mDNS/DNS-SD protocol suite...&quot;</p>
+</blockquote>
+<p>This is used to find devices on the network</p>
+<h4>Install it with:</h4>
+<pre class="prettyprint source lang-bash"><code>$ sudo apt install avahi-utils
+</code></pre>
+<h4>Scan your network:</h4>
+<pre class="prettyprint source lang-bash"><code>$ avahi-browse -a
+</code></pre>
+<h4>Simulate a device on the network.</h4>
+<p>the paramerters are:
+<code>name</code>, <code>type</code>, <code>port</code>, <code>TXT</code></p>
+<pre class="prettyprint source lang-bash"><code>$ avahi-publish-service &quot;Dev Laptop&quot; _http._tcp. 80 v=10.2.0 platform=emoncms path=/emoncms
+</code></pre>
+<hr>
+<h1>todo</h1>
+<ul>
+<li><code>onOffline()</code> and <code>onOnline()</code> are not called correctly. need to improve the &quot;I'm offline&quot; event handling to store the <code>currentSSID</code> and <code>currentIP</code> correctly</li>
+<li>translation - i18n label placeholders and translations</li>
+<li>better structure the code into backend and frontend methods.</li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>index.js</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Scans the local network for device. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+    <dt class="tag-version">Version:</dt>
+    <dd class="tag-version"><ul class="dummy"><li>0.2.0</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li><a href="mailto:emrys@openenergymonitor.org.uk">Emrys Roberts</a></li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>AGPL-3.0-or-later</li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="http://openenergymonitor.org">OpenEnergyMonitor project</a></li>
+        
+            <li><a href="https://github.com/emrysr/devices/LICENSE.txt">https://github.com/emrysr/devices/LICENSE.txt</a></li>
+        
+            <li><a href="https://github.com/emrysr/devices/COPYRIGHT.txt">https://github.com/emrysr/devices/COPYRIGHT.txt</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="Controller.html">Controller</a></li><li><a href="Devices.html">Devices</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Utilities.html">Utilities</a></li><li><a href="View.html">View</a></li><li><a href="Wifi.html">Wifi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_loggerLevels">_loggerLevels</a></li><li><a href="global.html#controller">controller</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#utils">utils</a></li><li><a href="global.html#view">view</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Tue Jul 28 2020 02:10:18 GMT+0100 (Amser Haf Prydain)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

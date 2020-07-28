@@ -46,7 +46,7 @@
                 <section id="devices">
                     <header id="devices_title" class="d-none">
                         <h2>Devices</h2>
-                        <p>Select a device to view its admin screen or add a new device</p>
+                        <p>You can select an existing device or add a new device</p>
                     </header>
                     <article>
                         <nav class="list"><p>Searching...</p></nav>
@@ -60,10 +60,26 @@
                     </footer>
                 </section>
 
+                <section id="device-actions" class="d-none">
+                    <header id="device-actions_title">
+                        <h2></h2>
+                        <p>Actions</p>
+                    </header>
+                    <article>
+                        <div id="device-properties"></div>
+                        <nav class="list"></nav>
+                    </article>
+                    <footer>
+                        <nav>
+                            <a href="#devices" class="button cancel">Back</a>
+                        </nav>
+                    </footer>
+                </section>
+
                 <section id="add-device" class="d-none">
                     <header>
                         <h2><span class="icon-outline">➕</span> Add a new Device</h2>
-                        <p>Select the device you'd like to add:</p>
+                        <p>Select from one of the the devices currently in range:</p>
                     </header>
                     <article>
                         <nav class="list"><p>Searching...</p></nav>
@@ -107,8 +123,8 @@
                 <section id="accesspoints" class="d-none">
                     <header>
                         <h2>Choose a WiFi connection</h2>
-                        <p>How should <strong id="selectedDevice">your new device</strong> connect?</p>
-                        <p><small><em>Your current connection is highlighted.</em></small></p>
+                        <p>Connect <strong id="selectedDevice">your new device</strong> to:</p>
+                        <p style="padding-top:0!important"><small><em>(Your current connection is highlighted)</em></small></p>
                     </header>
                     <article>
                         <nav class="list"><p>Searching...</p></nav>
@@ -122,19 +138,19 @@
                     </footer>
                 </section>
 
-                <section id="auth" class="d-none">
+                <section id="accesspoint_password" class="d-none">
                     <header>
                         <h2>WIFI Connection password</h2>
                         <p>Please enter the password for<br> <strong class="ssid">your wifi connection</strong></p>
                     </header>
                     <article>
-                        <form style="margin-top: 2em;">
+                        <form style="margin-top: 1em">
                             <input type="hidden" name="ssid" id="ssid_input" class="ssid" value="">
-                            <label for="psk">Password</label>
+                            <label for="psk">Wifi Password</label>
                             <div class="input-group">
-                                <input name="psk" id="psk" type="text" autocorrect="off" autocapitalize="none">
+                                <input name="psk" id="psk" type="password" autocorrect="off" autocapitalize="none">
                                 <div>
-                                    <button type="button" data-show-password="#psk" class="button active" title="Hide Password">
+                                    <button type="button" data-show-password="#psk" class="button" title="Hide Password">
                                         <span class="icon-outline">👁️‍🗨️</span>
                                     </button>
                                 </div>
@@ -154,16 +170,92 @@
                             </blockquote>
                             
                         </form>
-                        <ul class="log text-light"></ul>
                     </article>
                     <footer>
                         <nav>
                             <a href="#accesspoints" class="button cancel">Back</a>
-                            <a id="save_auth" href="#saved" class="button" data-ssid="">Save</a>
+                            <a id="save_auth" href="#mqtt" class="button" data-ssid="">Next</a>
                         </nav>
                     </footer>
                 </section>
 
+                <section id="mqtt" class="d-none">
+                    <header>
+                        <h2>Remote Control</h2>
+                        <p id="device-name"></p>
+                        <p style="padding-top:0!important"><small><em>Connect to your dashboard</em></small></p>
+                    </header>
+                    <article id="mqtt_interface" style="width: 90%">
+                        <p class="text-light">Login to connect your device to the internet</p>
+                        <form style="border-radius: var(--border-radius)">
+                            <h3 style="text-align:center;margin-bottom:.6em;color:var(--color-primary)">Dashboard Login:</h3>
+                            <div class="form-group rows">
+                                <label for="dashboard_username">Username</label>
+                                <input name="dashboard_username" id="dashboard_username" type="text" autocorrect="off" autocapitalize="none">
+                            </div>
+                            <div class="form-group rows">
+                                <label for="dashboard_password">Password</label>
+                                <div class="input-group">
+                                    <input name="dashboard_password" id="dashboard_password" type="password" autocorrect="off" autocapitalize="none">
+                                    <div>
+                                        <button type="button" data-show-password="#dashboard_password" class="button" title="Show Password">
+                                            <span class="icon-outline">👁️‍🗨️</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <details>
+                                <summary class="text-light">advanced&hellip;</summary>
+                                <div class="form-group rows">
+                                    <label for="mqtt_server">MQTT Server:</label>
+                                    <input id="mqtt_server" type="text" name="mqtt_server" value="dashboard.energylocal.org.uk">
+                                </div>
+                                <div class="form-group rows">
+                                    <label for="mqtt_port">MQTT Port:</label>
+                                    <input id="mqtt_port" type="text" name="mqtt_port" value="1883">
+                                </div>
+                                <div class="form-group rows">
+                                    <label for="mqtt_topic">MQTT Base-topic:</label>
+                                    <input id="mqtt_topic" type="text" name="mqtt_topic" value="">
+                                </div>
+                                <div class="form-group rows">
+                                    <label for="mqtt_username">MQTT Username:</label>
+                                    <input id="mqtt_username" type="text" name="mqtt_username" value="">
+                                </div>
+                                <div class="form-group rows">
+                                    <label for="mqtt_password">MQTT Password:</label>
+                                    <input id="mqtt_password" type="text" name="mqtt_password" value="">
+                                </div>
+                            </details> -->
+                        </form>
+                    </article>
+                    <article>
+                    </article>
+                    <footer>
+                        <nav>
+                            <a href="#accesspoint_password" class="button cancel">Back</a>
+                            <!-- <a href="#saving" class="button secondary">Skip</a> -->
+                            <a href="#saving" class="button">Login</a>
+                        </nav>
+                    </footer>
+                </section>
+
+                <section id="saving" class="d-none">
+                    <div class="jumbotron">
+                        <h2>Saving to Device</h2>
+                        <p id="device-name"></p>
+                    </div>
+                    <article>
+                        <p style="text-align: center;" class="text-light">Please wait while your settings are saved</p>
+                        <ul class="log text-light"></ul>
+                    </article>
+                    <footer>
+                        <nav>
+                            <a href="#mqtt" class="button cancel">Cancel</a>
+                            <a id="indicator" href="#" class="button blink" aria-disabled>Saving&hellip;</a>
+                        </nav>
+                    </footer>
+                </section>
 
                 <section id="saved" class="d-none">
                     <div class="jumbotron">

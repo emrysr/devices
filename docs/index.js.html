@@ -1,6 +1,34 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: index.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: index.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @file Cordova app to display and add emoncms compatible devices | Part of the OpenEnergyMonitor project
- * @author Emrys Roberts <emrys@openenergymonitor.org.uk>
+ * @author Emrys Roberts &lt;emrys@openenergymonitor.org.uk>
  * @description Scans the local network for device. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.
  * @summary Emon Devices App
  * @see {@link http://openenergymonitor.org|OpenEnergyMonitor project}
@@ -83,7 +111,8 @@ var app = {
     
     onDeviceReady: function() {
         // populate global variables
-        logger = new Logger(_loggerLevels.WARN); // handle application event loggin
+        // logger = new Logger(_loggerLevels.WARN); // handle application event loggin
+        logger = new Logger(_loggerLevels.TRACE); // handle application event loggin
         controller = new Controller(app.defaultView); // handle all view/tab changes
         utils = new Utilities(); // fill global variable with methods
         view = new View(); // handle dom changes
@@ -214,7 +243,7 @@ var app = {
     },
     /**
      * returns promise with bool as parameter in sucessful then()
-     * @returns {Promise<Boolean>}
+     * @returns {Promise&lt;Boolean>}
      */
     getWifiEnabled: function() {
         return WifiWizard2.isWifiEnabled();
@@ -224,7 +253,7 @@ var app = {
         app.zeroconfScan().catch(app.showError)
             .finally(() => {
                 // repeat the scan after delay - only if in "device scan" tab
-                if(controller.state === "#devices" && !app.getState("deviceScanCancelled")) {
+                if(controller.state === "#devices" &amp;&amp; !app.getState("deviceScanCancelled")) {
                     var t = setTimeout(function() {
                                 app.getNetworkDevices()
                             }, app.getSettings("deviceScanRepeat"));
@@ -263,7 +292,7 @@ var app = {
                     // increment counter
                     app.setState("deviceApScanRetries", app.getState("deviceApScanRetries") + 1);
                     // test if counter reached max
-                    if(app.getState("deviceApScanRetries") <= app.getSettings("deviceApScanMaxRetries")) {
+                    if(app.getState("deviceApScanRetries") &lt;= app.getSettings("deviceApScanMaxRetries")) {
                         WifiWizard2.timeout(app.getSettings("deviceApScanRepeat"))
                         .then(function() {
                             app.checkForNewDevices();
@@ -286,7 +315,7 @@ var app = {
                     // increment counter
                     app.setState("deviceApScanRetries", app.getState("deviceApScanRetries") + 1);
                     // test if counter reached max
-                    if(app.getState("deviceApScanRetries") <= app.getSettings("deviceApScanMaxRetries")) {
+                    if(app.getState("deviceApScanRetries") &lt;= app.getSettings("deviceApScanMaxRetries")) {
                         WifiWizard2.timeout(app.getSettings("deviceApScanRepeat")*3)
                         .then(function() {
                             app.checkForNewDevices();
@@ -355,7 +384,7 @@ var app = {
     /**
      * get matching device from devices list
      * @param {String} ip ipv4 address
-     * @returns {Array<Object>} empty if not found.
+     * @returns {Array&lt;Object>} empty if not found.
      */
     findDevice: function (ip) {
         return app.getState("devices").reduce((devices, device)=> {
@@ -372,7 +401,7 @@ var app = {
     removeExpired: function(_devices) {
         return _devices.reduce((list, item) => {
             // 15seconds TTL
-            if ((new Date().valueOf() - item.lastSeen) / 1000 < 15) {
+            if ((new Date().valueOf() - item.lastSeen) / 1000 &lt; 15) {
                 list.push(item);
             }
             return list;
@@ -486,7 +515,7 @@ var app = {
                 // top scan after `deviceScanTimeout`
                 setTimeout(function() {
                     var devices = app.getState("devices");
-                    if(devices && devices.length > 0) {
+                    if(devices &amp;&amp; devices.length > 0) {
                         zeroconf.close(
                             ()=>resolve(devices),
                             ()=>reject("Unable to close zeroconf browser")
@@ -545,21 +574,21 @@ var app = {
         }, []);
         // Access point(s) ?
         var _aps = filtered.length === 1 ? "Access point": "Access points";
-        list.innerHTML = `<p>Found ${filtered.length} ${_aps}</p>`;
+        list.innerHTML = `&lt;p>Found ${filtered.length} ${_aps}&lt;/p>`;
 
         // show each wifi connection as individual link
         filtered.forEach(ap => {
             var item = document.createElement('div');
             var wpa, ess, wps;
             [wpa, ess, wps] = app.getApCapabilities(ap);
-            var title = ap.SSID === "" ? `<span class="text-muted">${ap.BSSID}</span>`: ap.SSID;
+            var title = ap.SSID === "" ? `&lt;span class="text-muted">${ap.BSSID}&lt;/span>`: ap.SSID;
             var css = ap.SSID === app.getState("currentSSID") ? 'current': '';
-            item.innerHTML = `<a href="#accesspoint_password" data-ssid="${ap.SSID}" data-wpa="${wpa}" class="${css}">
-                                <span>${title}<small class="badge text-muted">${wps}</small></span>
-                                <progress max="5" value="${ap.rating}" title="${ap.strength}">
+            item.innerHTML = `&lt;a href="#accesspoint_password" data-ssid="${ap.SSID}" data-wpa="${wpa}" class="${css}">
+                                &lt;span>${title}&lt;small class="badge text-muted">${wps}&lt;/small>&lt;/span>
+                                &lt;progress max="5" value="${ap.rating}" title="${ap.strength}">
                                     ${ap.level}dBm
-                                </progress>
-                              </a>`;
+                                &lt;/progress>
+                              &lt;/a>`;
             list.append(item.firstElementChild);
         });
     },
@@ -574,7 +603,7 @@ var app = {
      *              ["WPA2-EAP-CCMP+TKIP", "WPA-EAP-CCMP+TKIP", "ESS"]
      *              ["ESS"]
      * @param {Object} ap AccessPoint object as returned by WiFiWizard2 plugin
-     * @returns {Array.<String>} "WPA","ESS","WPS" or empty strings if not set
+     * @returns {Array.&lt;String>} "WPA","ESS","WPS" or empty strings if not set
      * @see {@link https://github.com/tripflex/wifiwizard2#readme|WiFiWizard2 docs}
      */
     getApCapabilities: function(ap) {
@@ -609,7 +638,7 @@ var app = {
      * @param {String} ssid SSID of wifi ap - REQUIRED
      * @param {String} password password for connection - not needed for open network
      * @param {String} algorithm "WPA"|"WEP" - not needed for open network
-     * @returns {Promise<String>} WifiWIzard2.connect() promise
+     * @returns {Promise&lt;String>} WifiWIzard2.connect() promise
      * @see {@link https://github.com/tripflex/wifiwizard2#readme|WifiWizard2 Docs}
      */
     connect: function(ssid, password, algorithm) {
@@ -717,7 +746,7 @@ var app = {
      * @param {Object} device with ip,name,url etc
      */
     saveDevice: function(device) {
-        if(device && device.ip) {
+        if(device &amp;&amp; device.ip) {
             var devices = app.updateDevices(app.getState("devices"), [device]);
             app.setState("devices", devices);
             // app.save() returns undefined on success;
@@ -744,7 +773,7 @@ var app = {
         controller.onViewExit(state);
         controller.stopLoader();
         // show message
-        controller.find(state + " .list").innerHTML = "<p>Cached list of devices cleared</p>";
+        controller.find(state + " .list").innerHTML = "&lt;p>Cached list of devices cleared&lt;/p>";
         // change to devices view
         controller.hideAll();
         controller.show(state);
@@ -755,7 +784,7 @@ var app = {
     /**
      * checks ip address exists in `app.state.devices[]` objects {name:'hub34',ip:'10.0.0.222'}
      * @param {Object} _device with ip,ssid,strength etc
-     * @param {Array.<Object>} [_devices] check against given list 
+     * @param {Array.&lt;Object>} [_devices] check against given list 
      * @returns {Boolean} true if ip address is not already in list
      */
     deviceIsUnique: function(_device, _devices) {
@@ -770,7 +799,7 @@ var app = {
     /**
      * test to see if _device is newer than the one in _devices.
      * @param {Object} _device a single device to check
-     * @param {Array.<Object>} _devices all the devices
+     * @param {Array.&lt;Object>} _devices all the devices
      * @returns {boolean} true = _device is newer or not in _devices
      */
     deviceIsNewer: function(_device, _devices) {
@@ -778,7 +807,7 @@ var app = {
         for(d in devices) {
             let device = devices[d];
             // return false if matching (by ip address) `device` is older than given `_device`
-            if (device.ip === _device.ip && device.lastSeen >= _device.lastSeen) return false;
+            if (device.ip === _device.ip &amp;&amp; device.lastSeen >= _device.lastSeen) return false;
         }
         // if no matching entries or diven `_device` lastSeen is greater
         return true;
@@ -798,7 +827,7 @@ var app = {
      * 
      * @param {String} username 
      * @param {String} password
-     * @returns {(Promise<Success>|Promise<Fail>)}
+     * @returns {(Promise&lt;Success>|Promise&lt;Fail>)}
      */
     authenticate: function(username, password) {
         return new Promise((resolve, reject) => {
@@ -940,7 +969,7 @@ var app = {
                 cordova.plugin.http.get(url, params, headers, 
                     response=> {
                         logger.info(`http.get success: ${url}`)
-                        if(response.status >= 200 && response.status <= 299) {
+                        if(response.status >= 200 &amp;&amp; response.status &lt;= 299) {
                             logger.trace(`http.get.status: ${response.status}`);
                             resolve(response.data);
                         } else {
@@ -976,7 +1005,7 @@ var app = {
 
             // save passkey locally
             var passwordList = app.load('ssid') || {};
-            if(controller.find("#save-psk").checked && deviceConnectionSSID) {
+            if(controller.find("#save-psk").checked &amp;&amp; deviceConnectionSSID) {
                 passwordList[deviceConnectionSSID] = app.getState("deviceConnectionPsk");
             } else {
                 delete passwordList[deviceConnectionSSID];
@@ -990,11 +1019,11 @@ var app = {
 
             // add grayed out items "todo". once done class "done" is added
             controller.find("#saving .log").innerHTML= `
-                <li id="connect_device">Connecting to ${selectedHotspot}</li>
-                <li id="save_network_setting">Saving Network Settings</li>
-                <li id="save_mqtt_settings">Saving Remote Settings</li>
-                <li id="restart_device">Restarting ${selectedHotspot}</li>
-                <li id="connect_original">Reconnecting to ${currentSSID}</li>
+                &lt;li id="connect_device">Connecting to ${selectedHotspot}&lt;/li>
+                &lt;li id="save_network_setting">Saving Network Settings&lt;/li>
+                &lt;li id="save_mqtt_settings">Saving Remote Settings&lt;/li>
+                &lt;li id="restart_device">Restarting ${selectedHotspot}&lt;/li>
+                &lt;li id="connect_original">Reconnecting to ${currentSSID}&lt;/li>
             `;
 
             // connect to device's hotspot
@@ -1146,7 +1175,7 @@ var Controller = function(defaultView) {
             self = this;
             this.bindEvents();
             // list of all views to hide initially
-            // todo: automatically create this list by searching the page for <section> tags
+            // todo: automatically create this list by searching the page for &lt;section> tags
             self.views = [
                 "#welcome",
                 "#devices",
@@ -1341,10 +1370,10 @@ var Controller = function(defaultView) {
                     var name = app.getState("selectedHotspot"), type, icon_name;
                     [type,icon_name] = Devices.getDeviceType(name);
                     controller.find("#mqtt #device-name").innerHTML = `
-                        <span>
+                        &lt;span>
                             ${controller.icon(icon_name)}
                             ${name}
-                        </span> `;
+                        &lt;/span> `;
 
                     controller.find("#dashboard_username").value = app.getState("dashboard_username") || "";
                     controller.find("#dashboard_password").value = app.getState("dashboard_password") || "";
@@ -1363,10 +1392,10 @@ var Controller = function(defaultView) {
                     var name = app.getState("selectedHotspot"), type, icon;
                     [type,icon] = Devices.getDeviceType(name);
                     controller.find("#saving #device-name").innerHTML = `
-                        <span>
+                        &lt;span>
                             ${controller.icon(icon)}
                             ${name}
-                        </span> `;
+                        &lt;/span> `;
                     
                     // before displaying #saving view authenticate with web api
                     // login to remote server to get api key
@@ -1384,7 +1413,7 @@ var Controller = function(defaultView) {
                             app.setState("dashboard_password", "");
                             logger.trace(`/auth api response: ${response.data}`);
                             // if http request successful, check response
-                            if(response.status >= 200 && response.status <= 300) {
+                            if(response.status >= 200 &amp;&amp; response.status &lt;= 300) {
                                 var data = false;
                                 try{
                                     data = JSON.parse(response.data);
@@ -1400,7 +1429,7 @@ var Controller = function(defaultView) {
 
                             // todo: save dashboard_username and dashboard_password to localstorage
                             // todo: continue even if auth fails. need to save network info on device
-                            // AUTH SUCCESS - reset loading indicator text & button.
+                            // AUTH SUCCESS - reset loading indicator text &amp; button.
                             // move to #saving view
                             link.innerText = "Authenticated ✔";
                             link.classList.remove('blink');
@@ -1543,7 +1572,7 @@ var Controller = function(defaultView) {
         },
         /**
          * @param {String} selector css query selector. only matches first
-         * @returns {HTMLElement} DOM element, empty <DIV> if no match.
+         * @returns {HTMLElement} DOM element, empty &lt;DIV> if no match.
          */
         find: function(selector) {
             return document.querySelector(selector) || document.createElement('div');
@@ -1580,11 +1609,11 @@ var Controller = function(defaultView) {
          * create the svg markup needed to display an icon.
          * 
          * svg icons must be inline in the html to enable xlink references
-         * will not work with external files eg. <img> src .svg files
+         * will not work with external files eg. &lt;img> src .svg files
          * @param {String} name last part of icon id. eg #icon-xxxx
          */
         icon: function(name){
-            return `<svg class="icon"><use xlink:href="#icon-${name}"></use></svg>`
+            return `&lt;svg class="icon">&lt;use xlink:href="#icon-${name}">&lt;/use>&lt;/svg>`
         },
     }
     controller.initialize();
@@ -1612,7 +1641,7 @@ var Utilities = function() {
          * @returns {HTMLElement} parent/closest element that matches | or null
          */
         getClosest: function (elem, selector) {
-            for ( ; elem && elem !== document; elem = elem.parentNode ) {
+            for ( ; elem &amp;&amp; elem !== document; elem = elem.parentNode ) {
                 if ( elem.matches( selector ) ) return elem;
             }
             return null;
@@ -1631,7 +1660,7 @@ var Wifi = (function() {
         /**
          * request a scan and return a promise
          * @alias Wifi.getAccessPoints
-         * @returns {Promise<Network>} 
+         * @returns {Promise&lt;Network>} 
          */
         scan: function() {
             return WifiWizard2.scan();
@@ -1722,7 +1751,7 @@ var Wifi = (function() {
             }
             return updated.reduce((accessPoints, ap) => {
                 // 15mins TTL
-                if ((new Date().valueOf() - ap.lastSeen) / 1000 / 60 < 15) {
+                if ((new Date().valueOf() - ap.lastSeen) / 1000 / 60 &lt; 15) {
                     accessPoints.push(ap);
                 }
                 return accessPoints;
@@ -1762,7 +1791,7 @@ var Devices = (function() {
         removeExpired: function(_devices) {
             return _devices.reduce((list, item) => {
                 // 15seconds TTL
-                if ((new Date().valueOf() - item.lastSeen) / 1000 < 15) {
+                if ((new Date().valueOf() - item.lastSeen) / 1000 &lt; 15) {
                     list.push(item);
                 }
                 return list;
@@ -1792,7 +1821,7 @@ var Devices = (function() {
          * eg smartplug3213 will return ['Smart Plug','smartplug']
          * @param {String} name name of ssid or device
          * @alias Devices.getDeviceType
-         * @returns {Array.<string>} the discoverd type and icon of device as an array of strings [type,icon]
+         * @returns {Array.&lt;string>} the discoverd type and icon of device as an array of strings [type,icon]
          */
         getDeviceType: function(name) {
             var icon, // icon class name ... smartplug|smartmeter|openevse|hpmon|edmi-am|emonth
@@ -1837,14 +1866,14 @@ var View = function() {
         /**
          * add list of devices to container
          * @param {HTMLElement} container - container
-         * @param {Array<Device>} results - list of devices
+         * @param {Array&lt;Device>} results - list of devices
          * @todo save results of app.removeExpired() and sort to app.state.devices
          */
         displayDevices: function(container, results) {
             logger.trace(`displayDevices(): ${container.tagName}: ${results.length} found`);
             if (!container) return;
             var _devices = results.length === 1 ? "device": "devices";
-            container.innerHTML = `<p>Found ${results.length} ${_devices} on your network</p>`;
+            container.innerHTML = `&lt;p>Found ${results.length} ${_devices} on your network&lt;/p>`;
 
             results.forEach(result => {
                 var type, icon_name,
@@ -1853,13 +1882,13 @@ var View = function() {
                     ip = result.ip,
                     name = result.name,
                     item = document.createElement('div'),
-                    html = `<a title="${type}" href="${url}" data-weblink data-ip="${ip}">
-                                <span>
+                    html = `&lt;a title="${type}" href="${url}" data-weblink data-ip="${ip}">
+                                &lt;span>
                                     ${controller.icon(icon_name)}
                                     ${name}
-                                </span> 
-                                <small class="badge">${ip}</small>
-                            </a>`;
+                                &lt;/span> 
+                                &lt;small class="badge">${ip}&lt;/small>
+                            &lt;/a>`;
 
                 item.innerHTML = html;
                 container.appendChild(item.firstElementChild);
@@ -1880,18 +1909,18 @@ var View = function() {
         showDeviceHotspots: function(hotspots) {
             const list = controller.find("#add-device .list");
             var _devices = hotspots.length === 1 ? "device": "devices";
-            list.innerHTML = `<p>Found ${hotspots.length} available ${_devices}</p>`;
+            list.innerHTML = `&lt;p>Found ${hotspots.length} available ${_devices}&lt;/p>`;
             hotspots.forEach(hotspot=> {
                 var name = hotspot.SSID, type, icon_name,
                 [type,icon_name] = Devices.getDeviceType(name);
-                var html = `<a href="#accesspoints" data-name="${name}">
-                    <span>
+                var html = `&lt;a href="#accesspoints" data-name="${name}">
+                    &lt;span>
                         ${controller.icon(icon_name)}
                         ${name}
-                        ${hotspot.rating < 3 ? '<small class="text-muted">('+hotspot.strength+')</small>': ''}
-                    </span> 
-                    <small class="badge">${type}</small>
-                </a>
+                        ${hotspot.rating &lt; 3 ? '&lt;small class="text-muted">('+hotspot.strength+')&lt;/small>': ''}
+                    &lt;/span> 
+                    &lt;small class="badge">${type}&lt;/small>
+                &lt;/a>
                 `,
                     item = document.createElement('div');
 
@@ -1947,4 +1976,26 @@ var View = function() {
   * @property {String} name - Label for device
   * @property {String} url
   * @property {String} ip
-  */
+  */</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="Controller.html">Controller</a></li><li><a href="Devices.html">Devices</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Utilities.html">Utilities</a></li><li><a href="View.html">View</a></li><li><a href="Wifi.html">Wifi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_loggerLevels">_loggerLevels</a></li><li><a href="global.html#controller">controller</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#utils">utils</a></li><li><a href="global.html#view">view</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Tue Jul 28 2020 02:10:18 GMT+0100 (Amser Haf Prydain)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

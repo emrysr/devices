@@ -1,5 +1,6 @@
 :root {
     --color-primary: #ea510e;
+    --color-secondary: #ea870e;
     --color-dark: #333;
     --color-grey: #757575;
     --color-light: #EFEFEF;
@@ -161,6 +162,9 @@ section footer nav a.button {
 }
 section footer nav a.button {
     background: var(--color-primary);
+}
+section footer nav a.button.secondary {
+    background: var(--color-secondary);
 }
 section footer nav a.button.dark {
     background: var(--color-dark);
@@ -326,6 +330,7 @@ nav.menu a:hover {
 }
 .app main #loader-animation {
     position: absolute;
+    z-index: 2;
     right: 0.8rem;
     top: .8rem;
     border: 1em solid white;
@@ -342,9 +347,36 @@ nav.menu a:hover {
     100% { transform: rotate(360deg); }
 }
 
-
+.form-group.rows label {
+    margin-bottom: 0;
+}
+.form-group.rows {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: .5rem;
+}
+.form-group.rows .input-group input[type="text"],
+.form-group.rows .input-group input[type="password"]{
+    flex-grow: 1;
+    width: calc( 100% - 2rem);
+}
+form details {
+    color: var(--color-grey)
+}
+form details label {
+    color: var(--color-grey);
+}
+form details .form-group:first-of-type {
+    margin-top: 1rem;
+}
+#mqtt form {
+    margin-bottom: 4rem;
+    padding: 1rem 2rem;
+    background-color: var(--color-light)
+}
 
 .tip-title {
+    margin: 0;
     margin-bottom: .2em;
     font-weight: bold;
 }
@@ -590,6 +622,39 @@ section header p{
     font-weight: lighter;
     color: white;
 }
+/* used to display prop/value lists for device info
+   currently unused
+*/
+main section article dl {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    margin-top: .5rem;
+    border: 1px solid var(--color-primary);
+    border-radius: var(--border-radius);
+}
+main section article dt, main section article dd {
+    padding: 0;
+    margin: .1rem 0;
+}
+main section article dt {
+    flex-basis: 40%;
+    text-align: right;
+    padding-right: .5rem;
+    color: var(--color-primary);
+}
+main section article dd {
+    flex-basis: 60%;
+    flex-grow: 1;
+    color: #838383;
+}
+main section article dd .badge{
+    vertical-align: baseline;
+    margin-top: .2rem;
+    margin-left: 0;
+}
 
 ul.log {
     margin-top: 2em;
@@ -618,6 +683,13 @@ ul.log li.done:before {
     line-height: 1rem;
     font-size: 1.7rem;
     animation: fadeIn .3s var(--ease-in-cubic) forwards;
+}
+
+a[aria-disabled="true"] {
+    color: currentColor;
+    display: inline-block;  /* For IE11/ MS Edge bug */
+    pointer-events: none;
+    text-decoration: none;
 }
 
 footer nav.list {

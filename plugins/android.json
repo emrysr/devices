@@ -15,6 +15,9 @@
     },
     "wifiwizard2": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
+    },
+    "cordova-plugin-advanced-http": {
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
     }
   },
   "dependent_plugins": {
@@ -22,6 +25,9 @@
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
     "es6-promise-plugin": {
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
+    },
+    "cordova-plugin-file": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     }
   }
