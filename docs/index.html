@@ -47,9 +47,9 @@
 <p>EmonCMS devices create wifi hotspots when not connected. Once connected to these hotspots you can configure the device to connect to your local wifi connection.</p>
 <p>This app will discover these hotspots and connect your device to your wifi without manual configuration.</p>
 <p>You can sign into your dashboard to allow your device to be controlled online as well as locally.</p>
-<p>Written with <a href="https://cordova.apache.org/">Apache Cordova</a> - works on multiple devices, however main development done one Android.</p>
+<p>Written with <a href="https://cordova.apache.org/">Apache Cordova</a> - works on multiple devices, however main development done one Android 9. Other devices and versions should be compatible with this Cordova App.</p>
 <blockquote>
-<p>:information_source: If issues found on other platforms please create a <a href="https://github.com/emrysr/devices/issues">github issue</a> :bug:</p>
+<p>:information_source: If any issues found runnig the app on iPhones please create a <a href="https://github.com/emrysr/devices/issues">github issue</a> :bug: to track problems and fixes</p>
 </blockquote>
 <hr>
 <h2>Screenshots</h2>
@@ -76,122 +76,37 @@
     </tr>
 </table>
 <hr>
-<h2>quick run</h2>
+<h2>Quick run</h2>
+<blockquote>
+<p>If Cordova not installed... <code>$ sudo npm install -g cordova</code></p>
+</blockquote>
 <pre class="prettyprint source lang-bash"><code>$ git clone [this repo]
 $ cd [this repo directory]
 $ cordova platform add android
 $ cordova run android --device
 </code></pre>
-<h2>cordova requirements</h2>
+<h2>Cordova requirements</h2>
 <pre class="prettyprint source lang-bash"><code>$ cordova plugin add cordova-plugin-zeroconf
 $ cordova plugin add https://github.com/tripflex/wifiwizard2
 $ cordova plugin add cordova-plugin-advanced-http
 </code></pre>
-<h2>problems</h2>
-<p>if you have problems compiling try to remove then add the platform</p>
+<h2>Issues</h2>
+<p>You may have problems compiling, try to remove then add the cordova platform</p>
 <pre class="prettyprint source lang-bash"><code>$ cordova platform remove android
 $ cordova platform add android
 </code></pre>
 <p>or <code>$ rm -rf [repo dir]/platforms &amp;&amp; cordova platform add android</code>y</p>
+<blockquote>
+<p>please create a <a href="https://github.com/emrysr/devices/issues">github issue</a> to track problems and fixes. thanks</p>
+</blockquote>
 <hr>
-<h2>Debugging API responses</h2>
-<p>If you're vs code to <a href="https://docs.microsoft.com/en-us/visualstudio/cross-platform/tools-for-cordova/run-your-app/simulate-in-browser?view=toolsforcordova-2017">live-preview your code in a browser</a> there are a few &quot;external&quot; api calls that require JSON responses.
-These are the examples I've been using to test with: (paste them into the &quot;Android in a browser simulator&quot; reponses for each call)</p>
-<h3>WifiWizard2.isWifiEnabled()</h3>
-<p>This just requires a success or fail response to test. I tested with both to see the result on the application.</p>
-<blockquote>
-<p>eg: &quot;true&quot; -&gt; click [SUCCESS]</p>
-</blockquote>
-<h3>WifiWizard2.getConnectedSSID()</h3>
-<p>You can respond with any <code>String</code>, however if you use your actual wifi connection name the &quot;current connection&quot; will be correctly hightlighted in the access point list</p>
-<blockquote>
-<p>eg: &quot;BTHub5-AAAA&quot; -&gt; click [SUCCESS]</p>
-</blockquote>
-<h3>WifiWizard2.getWifiIp()</h3>
-<p>You can respond with any <code>String</code>, however try entering in a similar IP address to your local network</p>
-<blockquote>
-<p>eg: &quot;192.168.1.222&quot; -&gt; click [SUCCESS]</p>
-</blockquote>
-<h3>WifiWizard2.scan()</h3>
-<p>This will simulate a wifi scan to see all available accesspoints (one device and one standard ap)</p>
-<pre class="prettyprint source lang-JSON"><code>[
-  {
-    &quot;level&quot;: -32,
-    &quot;SSID&quot;: &quot;smartplug5339&quot;,
-    &quot;BSSID&quot;: &quot;86:f3:eb:00:00:00&quot;,
-    &quot;frequency&quot;: 2412,
-    &quot;capabilities&quot;: &quot;[ESS]&quot;,
-    &quot;timestamp&quot;: 1893205094332,
-    &quot;channelWidth&quot;: 0,
-    &quot;centerFreq0&quot;: 0,
-    &quot;centerFreq1&quot;: 0
-  },
-  {
-    &quot;level&quot;: -62,
-    &quot;SSID&quot;: &quot;BTHub5-AAAA&quot;,
-    &quot;BSSID&quot;: &quot;08:36:c9:00:00:00&quot;,
-    &quot;frequency&quot;: 2427,
-    &quot;capabilities&quot;: &quot;[WPA2-PSK-CCMP][ESS][WPS]&quot;,
-    &quot;timestamp&quot;: 1893205094360,
-    &quot;channelWidth&quot;: 0,
-    &quot;centerFreq0&quot;: 0,
-    &quot;centerFreq1&quot;: 0
-  }
-]
-</code></pre>
-<p>-&gt; click [SUCCESS]</p>
-<h3>WifiWizar2d.add([SSID]])</h3>
-<pre><code>-&gt; click [SUCCESS]
-</code></pre>
-<h3>WifiWizar2.connect([SSID]])</h3>
-<pre><code>-&gt; click [SUCCESS]
-</code></pre>
-<blockquote>
-<p>WifiWizar2.connect() is the same as calling formatWifiConfig() then add() then enable()</p>
-</blockquote>
-<h3>CordovaHttpPlugin.post([host], [username], [password])</h3>
-<p>This returns error not data if there is an error</p>
-<pre class="prettyprint source lang-JSON"><code>{
-    &quot;status&quot;:200,
-    &quot;url&quot;:&quot;http://test.localhost&quot;,
-    &quot;data&quot;:&quot;{\&quot;success\&quot;: true,\&quot;userid\&quot;: 0,\&quot;apikey_write\&quot;: \&quot;e31da26bd2f9807930cad74adb9853a0\&quot;,\&quot;apikey_read\&quot;: \&quot;6c255f8156fe09694a9a316fb36db971\&quot;}&quot;,
-    &quot;headers&quot;:{}
-}
-</code></pre>
-<pre><code>-&gt; click [SUCCESS]
-</code></pre>
-<p>or an error</p>
-<pre class="prettyprint source lang-JSON"><code>{
-    &quot;status&quot;:404,
-    &quot;url&quot;:&quot;http://test.localhost&quot;,
-    &quot;error&quot;:&quot;{\&quot;success\&quot;: false, \&quot;message\&quot;: \&quot;Incorrect authentication\&quot;}&quot;,
-    &quot;headers&quot;:{}
-}
-</code></pre>
-<pre><code>-&gt; click [FAILURE]
-</code></pre>
-<h3>ZeroConf.reInit()</h3>
-<p>This just requires a success or fail response to test. Value is not important.
--&gt; click [SUCCESS]</p>
-<h3>ZeroConf.watch()</h3>
-<p>This requires a specific JSON object with known properties:</p>
-<blockquote>
-<p>eg: <code>{&quot;action&quot;:&quot;resolved&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_workstation._tcp.&quot;,&quot;name&quot;:&quot;emonpi [b8:27:b8:27:b8:27]&quot;,&quot;port&quot;:9,&quot;hostname&quot;:&quot;&quot;,&quot;ipv4Addresses&quot;:[&quot;192.168.1.186&quot;],&quot;ipv6Addresses&quot;:[&quot;fe80::b03c:1111:1111:1111&quot;],&quot;txtRecord&quot;:{}}}</code>
--&gt; click [SUCCESS]</p>
-</blockquote>
-<p>5 more different example responses:-</p>
-<pre class="prettyprint source lang-JSON"><code>{&quot;action&quot;:&quot;added&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_http._tcp.&quot;,&quot;name&quot;:&quot;smartplug5339&quot;,&quot;port&quot;:0,&quot;hostname&quot;:&quot;smartplug5339._http._tcp.local.&quot;,&quot;ipv4Addresses&quot;:[],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{&quot;smartplug5339._http._tcp.local.&quot;:&quot;true&quot;}}}
-{&quot;action&quot;:&quot;resolved&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_http._tcp.&quot;,&quot;name&quot;:&quot;smartplug5339&quot;,&quot;port&quot;:80,&quot;hostname&quot;:&quot;&quot;,&quot;ipv4Addresses&quot;:[&quot;192.168.1.78&quot;],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{}}}
-{&quot;action&quot;:&quot;added&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_http._tcp.&quot;,&quot;name&quot;:&quot;openevse-8970&quot;,&quot;port&quot;:0,&quot;hostname&quot;:&quot;openevse-8970._http._tcp.local.&quot;,&quot;ipv4Addresses&quot;:[],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{&quot;openevse-8970._http._tcp.local.&quot;:&quot;true&quot;}}}
-{&quot;action&quot;:&quot;resolved&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_http._tcp.&quot;,&quot;name&quot;:&quot;openevse-8970&quot;,&quot;port&quot;:80,&quot;hostname&quot;:&quot;&quot;,&quot;ipv4Addresses&quot;:[&quot;192.168.1.81&quot;],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{}}}
-{&quot;action&quot;:&quot;added&quot;,&quot;service&quot;:{&quot;domain&quot;:&quot;local.&quot;,&quot;type&quot;:&quot;_workstation._tcp.&quot;,&quot;name&quot;:&quot;emonpi [b8:27:b8:27:b8:27]&quot;,&quot;port&quot;:0,&quot;hostname&quot;:&quot;emonpi [b8:27:b8:27:b8:27]._workstation._tcp.local.&quot;,&quot;ipv4Addresses&quot;:[],&quot;ipv6Addresses&quot;:[],&quot;txtRecord&quot;:{&quot;emonpi [b8:27:b8:27:b8:27]._workstation._tcp.local.&quot;:&quot;true&quot;}}}
-</code></pre>
-<blockquote>
-<p>you could also use the <code>avahi-discover</code> terminal command to see your actual results and change the above examples to match</p>
-</blockquote>
-<h3>ZeroConf.close()</h3>
-<p>This just requires a success or fail response to test. Value is not important.
--&gt; click [SUCCESS]</p>
+<h2>Code Documentation (jsdoc)</h2>
+<p>The code comments have been used to document the code using jsdoc in the <code>/docs</code> directory</p>
+<p>The hosted github pages version is here: http://code.emrys.cymru/devices/</p>
+<h1>Debugging</h1>
+<h2>VS Code specific debugging</h2>
+<p>You can debug running Cordova apps using the vscode debug tools. The web browser based simulator expects responses when the app uses any plugin api.
+I've created a <a href="README-vscode-debugging.md">list of example responses</a> for you to use during debugging.</p>
 <blockquote>
 <p>there is a larger example in the <a href="https://github.com/emrysr/wifiscan">wifi-scan</a> repo I based this work on  - RAW: <a href="https://raw.githubusercontent.com/emrysr/wifiscan/master/WifiWizard2.scan.response.example.json">WifiWizard2.scan.response.example.json</a></p>
 </blockquote>
@@ -243,7 +158,7 @@ These are the examples I've been using to test with: (paste them into the &quot;
     <div class="container-overview">
     
         
-            <div class="description">Scans the local network for device. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.</div>
+            <div class="description">Mobile app that scans the local network for device. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.</div>
         
 
         
@@ -280,10 +195,13 @@ These are the examples I've been using to test with: (paste them into the &quot;
     
 
     
+    <dt class="tag-copyright">Copyright:</dt>
+    <dd class="tag-copyright"><ul class="dummy"><li>EmonCMS 2020 <a href="https://raw.githubusercontent.com/emrysr/devices/master/COPYRIGHT.txt">COPYRIGHT.txt</a></li></ul></dd>
+    
 
     
     <dt class="tag-license">License:</dt>
-    <dd class="tag-license"><ul class="dummy"><li>AGPL-3.0-or-later</li></ul></dd>
+    <dd class="tag-license"><ul class="dummy"><li>AGPL-3.0-or-later <a href="https://raw.githubusercontent.com/emrysr/devices/master/LICENSE.txt">LICENSE.txt</a></li></ul></dd>
     
 
     
@@ -302,10 +220,6 @@ These are the examples I've been using to test with: (paste them into the &quot;
     <dd class="tag-see">
         <ul>
             <li><a href="http://openenergymonitor.org">OpenEnergyMonitor project</a></li>
-        
-            <li><a href="https://github.com/emrysr/devices/LICENSE.txt">https://github.com/emrysr/devices/LICENSE.txt</a></li>
-        
-            <li><a href="https://github.com/emrysr/devices/COPYRIGHT.txt">https://github.com/emrysr/devices/COPYRIGHT.txt</a></li>
         </ul>
     </dd>
     
@@ -353,7 +267,7 @@ These are the examples I've been using to test with: (paste them into the &quot;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Tue Jul 28 2020 11:55:59 GMT+0100 (Amser Haf Prydain)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Tue Jul 28 2020 13:33:24 GMT+0100 (Amser Haf Prydain)
 </footer>
 
 <script> prettyPrint(); </script>

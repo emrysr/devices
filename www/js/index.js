@@ -1,13 +1,12 @@
 /**
- * @file Cordova app to display and add emoncms compatible devices | Part of the OpenEnergyMonitor project
+ * @file Mobile app to display and add emoncms devices | Part of the OpenEnergyMonitor project
  * @author Emrys Roberts <emrys@openenergymonitor.org.uk>
- * @description Scans the local network for device. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.
+ * @description Mobile app that scans the local network for device. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.
  * @summary Emon Devices App
  * @see {@link http://openenergymonitor.org|OpenEnergyMonitor project}
  * @version 0.2.0
- * @license AGPL-3.0-or-later
- * @see {@link https://github.com/emrysr/devices/LICENSE.txt}
- * @see {@link https://github.com/emrysr/devices/COPYRIGHT.txt}
+ * @license AGPL-3.0-or-later {@link https://raw.githubusercontent.com/emrysr/devices/master/LICENSE.txt|LICENSE.txt}
+ * @copyright EmonCMS 2020 {@link https://raw.githubusercontent.com/emrysr/devices/master/COPYRIGHT.txt|COPYRIGHT.txt}
  *
  */
 
@@ -683,33 +682,6 @@ var app = {
             controller.show("#not_saved");
             button.innerText = button.dataset.originalText;
         }, 4000)
-    },
-    /**
-     * Return strength and rating for given ap.level value
-     * @param {Object} ap AccessPoint object
-     * @returns {Iterable} requires multiple values to be returned
-     * @see: "destructing assingment" https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
-     */
-    getApStrengthAndRating: function(ap) {
-        var strength = "Very Weak";
-        var rating = 1;
-        if(ap.level > -81) {
-            strength = "Not Good";
-            rating = 2;
-        }
-        if(ap.level > -71) {
-            strength = "Okay";
-            rating = 3;
-        }
-        if(ap.level > -67) {
-            strength = "Very Good";
-            rating = 4;
-        }
-        if(ap.level > -30) {
-            strength = "Amazing";
-            rating = 5;
-        }
-        return [strength, rating]
     },
     /**
      * Add device if not already present
@@ -1641,6 +1613,8 @@ var Wifi = (function() {
          * adds lastSeen property to aid in caching
          * @alias Wifi.setAccessPointTTL
          * @param {Object} accessPoints list of found accesspoints from WiFiWizard2.scan();
+         * @see: "Destructing Assingment" https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+         * 
          */
         setAccessPointTTL: function(accessPoints) {
             var accessPoints = accessPoints.reduce((_accesspoints, ap) => {
@@ -1678,11 +1652,16 @@ var Wifi = (function() {
             return true;
         },
         /**
-         * Return strength and rating for given ap.level value
+         * Return strength and rating for given ap.level value.<br>
+         * 
+         * Strength is given as text eg. "Very Good"<br>
+         * rating is given as integer [1-5]<br>
+         * 
+         * reference table of values gained from metageek.com
          * @param {Object} ap AccessPoint object
          * @alias Wifi.getApStrengthAndRating
-         * @returns {Iterable} requires multiple values to be returned
-         * @see: "destructing assingment" https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+         * @returns {Array.<!String, !Number>} eg ["Very Good", 4]
+         * @see [metageek.com - values referenced in "Ideal Signal Strength" table - metageek.com/wifi-signal-strength-basics]{@link https://www.metageek.com/training/resources/wifi-signal-strength-basics.html}
          */
         getApStrengthAndRating: function(ap) {
             var strength = "Very Weak";
