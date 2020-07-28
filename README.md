@@ -82,7 +82,7 @@ The hosted github pages version is here: http://code.emrys.cymru/devices/
 You can debug running Cordova apps using the vscode debug tools. The web browser based simulator expects responses when the app uses any plugin api.
 I've created a [list of example responses](https://github.com/emrysr/devices/blob/master/README-vscode-debugging.md) for you to use during debugging.
 
-> there is a larger example in the [wifi-scan](https://github.com/emrysr/wifiscan) repo I based this work on  - RAW: [WifiWizard2.scan.response.example.json](https://raw.githubusercontent.com/emrysr/wifiscan/master/WifiWizard2.scan.response.example.json)
+> there more details on vscode setup in the [wifi-scan](https://github.com/emrysr/wifiscan#using-vscode) repo I based this work on 
 
 ---------------------------------------------
 
