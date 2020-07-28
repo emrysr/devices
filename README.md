@@ -8,7 +8,8 @@ You can sign into your dashboard to allow your device to be controlled online as
 
 > Control your device using your [Energy Local Dashboard](https://dashboard.energylocal.org.uk) account
 
-[<img src="screenshot.png?raw=true" width="350"/>](screenshot.png?raw=true)
+[<img src="dashboard-screenshot.png?raw=true" width="623" alt="Dashboard"/>](dashboard-screenshot.png?raw=true)
+[<img src="app-screenshot.png?raw=true" width="300" alt="Andriod App"/>](app-screenshot.png?raw=true)
 
 
 ## quick run
