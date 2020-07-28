@@ -8,7 +8,7 @@ You can sign into your dashboard to allow your device to be controlled online as
 
 Written with [Apache Cordova](https://cordova.apache.org/) - works on multiple devices, however main development done one Android.
 
-> If issues found on other platforms please create a [github issue](https://github.com/emrysr/devices/issues) :worried:
+> If issues found on other platforms please create a [github issue](https://github.com/emrysr/devices/issues) :bug:
 
 
 ---------------------------------------------
@@ -16,6 +16,8 @@ Written with [Apache Cordova](https://cordova.apache.org/) - works on multiple d
  
 ## Screenshots
 Screenshots of the web based [Energy Local Dashboard](https://dashboard.energylocal.org.uk) and this App running on Android
+> :information_source: You can control your device using your [Energy Local Dashboard](https://dashboard.energylocal.org.uk) account
+
 <table>
     <tr>
         <td>
@@ -25,7 +27,6 @@ Screenshots of the web based [Energy Local Dashboard](https://dashboard.energylo
             <br>
             <em>Dashboard showing device synced with the <a href="https://octopus.energy/agile/">Octopus Agile tariff</a> pricing</em>
         </td>
-        <td></td>
         <td>
             <a href="app-screenshot.png?raw=true" alt="App Screenshot">
                 <img src="app-screenshot.png?raw=true" width="217" alt="Screenshot of App">
@@ -36,7 +37,6 @@ Screenshots of the web based [Energy Local Dashboard](https://dashboard.energylo
     </tr>
 </table>
 
-> You can control your device using your [Energy Local Dashboard](https://dashboard.energylocal.org.uk) account
 
 
 ---------------------------------------------
