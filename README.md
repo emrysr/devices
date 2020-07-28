@@ -8,7 +8,7 @@ You can sign into your dashboard to allow your device to be controlled online as
 
 Written with [Apache Cordova](https://cordova.apache.org/) - works on multiple devices, however main development done one Android.
 
-> If issues found on other platforms please create a [github issue](https://github.com/emrysr/devices/issues) :bug:
+> :information_source: If issues found on other platforms please create a [github issue](https://github.com/emrysr/devices/issues) :bug:
 
 
 ---------------------------------------------
@@ -16,7 +16,7 @@ Written with [Apache Cordova](https://cordova.apache.org/) - works on multiple d
  
 ## Screenshots
 Screenshots of the web based [Energy Local Dashboard](https://dashboard.energylocal.org.uk) and this App running on Android
-> :information_source: You can control your device using your [Energy Local Dashboard](https://dashboard.energylocal.org.uk) account
+> :link: You can control your device using your [Energy Local Dashboard](https://dashboard.energylocal.org.uk) account
 
 <table>
     <tr>
