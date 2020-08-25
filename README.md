@@ -57,22 +57,29 @@ $ cordova run android --device
 $ cordova plugin add cordova-plugin-zeroconf
 $ cordova plugin add https://github.com/tripflex/wifiwizard2
 $ cordova plugin add cordova-plugin-advanced-http
+$ cordova plugin add cordova-plugin-inappbrowser
+```
+or as one liner...
+
+```bash
+$ cordova plugin add cordova-plugin-zeroconf https://github.com/tripflex/wifiwizard2 cordova-plugin-advanced-http cordova-plugin-inappbrowser
 ```
 
-## Issues
-You may have problems compiling, try to remove then add the cordova platform
+## Possible Problems
+You may have problems compiling, try to remove then add the cordova platform to fix this:
 ```bash
 $ cordova platform remove android
 $ cordova platform add android
 ```
-or
+or remove the whole `platform` directory and re-add:
 ```bash
 $ rm -rf platforms && cordova platform add android
 ```
+> __⚠ NOTE__ : The Cordova plugins will also need to be re-installed once you remove a platform
+
 
 ## Github issue tracker
 If you find any issues please add a new entry onto the github repo's issue tracker. Thanks
-
 
 > :link: We use __[Github issues](https://github.com/emrysr/devices/issues)__ to track issues and create fixes.
 
