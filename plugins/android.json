@@ -13,10 +13,10 @@
     "cordova-plugin-browsersync": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
-    "wifiwizard2": {
+    "cordova-plugin-zeroconf": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
-    "cordova-plugin-zeroconf": {
+    "wifiwizard2": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
     "cordova-plugin-inappbrowser": {
