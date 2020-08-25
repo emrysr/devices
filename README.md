@@ -1,6 +1,6 @@
 ## EmonCMS Devices App - Pair your new device
 
-EmonCMS devices create wifi hotspots when not connected. Once connected to these hotspots you can configure the device to connect to your local wifi connection.
+[EmonCMS devices](https://github.com/emrysr/devices) create wifi hotspots when not connected. Once connected to these hotspots you can configure the device to connect to your local wifi connection.
 
 This app will discover these hotspots and connect your device to your wifi without manual configuration.
 
@@ -65,7 +65,10 @@ or as one liner...
 $ cordova plugin add cordova-plugin-zeroconf https://github.com/tripflex/wifiwizard2 cordova-plugin-advanced-http cordova-plugin-inappbrowser
 ```
 
-## Possible Problems
+
+---------------------------------------------
+
+## Compling Problems
 You may have problems compiling, try to remove then add the cordova platform to fix this:
 ```bash
 $ cordova platform remove android
@@ -85,11 +88,20 @@ If you find any issues please add a new entry onto the github repo's issue track
 
 ---------------------------------------------
 
-## Code Documentation (jsdoc)
+
+
+## Documentation
+### code documentation (jsdoc)
 The code comments have been used to document the code using jsdoc in the `/docs` directory
+
+Changes to comments in `www/js/index.js` or the `README.md` can automatically be shown in the documentation by using jsdoc
+```bash
+$ jsdoc www/js/index.js README.md -d docs
+```
 
 The hosted github pages version is here: http://code.emrys.cymru/devices/
 
+---------------------------------------------
 
 # Debugging
 ## VS Code specific debugging
