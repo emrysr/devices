@@ -160,12 +160,17 @@ section footer nav a.button {
     flex-grow: 1;
     text-align: center;
 }
-section footer nav a.button {
+a.button {
     background: var(--color-primary);
+    border-radius: .3em;
 }
-section footer nav a.button.secondary {
+a.button.secondary {
     background: var(--color-secondary);
 }
+footer nav a.button {
+    border-radius: 0;
+}
+
 section footer nav a.button.dark {
     background: var(--color-dark);
 }
@@ -374,7 +379,7 @@ form details .form-group:first-of-type {
     padding: 1rem 2rem;
     background-color: var(--color-light)
 }
-
+/* 
 .tip-title {
     margin: 0;
     margin-bottom: .2em;
@@ -395,7 +400,7 @@ form details .form-group:first-of-type {
 #auth .tip-title:first-child:first-letter {
     margin: -0.1em 0.5em 0.2em 0.2em;
     padding: 0.1em 0.4em 0em 0.4em;
-}
+} */
 #sidebar {
     position: fixed;
     display: flex;
@@ -438,6 +443,9 @@ form details .form-group:first-of-type {
 #sidebar > header,
 #sidebar > article{
     padding: 0 2rem;
+}
+#sidebar > article{
+    flex-grow: 1;
 }
 #sidebar blockquote{
     border-left: .2em solid var(--color-grey);
@@ -598,8 +606,33 @@ form details .form-group:first-of-type {
     font-weight: lighter;
     color: white;
 }
+article nav.links {
+    margin-top: 1rem;
+    flex-direction: row;
+    justify-content: center;
+}
+article nav.links .button {
+    font-size: 20px;
+}
 
-
+.jumbotron nav {
+    margin-top: 2rem;
+    flex-direction: row;
+    justify-content: center;
+}
+.jumbotron nav .button {
+    font-size: 18px;
+    border: 1px solid var(--color-light);
+}
+.jumbotron nav .button:active,
+.jumbotron nav .button:hover {
+    color: var(--color-light);
+    background-color: var(--color-dark);
+    border: 1px solid var(--color-dark);
+}
+.button:active {
+    transform: translate(0px, .2rem);
+}
 section header {
     padding: 1rem 2rem;
     background: var(--color-primary);
@@ -682,6 +715,21 @@ ul.log li.done:before {
     height: 1rem;
     line-height: 1rem;
     font-size: 1.7rem;
+    animation: fadeIn .3s var(--ease-in-cubic) forwards;
+}
+ul.log li.failed {
+    color: #d42525;
+    font-weight: bold
+}
+ul.log li.failed:before {
+    content: "❌";
+    border: 1px solid #d42525;
+    border-radius: 50%;
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    line-height: 1rem;
+    font-size: .9rem;
     animation: fadeIn .3s var(--ease-in-cubic) forwards;
 }
 

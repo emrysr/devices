@@ -16,13 +16,13 @@
     "fetchSpec": "^2.0.2"
   },
   "_requiredBy": [
-    "#USER",
-    "/"
+    "#DEV:/",
+    "#USER"
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-add-swift-support/-/cordova-plugin-add-swift-support-2.0.2.tgz",
   "_shasum": "bfa848356f35edc0898403eb510fe407adb40e9f",
   "_spec": "cordova-plugin-add-swift-support@^2.0.2",
-  "_where": "/home/emrys/test/pair",
+  "_where": "/home/emrys/test/wifi-scan",
   "author": {
     "name": "Alexis Kofman",
     "email": "alexis.kofman@gmail.com",

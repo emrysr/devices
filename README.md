@@ -52,7 +52,7 @@ $ cordova platform add android
 $ cordova run android --device
 ```
 
-## Cordova requirements
+## Required Cordova plugins
 ```bash
 $ cordova plugin add cordova-plugin-zeroconf
 $ cordova plugin add https://github.com/tripflex/wifiwizard2
@@ -65,7 +65,7 @@ You may have problems compiling, try to remove then add the cordova platform
 $ cordova platform remove android
 $ cordova platform add android
 ```
-or `$ rm -rf [repo dir]/platforms && cordova platform add android`y
+or `$ rm -rf platforms && cordova platform add android`y
 
 > please create a [github issue](https://github.com/emrysr/devices/issues) to track problems and fixes. thanks
 

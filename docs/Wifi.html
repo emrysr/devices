@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Wifi</h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Wifi<span class="signature">()</span><span class="type-signature"></span></h2>
         
     
 </header>
@@ -38,7 +38,19 @@
     
         
 
+    
 
+    
+    <h4 class="name" id="Wifi"><span class="type-signature"></span>new Wifi<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Collection of methods and properties for managing Wifi access points
+</div>
 
 
 
@@ -81,7 +93,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1649">line 1649</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1156">line 1156</a>
     </li></ul></dd>
     
 
@@ -238,7 +250,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1694">line 1694</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1236">line 1236</a>
     </li></ul></dd>
     
 
@@ -292,6 +304,418 @@
     
 
     
+    <h4 class="name" id=".connect"><span class="type-signature">(static) </span>connect<span class="signature">(ssid, password, algorithm)</span><span class="type-signature"> &rarr; {Promise.&lt;String>}</span></h4>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ssid</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">SSID of wifi ap - REQUIRED</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>password</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">password for connection - not needed for open network</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>algorithm</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">"WPA"|"WEP" - not needed for open network</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1175">line 1175</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://github.com/tripflex/wifiwizard2#readme">WifiWizard2 Docs</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    WifiWIzard2.connect() promise
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;String></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".disconnect"><span class="type-signature">(static) </span>disconnect<span class="signature">()</span><span class="type-signature"> &rarr; {Promise}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    disconnect from current SSID. if no ssid passed it will attempt to re-connect on previous connection
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1197">line 1197</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://github.com/tripflex/WifiWizard2#disconnect-vs-disable">WifiWizard2 Docs</a>
+"...ssid is OPTIONAL .. if not passed, will disconnect current WiFi (almost all Android versions now will just automatically reconnect to last wifi after disconnecting)..."</li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".displayAccessPoints"><span class="type-signature">(static) </span>displayAccessPoints<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Display a list of Access Points to select from.
+
+Only used in #accesspoints view
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1250">line 1250</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id=".filterLatestAccessPoints"><span class="type-signature">(static) </span>filterLatestAccessPoints<span class="signature">(accessPoints, cache)</span><span class="type-signature"> &rarr; {Array}</span></h4>
     
 
@@ -300,7 +724,7 @@
 
 
 <div class="description">
-    will check the lastSeen prop to test validity. removing old entries.
+    Will check the lastSeen prop to test validity. removing old entries.
 loads previous results from app state/local store
 </div>
 
@@ -417,7 +841,7 @@ loads previous results from app state/local store
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1743">line 1743</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1375">line 1375</a>
     </li></ul></dd>
     
 
@@ -527,7 +951,7 @@ loads previous results from app state/local store
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1656">line 1656</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1163">line 1163</a>
     </li></ul></dd>
     
 
@@ -564,6 +988,180 @@ loads previous results from app state/local store
     <dd>
         
 <span class="param-type">Promise.&lt;<a href="global.html#Network">Network</a>></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getApCapabilities"><span class="type-signature">(static) </span>getApCapabilities<span class="signature">(ap)</span><span class="type-signature"> &rarr; {Array.&lt;String>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Get wpa,ess and wps status for access point
+
+The access point object's capabilities property :-
+     "...Describes the authentication, key management, and encryption 
+         schemes supported by the access point..." - WiFiWizard2 docs
+Access point capabilites are returned as a formatted string
+ 3 examples: ["WPA2-PSK-CCMP", "ESS", "WPS"]
+             ["WPA2-EAP-CCMP+TKIP", "WPA-EAP-CCMP+TKIP", "ESS"]
+             ["ESS"]
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>ap</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">AccessPoint object as returned by WiFiWizard2 plugin</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1307">line 1307</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://github.com/tripflex/wifiwizard2#readme">WiFiWizard2 docs</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    "WPA","ESS","WPS" or empty strings if not set
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;String></span>
 
 
     </dd>
@@ -636,7 +1234,7 @@ reference table of values gained from metageek.com
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type"><a href="global.html#Network">Network</a></span>
 
 
             
@@ -646,7 +1244,7 @@ reference table of values gained from metageek.com
 
             
 
-            <td class="description last">AccessPoint object</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -687,7 +1285,7 @@ reference table of values gained from metageek.com
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1714">line 1714</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1346">line 1346</a>
     </li></ul></dd>
     
 
@@ -752,6 +1350,288 @@ reference table of values gained from metageek.com
     
 
     
+    <h4 class="name" id=".getCurrentSSID"><span class="type-signature">(static) </span>getCurrentSSID<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    get the currently connected SSID. save to app.state and update view
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1435">line 1435</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".getStatus"><span class="type-signature">(static) </span>getStatus<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    collect current wifi state to show in settings
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1442">line 1442</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".isWifiEnabled"><span class="type-signature">(static) </span>isWifiEnabled<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Boolean>}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    returns promise with bool as parameter in sucessful then()
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1408">line 1408</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Promise.&lt;Boolean></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id=".setAccessPointTTL"><span class="type-signature">(static) </span>setAccessPointTTL<span class="signature">(accessPoints)</span><span class="type-signature"></span></h4>
     
 
@@ -762,6 +1642,8 @@ reference table of values gained from metageek.com
 <div class="description">
     checks that SSID is unique before adding to the list
 adds lastSeen property to aid in caching
+adds strength property
+adds rating property
 </div>
 
 
@@ -854,7 +1736,144 @@ adds lastSeen property to aid in caching
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1667">line 1667</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1210">line 1210</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".setIsConnected"><span class="type-signature">(static) </span>setIsConnected<span class="signature">(isOnline)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    toggle connectivity state and show result
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>isOnline</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">true = is online ok</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1416">line 1416</a>
     </li></ul></dd>
     
 
@@ -900,13 +1919,13 @@ adds lastSeen property to aid in caching
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="Controller.html">Controller</a></li><li><a href="Devices.html">Devices</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Utilities.html">Utilities</a></li><li><a href="View.html">View</a></li><li><a href="Wifi.html">Wifi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_loggerLevels">_loggerLevels</a></li><li><a href="global.html#controller">controller</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#utils">utils</a></li><li><a href="global.html#view">view</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="controller.html">controller</a></li><li><a href="Devices.html">Devices</a></li><li><a href="logger.html">logger</a></li><li><a href="view.html">view</a></li><li><a href="Wifi.html">Wifi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_SETTINGS">_SETTINGS</a></li><li><a href="global.html#removeAccessPoint">removeAccessPoint</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Tue Jul 28 2020 15:32:47 GMT+0100 (Amser Haf Prydain)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Tue Aug 25 2020 00:12:01 GMT+0100 (Amser Haf Prydain)
 </footer>
 
 <script> prettyPrint(); </script>

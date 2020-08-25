@@ -16,13 +16,13 @@
     "fetchSpec": "latest"
   },
   "_requiredBy": [
-    "#USER",
-    "/"
+    "#DEV:/",
+    "#USER"
   ],
   "_resolved": "https://registry.npmjs.org/cordova-plugin-zeroconf/-/cordova-plugin-zeroconf-1.4.2.tgz",
   "_shasum": "0d8a7de4b2d7932149a57fb9cd37dee8366ff450",
   "_spec": "cordova-plugin-zeroconf",
-  "_where": "/home/emrys/test/pair",
+  "_where": "/home/emrys/test/wifi-scan",
   "author": {
     "name": "Sylvain Bréjeon",
     "url": "https://github.com/becvert"

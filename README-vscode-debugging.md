@@ -67,12 +67,12 @@ This will simulate a wifi scan to see all available accesspoints (one device and
 ```
 `    -> click [SUCCESS]`
 
-### WifiWizar2d.add([SSID]])
+### WifiWizard2.add([SSID]])
 `    -> click [SUCCESS]`
 
-### WifiWizar2.connect([SSID]])
+### WifiWizard2.connect([SSID]])
 `    -> click [SUCCESS]`
-> WifiWizar2.connect() is the same as calling formatWifiConfig() then add() then enable()
+> WifiWizard2.connect() is the same as calling formatWifiConfig() then add() then enable()
 
 ### CordovaHttpPlugin.post([host], [username], [password])
 This returns error not data if there is an error

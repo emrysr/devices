@@ -21,7 +21,7 @@
 
             <!-- only shown on first load -->
             <aside id="welcome" class="jumbotron fade">
-                <a href="#close" data-close>×</a>
+                <a href="#close-welcome" data-close>×</a>
                 <h2>Welcome</h2>
                 <p>You can use this app to find and<br> add new EmonCMS devices.</p>
                 <h2 style="display: flex; justify-content: space-around;margin:.5em;">
@@ -31,7 +31,13 @@
                     <svg class="icon"><use xlink:href="#icon-hpmon"></use></svg>
                     <svg class="icon"><use xlink:href="#icon-edmi-am"></use></svg>
                     <svg class="icon"><use xlink:href="#icon-emonth"></use></svg>
-                  </h2>
+                </h2>
+                <nav>
+                    <a href="#add-device" class="button">
+                        <svg class="icon icon-plus"><use xlink:href="#icon-plus"></use></svg> 
+                        Add New Device
+                    </a>
+                </nav>
             </aside>
 
             <!--
@@ -49,18 +55,21 @@
                         <p>You can select an existing device or add a new device</p>
                     </header>
                     <article>
-                        <nav class="list"><p>Searching...</p></nav>
+                        <nav class="list"><p>Searching for devices...</p></nav>
                         <p class="loader-text text-muted blink"></p>
                     </article>
                     <footer>
                         <nav>
-                            <a href="#add-device" class="button"><span class="icon-outline">➕</span> Add New Device</a>
+                            <a href="#add-device" class="button">
+                                <svg class="icon icon-plus"><use xlink:href="#icon-plus"></use></svg> 
+                                Add New Device
+                            </a>
                             <a href="#devices" class="button d-none cancel" data-reload style="background-color: var(--color-dark);">Scan</a>
                         </nav>
                     </footer>
                 </section>
 
-                <section id="device-actions" class="d-none">
+                <!--section id="device-actions" class="d-none">
                     <header id="device-actions_title">
                         <h2></h2>
                         <p>Actions</p>
@@ -74,11 +83,13 @@
                             <a href="#devices" class="button cancel">Back</a>
                         </nav>
                     </footer>
-                </section>
+                </section-->
 
                 <section id="add-device" class="d-none">
                     <header>
-                        <h2><span class="icon-outline">➕</span> Add a new Device</h2>
+                        <h2><svg class="icon icon-plus"><use xlink:href="#icon-plus"></use></svg> 
+                            Add a new Device
+                        </h2>
                         <p>Select from one of the the devices currently in range:</p>
                     </header>
                     <article>
@@ -95,17 +106,18 @@
 
                 <section id="add-device-failed" class="d-none">
                     <header>
-                        <h2><span class="icon-outline">➕</span> Add a new Device</h2>
-                        <p>Select the device you'd like to add:</p>
+                        <h2><svg class="icon icon-plus"><use xlink:href="#icon-plus"></use></svg> 
+                            Add a new Device
+                        </h2>
+                        <p>Select from one of the the devices currently in range:</p>
                     </header>
                     <article>
-                        <p></p>
-
                         <blockquote id="password-confirm" style="margin-top:2em">
-                            <h2 class="tip-title">
-                              ❗ No new device found!
+                            <h2>
+                                <svg class="icon icon-notification"><use xlink:href="#icon-notification"></use></svg> 
+                                No new device found!
                             </h2>
-                            <p style="padding-bottom: 0">This app will connect to the new device via WiFi.</p>
+                            <p style="padding-bottom: 0">This app connects to the new device via WiFi.</p>
                             <p class="text-light" style="font-style: italic;">
                                If you're having troubles connecting, try being within a few meters of the new device before running a re-scan.
                             </p>
@@ -161,8 +173,9 @@
                             </div>
 
                             <blockquote id="password-confirm" style="margin-top:2em">
-                                <p class="tip-title">
-                                    ℹ Please ensure the password is correct
+                                <p>
+                                    <svg class="icon icon-info-circle"><use xlink:href="#icon-info-circle"></use></svg> 
+                                    Please ensure the password is correct
                                 </p>
                                 <p class="text-light" style="font-style: italic;">
                                     If the password is incorrectly set the device cannot be re-configured over the network.<br>
@@ -229,8 +242,7 @@
                             </details> -->
                         </form>
                     </article>
-                    <article>
-                    </article>
+
                     <footer>
                         <nav>
                             <a href="#accesspoint_password" class="button cancel">Back</a>
@@ -260,25 +272,28 @@
                 <section id="saved" class="d-none">
                     <div class="jumbotron">
                         <h2>Success ✔</h2>
-                        <p>Please wait a few seconds for your device to reboot</p>
+                        <p>Please wait a few seconds for your device to reboot and connect to your wifi</p>
                     </div>
                     <article>
-                        <p style="text-align: center;" class="text-light">Once the device is connected to your wifi, you'll be able to access it from the devices list.</p>
+                        <p id="authenticated" class="d-none" style="text-align: center;">Your device paired successfully with your online account. You're now able to control it via your online dashboard.</p>
+                        <p style="text-align: center;" class="text-light">Once your new device restarts and connected to your wifi, it will be shown in the Devices List.</p>
                     </article>
                     <footer>
                         <nav>
-                            <a href="#devices" class="button dark">Back to Devices List</a>
+                            <a href="#devices" class="button dark">Devices List</a>
+                            <a id="dashboard_link" href="https://dashboard.energylocal.org.uk" class="button secondary d-none" data-weblink>Online Dashboard...</a></p>
                         </nav>
                     </footer>
                 </section>
 
                 <section id="not_saved" class="d-none">
                     <div class="jumbotron">
-                        <h2>Failed</h2>
-                        <p>An error occured while saving the details on the device</p>
+                        <h2>Failed to add</h2>
+                        <p>Failed to add a new device. An error occured while saving the settings to the device</p>
                     </div>
                     <article>
-                        <p style="text-align: center;" class="text-light">Please try again to add this as a new device.</p>
+                        <p style="text-align: center;">Please ensure that the device is in range and try again.</p>
+                        <p style="text-align: center;"><a href="#saving" class="button" style="font-size: larger">Try again</a></p>
                         <p style="text-align: center;" class="text-light">If the problem persists please email me on <a href="mailto:emrys@openenergymonitor.org">emrys@openenergymonitor.org</a>.</p>
                     </article>
                     <footer>
@@ -293,9 +308,16 @@
                         <h2>WIFI Disconnnected</h2>
                         <p>Please re-connect to your WIFI before using this app</p>
                     </header>
+                    <article>
+                        <p>Your device might be in flight mode or out of range of your access point?</p>
+                        <nav class="links">
+                            <a href="#disconnected" class="button">Re-connect</a>
+                        </nav>
+                    </article>
                     <footer>
                         <nav>
                             <a href="#" class="button cancel">Back</a>
+                            <a href="#disconnected" class="button">Refresh</a>
                         </nav>
                     </footer>
                 </section>
@@ -316,23 +338,23 @@
                         <dt>Connected</dt><dd><span id="connected" class="badge"></span></dd>
                         <dt>WiFi</dt><dd><span id="currentSSID" class="badge"></span></dd>
                         <dt>IP Address</dt><dd><span id="currentIP" class="badge"></span></dd>
-                        <dt>Version</dt><dd><span class="badge">v0.1.0</span></dd>
+                        <dt>Version</dt><dd><span class="badge">v0.2.0</span></dd>
                     </dl>
-                    <dl>
+                    <!-- <dl>
                         <dt><label for="language">Language</label></dt>
                         <dd>
                             <select id="language" name="language">
                                 <option>English</option>
-                                <!-- <option>Español</option>
-                                <option>Cymraeg</option> -->
+                                <option>Cymraeg</option>
                             </select>
                         </dd>
-                    </dl>
-                    <!-- to try differnet UI colours -->
+                    </dl> -->
+                    
                     <dl>
+                        <!-- to try differnet UI colours (not required)-->
+                    <!--
                         <dt><label for="colour">Theme</label></dt>
                         <dd>
-                            <!-- <input type="color" id="colour" name="colour"> -->
                             <select id="colour" name="colour">
                                 <option value="#1d8dbc">Blue</option>
                                 <Option value="#757449">Green</option>
@@ -342,14 +364,23 @@
                                 <Option value="#ea510e">Orange</option>
                             </select>
                         </dd>
+                    -->
                         <dt>Welcome</dt>
                         <dd><a href="#welcome" class="button">Show</a></dd>
                         <dt>Cache</dt>
                         <dd><a href="#clear-cache" class="button">Clear</a></dd>
+                        <dt>Dashboard</dt>
+                        <dd><a href="https://dashboard.energylocal.org.uk" class="button" data-weblink>Login</a></dd>
+                        <dt>App</dt>
+                        <dd><a href="#reload" class="button">Reload</a></dd>
                         
                     </dl>
+
                     <blockquote>
-                        <p>This app is part of the OpenEnergyMonitor project: <a data-weblink href="https://openenergymonitor.org">http://openenergymonitor.org</a><br></p>
+                        <p>This app is part of the OpenEnergyMonitor project: <a data-weblink href="https://openenergymonitor.org">https://openenergymonitor.org</a><br></p>
+                    </blockquote>
+
+                    <blockquote>
                         <small>The source code is available on <a data-weblink href="https://github.com/emoncms/pair">GitHub</a></small><br>
                         <small>icons by <a data-weblink href="https://openenergymonitor.org">http://openenergymonitor.org</a>, <a data-weblink href="https://icomoon.io/">icomoon.io</a> and Smart meter by Justin Blake from the <a data-weblink href="https://thenounproject.com/">Noun Project</a></small>
                     </blockquote>
@@ -408,6 +439,18 @@
                     <symbol id="icon-device" viewBox="0 0 32 32">
                         <!-- <title>device</title> -->
                         <path d="M 19.767269,0.61701658 C 13.753166,4.8024629 7.7390624,8.9879095 1.7249593,13.173356 7.2846543,15.678801 12.844349,18.184247 18.404044,20.689693 22.685281,15.72343 26.966357,10.75703 31.247704,5.790861 27.420892,4.0662463 23.594081,2.3416314 19.767269,0.61701658 Z M 31.492134,6.7349893 c -4.193371,4.8637857 -8.38674,9.7275717 -12.58011,14.5913577 -0.02859,3.251308 -0.05719,6.502618 -0.08578,9.753926 4.2025,-5.942789 8.405001,-11.885579 12.607499,-17.828369 0.01947,-2.172305 0.03893,-4.3446096 0.05839,-6.5169147 z M 1.3105143,13.863236 c -0.029972,3.434933 -0.059945,6.869865 -0.089917,10.304798 5.599486,2.523188 11.1989717,5.046374 16.7984577,7.569562 0.03066,-3.434588 0.06133,-6.869175 0.09198,-10.303762 C 12.510929,18.910158 6.9107221,16.386696 1.3105143,13.863236 Z m 1.3167155,5.917985 c 1.7435688,0.784947 3.5029289,1.537379 5.2255209,2.367298 -0.039134,1.095804 0.035325,2.244147 -0.07183,3.309875 C 6.0519529,24.643799 4.3221155,23.831035 2.5936909,23.015296 2.5448786,21.95738 2.5438787,20.808848 2.6272298,19.781221 Z"></path>
+                    </symbol>
+                    <symbol id="icon-plus" viewBox="0 0 32 32">
+                        <!-- <title>plus</title> -->
+                        <path d="m 13.04656,27.628471 v -9.82627 H 3.2936205 V 13.6957 H 13.04656 V 3.9427608 h 4.155387 V 13.6957 h 9.75294 v 4.106501 h -9.75294 v 9.82627 z"></path>
+                    </symbol>
+                    <symbol id="icon-notification" viewBox="0 0 32 32">
+                        <!-- <title>notification</title> -->
+                        <path d="M16 3c-3.472 0-6.737 1.352-9.192 3.808s-3.808 5.72-3.808 9.192c0 3.472 1.352 6.737 3.808 9.192s5.72 3.808 9.192 3.808c3.472 0 6.737-1.352 9.192-3.808s3.808-5.72 3.808-9.192c0-3.472-1.352-6.737-3.808-9.192s-5.72-3.808-9.192-3.808zM16 0v0c8.837 0 16 7.163 16 16s-7.163 16-16 16c-8.837 0-16-7.163-16-16s7.163-16 16-16zM14 22h4v4h-4zM14 6h4v12h-4z"></path>
+                    </symbol>
+                    <symbol id="icon-info-circle" viewBox="0 0 27 32">
+                        <!-- <title>info</title> -->
+                        <path d="M18.286 24.571v-2.857c0-0.321-0.25-0.571-0.571-0.571h-1.714v-9.143c0-0.321-0.25-0.571-0.571-0.571h-5.714c-0.321 0-0.571 0.25-0.571 0.571v2.857c0 0.321 0.25 0.571 0.571 0.571h1.714v5.714h-1.714c-0.321 0-0.571 0.25-0.571 0.571v2.857c0 0.321 0.25 0.571 0.571 0.571h8c0.321 0 0.571-0.25 0.571-0.571zM16 8.571v-2.857c0-0.321-0.25-0.571-0.571-0.571h-3.429c-0.321 0-0.571 0.25-0.571 0.571v2.857c0 0.321 0.25 0.571 0.571 0.571h3.429c0.321 0 0.571-0.25 0.571-0.571zM27.429 16c0 7.571-6.143 13.714-13.714 13.714s-13.714-6.143-13.714-13.714 6.143-13.714 13.714-13.714 13.714 6.143 13.714 13.714z"></path>
                     </symbol>
                 </svg>
             </defs>

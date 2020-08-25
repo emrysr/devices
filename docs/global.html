@@ -98,13 +98,13 @@
 
         
             
-<h4 class="name" id="_loggerLevels"><span class="type-signature"></span>_loggerLevels<span class="type-signature"></span></h4>
+<h4 class="name" id="_SETTINGS"><span class="type-signature"></span>_SETTINGS<span class="type-signature"></span></h4>
 
 
 
 
 <div class="description">
-    Available log levels - higher level numbers display all lower level messages
+    Override app settings by changing these values...
 </div>
 
 
@@ -142,7 +142,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1040">line 1040</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line84">line 84</a>
     </li></ul></dd>
     
 
@@ -157,17 +157,28 @@
 
 
 
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         
             
-<h4 class="name" id="controller"><span class="type-signature"></span>controller<span class="type-signature"></span></h4>
 
+    
+
+    
+    <h4 class="name" id="removeAccessPoint"><span class="type-signature"></span>removeAccessPoint<span class="signature">(ssid)</span><span class="type-signature"></span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    Similar (ish) to MVC Controller
-instance of Controller
+    Once new device added, the saved accesspoint can be removed.
 </div>
 
 
@@ -176,217 +187,55 @@ instance of Controller
 
 
 
-<dl class="details">
 
-    
 
-    
-
+    <h5>Parameters:</h5>
     
 
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line25">line 25</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="Controller.html">Controller</a></li>
+<table class="params">
+    <thead>
+    <tr>
         
-            <li>app.onDeviceReady()</li>
-        </ul>
-    </dd>
-    
+        <th>Name</th>
+        
 
-    
-</dl>
-
-
-
-
-
+        <th>Type</th>
 
         
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
-<h4 class="name" id="logger"><span class="type-signature"></span>logger<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Displays debugging output at different levels ** instance of Logger
-filled once initialized by app.initialize()->app.onDeviceReady()
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line33">line 33</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="Logger.html">Logger</a></li>
-        
-            <li>_loggerLevels for list of output levels</li>
-        
-            <li>app.onDeviceReady()</li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
+                <td class="name"><code>ssid</code></td>
             
-<h4 class="name" id="utils"><span class="type-signature"></span>utils<span class="type-signature"></span></h4>
 
-
-
-
-<div class="description">
-    generic functions not app or controller specific
-Filled once initialized by app.initialize()->app.onDeviceReady()
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line41">line 41</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="Utilities.html">Utilities</a></li>
-        
-            <li>app.onDeviceReady()</li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
+            <td class="type">
             
-<h4 class="name" id="view"><span class="type-signature"></span>view<span class="type-signature"></span></h4>
+                
+<span class="param-type">String</span>
 
 
+            
+            </td>
 
+            
 
-<div class="description">
-    Populated once initialized by app.initialize()->app.onDeviceReady()
-</div>
+            
 
+            <td class="description last">name of accesspoint to remove from list</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -422,7 +271,7 @@ Filled once initialized by app.initialize()->app.onDeviceReady()
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line18">line 18</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1394">line 1394</a>
     </li></ul></dd>
     
 
@@ -438,9 +287,21 @@ Filled once initialized by app.initialize()->app.onDeviceReady()
 
 
 
-        
-    
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     
@@ -600,7 +461,7 @@ Filled once initialized by app.initialize()->app.onDeviceReady()
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1971">line 1971</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line2106">line 2106</a>
     </li></ul></dd>
     
 
@@ -793,7 +654,7 @@ Filled once initialized by app.initialize()->app.onDeviceReady()
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1945">line 1945</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line2080">line 2080</a>
     </li></ul></dd>
     
 
@@ -1108,7 +969,7 @@ Filled once initialized by app.initialize()->app.onDeviceReady()
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1955">line 1955</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line2090">line 2090</a>
     </li></ul></dd>
     
 
@@ -1308,7 +1169,7 @@ Filled once initialized by app.initialize()->app.onDeviceReady()
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="index.js.html">index.js</a>, <a href="index.js.html#line1935">line 1935</a>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line2070">line 2070</a>
     </li></ul></dd>
     
 
@@ -1321,6 +1182,438 @@ Filled once initialized by app.initialize()->app.onDeviceReady()
             <li><a href="https://www.npmjs.com/package/cordova-plugin-advanced-http#success">Cordova http plugin Docs</a></li>
         </ul>
     </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Zeroconf_Scan_Result">Zeroconf_Scan_Result</h4>
+
+
+
+
+<div class="description">
+    zeroconf scan result format
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>action</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">describes the state. eg "resolved"|"added"</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>service</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="global.html#Zeroconf_Service">Zeroconf_Service</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">describes found device</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line2114">line 2114</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
+                
+<h4 class="name" id="Zeroconf_Service">Zeroconf_Service</h4>
+
+
+
+
+<div class="description">
+    zeroconf discovered service format
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>domain</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>hostname</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ipv4Addresses</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;String></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ipv6Addresses</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;String></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>port</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>txtRecord</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">String</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="index.js.html">index.js</a>, <a href="index.js.html#line2121">line 2121</a>
+    </li></ul></dd>
+    
+
+    
+
     
 
     
@@ -1345,13 +1638,13 @@ Filled once initialized by app.initialize()->app.onDeviceReady()
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="Controller.html">Controller</a></li><li><a href="Devices.html">Devices</a></li><li><a href="Logger.html">Logger</a></li><li><a href="Utilities.html">Utilities</a></li><li><a href="View.html">View</a></li><li><a href="Wifi.html">Wifi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_loggerLevels">_loggerLevels</a></li><li><a href="global.html#controller">controller</a></li><li><a href="global.html#logger">logger</a></li><li><a href="global.html#utils">utils</a></li><li><a href="global.html#view">view</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="App.html">App</a></li><li><a href="controller.html">controller</a></li><li><a href="Devices.html">Devices</a></li><li><a href="logger.html">logger</a></li><li><a href="view.html">view</a></li><li><a href="Wifi.html">Wifi</a></li></ul><h3>Global</h3><ul><li><a href="global.html#_SETTINGS">_SETTINGS</a></li><li><a href="global.html#removeAccessPoint">removeAccessPoint</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Tue Jul 28 2020 15:32:47 GMT+0100 (Amser Haf Prydain)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Tue Aug 25 2020 00:12:01 GMT+0100 (Amser Haf Prydain)
 </footer>
 
 <script> prettyPrint(); </script>

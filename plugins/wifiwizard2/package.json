@@ -14,8 +14,8 @@
     "gitCommittish": null
   },
   "_requiredBy": [
-    "#USER",
-    "/"
+    "#DEV:/",
+    "#USER"
   ],
   "_resolved": "git+https://github.com/tripflex/wifiwizard2.git#0ec67cd9ef891c0f9892984dc8e51c1f837f00e8",
   "_spec": "https://github.com/tripflex/wifiwizard2",
