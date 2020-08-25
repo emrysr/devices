@@ -65,9 +65,16 @@ You may have problems compiling, try to remove then add the cordova platform
 $ cordova platform remove android
 $ cordova platform add android
 ```
-or `$ rm -rf platforms && cordova platform add android`y
+or
+```bash
+$ rm -rf platforms && cordova platform add android
+```
 
-> please create a [github issue](https://github.com/emrysr/devices/issues) to track problems and fixes. thanks
+## Github issue tracker
+If you find any issues please add a new entry onto the github repo's issue tracker. Thanks
+
+
+> :link: We use __[Github issues](https://github.com/emrysr/devices/issues)__ to track issues and create fixes.
 
 ---------------------------------------------
 

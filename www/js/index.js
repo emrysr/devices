@@ -48,7 +48,7 @@ var logger = (function() {
         */
         /** @alias logger.fatal */
         fatal: function(message) {
-            if(_level>1) console.error('FATAL!',message);
+            if(_level>=1) console.error('FATAL!',message);
         },
         /** @alias logger.error */
         error: function(message) {
@@ -79,10 +79,19 @@ var logger = (function() {
 })();
 
 /**
- * Override app settings by changing these values...
+ * Override app settings by changing the following options...
+ * 
+ * <br> - `device_ssid_pattern`- change this regexp pattern when a new device tyoe become available 
+ * <br> - `log_level`: 4 - to see more output during debug (1,2,4,8,16,32)
+ * <br> - `defaultView`: '#devices' - when a different 'first page' is required
+ * <br> - `deviceScanTimeout`: 3000 - ms before zeroconfScan aborts a scan.
+ * <br> - `deviceScanRepeat`: 2000 - ms before zeroconfScan begins new scan.
+ * <br> - `deviceApScanRepeat`: 5000 - ms before new device scan (wifiWizard2) is repeated
+ * <br> - `deviceApScanMaxRetries`: 8 - number of tries before aborting new device scan (wifiWizard2),
+ * <br> - `apScanIntervalDelay`: 4000 - ms before new accesspoint (wifiWizard2) scan is started
  */
 _SETTINGS = {
-    log_level: logger.levels.INFO,
+    log_level: logger.levels.WARN,
     defaultView: "#devices",
     deviceScanTimeout: 3000,
     deviceScanRepeat: 2000,
@@ -1399,6 +1408,7 @@ var Wifi = (function() {
         /**
          * Once new device added, the saved accesspoint can be removed.
          * @param {String} ssid name of accesspoint to remove from list
+         * @alias Wifi.removeAccessPoint
          */
         removeAccessPoint: function(ssid) {
             const accessPoints = app.getState("accessPoints");
