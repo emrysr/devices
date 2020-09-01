@@ -17,12 +17,13 @@
     "@red-mobile/cordova-plugin-networkinterface": "^2.0.2",
     "browser-sync": "^2.26.12",
     "cheerio": "^1.0.0-rc.3",
-    "cordova-android": "^9.0.0",
     "cordova-browser": "^6.0.0",
     "csp-parse": "0.0.2",
-    "es6-promise-plugin": "^4.1.0"
+    "es6-promise-plugin": "^4.1.0",
+    "q": "^1.5.1"
   },
   "devDependencies": {
+    "cordova-android": "^9.0.0",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-advanced-http": "^3.0.1",
     "cordova-plugin-file": "^6.0.2",
@@ -41,8 +42,6 @@
       "cordova-plugin-advanced-http": {},
       "cordova-plugin-inappbrowser": {}
     },
-    "platforms": [
-      "android"
-    ]
+    "platforms": []
   }
 }

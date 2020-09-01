@@ -46,9 +46,9 @@ Screenshots of the web based [Energy Local Dashboard](https://dashboard.energylo
 > If Cordova not installed... `$ sudo npm install -g cordova`
 
 ```bash
-$ git clone [this repo]
-$ cd [this repo directory]
+$ git clone https://github.com/emrysr/devices.git && cd devices
 $ cordova platform add android
+$ npm install
 $ cordova run android --device
 ```
 

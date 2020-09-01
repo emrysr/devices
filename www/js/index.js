@@ -1619,7 +1619,7 @@ var Devices = (function() {
                      */
                     if(error === "SCAN_FAILED") {
                         var delay = 3 * app.getSettings("deviceApScanRepeat");
-                        logger.debug(`SCAN_FAILED! Waiting ${delay}ms before retry...`);
+                        logger.error(`SCAN_FAILED! Waiting ${delay}ms before retry...`);
                         // increment counter
                         app.setState("deviceApScanRetries", app.getState("deviceApScanRetries") + 1);
                         // test if counter not reached max repeat

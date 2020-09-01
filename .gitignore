@@ -91,3 +91,5 @@ lint/tmp/
 platforms/
 plugins/
 node_modules/
+.gradle/
+.idea/

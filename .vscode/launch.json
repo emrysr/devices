@@ -15,68 +15,6 @@
             "cwd": "${workspaceFolder}",
             "ionicLiveReload": false
         },
-        // {
-        //     "name": "Run iOS on device",
-        //     "type": "cordova",
-        //     "request": "launch",
-        //     "platform": "ios",
-        //     "target": "device",
-        //     "port": 9220,
-        //     "sourceMaps": true,
-        //     "cwd": "${workspaceFolder}",
-        //     "ionicLiveReload": false
-        // },
-        // {
-        //     "name": "Attach to running android on device",
-        //     "type": "cordova",
-        //     "request": "attach",
-        //     "platform": "android",
-        //     "target": "device",
-        //     "port": 9222,
-        //     "sourceMaps": true,
-        //     "cwd": "${workspaceFolder}"
-        // },
-        // {
-        //     "name": "Attach to running iOS on device",
-        //     "type": "cordova",
-        //     "request": "attach",
-        //     "platform": "ios",
-        //     "target": "device",
-        //     "port": 9220,
-        //     "sourceMaps": true,
-        //     "cwd": "${workspaceFolder}"
-        // },
-        // {
-        //     "name": "Run Android on emulator",
-        //     "type": "cordova",
-        //     "request": "launch",
-        //     "platform": "android",
-        //     "target": "emulator",
-        //     "port": 9222,
-        //     "sourceMaps": true,
-        //     "cwd": "${workspaceFolder}",
-        //     "ionicLiveReload": false
-        // },
-        // {
-        //     "name": "Attach to running android on emulator",
-        //     "type": "cordova",
-        //     "request": "attach",
-        //     "platform": "android",
-        //     "target": "emulator",
-        //     "port": 9222,
-        //     "sourceMaps": true,
-        //     "cwd": "${workspaceFolder}"
-        // },
-        // {
-        //     "name": "Serve to the browser (ionic serve)",
-        //     "type": "cordova",
-        //     "request": "launch",
-        //     "platform": "serve",
-        //     "cwd": "${workspaceFolder}",
-        //     "devServerAddress": "localhost",
-        //     "sourceMaps": true,
-        //     "ionicLiveReload": true
-        // },
         {
             "name": "Simulate Android in browser",
             "type": "cordova",
@@ -87,28 +25,6 @@
             "livereload": true,
             "sourceMaps": true,
             "cwd": "${workspaceFolder}"
-        },
-        // {
-        //     "name": "Simulate iOS in browser",
-        //     "type": "cordova",
-        //     "request": "launch",
-        //     "platform": "ios",
-        //     "target": "chromium",
-        //     "simulatePort": 8000,
-        //     "livereload": true,
-        //     "sourceMaps": true,
-        //     "cwd": "${workspaceFolder}"
-        // },
-        // {
-        //     "name": "Run Browser",
-        //     "type": "cordova",
-        //     "request": "launch",
-        //     "platform": "browser",
-        //     "target": "chromium",
-        //     "simulatePort": 8000,
-        //     "livereload": true,
-        //     "sourceMaps": true,
-        //     "cwd": "${workspaceFolder}"
-        // }
-    ]
+        }
+   ]
 }

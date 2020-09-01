@@ -1,1 +1,1 @@
-{"plugins":["cordova-plugin-whitelist","cordova-plugin-zeroconf","cordova-plugin-add-swift-support","wifiwizard2","es6-promise-plugin","cordova-plugin-file","cordova-plugin-browsersync","cordova-plugin-networkinterface","cordova-plugin-advanced-http","cordova-plugin-inappbrowser"]}
+{"plugins":["cordova-plugin-whitelist","cordova-plugin-browsersync","cordova-plugin-networkinterface","wifiwizard2","es6-promise-plugin","cordova-plugin-zeroconf","cordova-plugin-add-swift-support","cordova-plugin-advanced-http","cordova-plugin-file","cordova-plugin-inappbrowser"]}
