@@ -16,13 +16,13 @@
     "fetchSpec": "4.1.0"
   },
   "_requiredBy": [
-    "#USER",
-    "/"
+    "#DEV:/",
+    "#USER"
   ],
   "_resolved": "https://registry.npmjs.org/es6-promise-plugin/-/es6-promise-plugin-4.1.0.tgz",
   "_shasum": "f06107399844509eaaba8ed07077d288a5ca697e",
   "_spec": "es6-promise-plugin@4.1.0",
-  "_where": "/home/emrys/test/pair",
+  "_where": "/home/emrys/Documents/devices",
   "author": "",
   "bugs": {
     "url": "https://github.com/vstirbu/PromisesPlugin/issues"
