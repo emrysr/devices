@@ -96,7 +96,7 @@ If you find any issues please add a new entry onto the github repo's issue track
 ### code documentation (jsdoc)
 The code comments have been used to document the code using jsdoc in the `/docs` directory
 
-Changes to comments in `www/js/index.js` or the `README.md` can automatically be shown in the documentation by using jsdoc
+Changes to comments in `www/js/index.js` or the `README.md` can be automatically shown in the documentation by using jsdoc
 ```bash
 $ jsdoc www/js/index.js README.md -d docs
 ```
@@ -111,6 +111,16 @@ You can debug running Cordova apps using the vscode debug tools. The web browser
 I've created a [list of example responses](https://github.com/emrysr/devices/blob/master/README-vscode-debugging.md) for you to use during debugging.
 
 > there more details on vscode setup in the [wifi-scan](https://github.com/emrysr/wifiscan#using-vscode) repo I based this work on 
+
+## adb (Android Debug Bridge)
+you can interrogate the connected device's activity log (and filter by specific tags) using the `logcat` and `grep` commands
+```
+adb logcat -v tag | grep -i -e 'connectivityservice\|wifiwizard2\|WifiService\|ssid\|wifi'
+```
+> this works for any android device connected (in developer mode with usb debugging turned on)
+
+## Android Studio
+Android studio has a feature where you can connect to and read from a device's log. Was not done as part of my development work.
 
 ---------------------------------------------
 
@@ -143,9 +153,7 @@ $ avahi-publish-service "Dev Laptop" _http._tcp. 80 v=10.2.0 platform=emoncms pa
 ---------------------------------------------
 
 # todo
-- `onOffline()` and `onOnline()` are not called correctly. need to improve the "I'm offline" event handling to store the `currentSSID` and `currentIP` correctly
 - translation - i18n label placeholders and translations
-- better structure the code into backend and frontend methods. 
 
 
 [1]: <https://docs.microsoft.com/en-us/visualstudio/cross-platform/tools-for-cordova/run-your-app/simulate-in-browser?view=toolsforcordova-2017>
