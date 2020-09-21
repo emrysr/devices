@@ -1,7 +1,7 @@
 /**
  * @file Mobile app to display and add emoncms devices | Part of the OpenEnergyMonitor project
  * @author Emrys Roberts <emrys@openenergymonitor.org.uk>
- * @description Mobile app that scans the local network for device. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.
+ * @description Mobile app that scans the local network for compatible devices. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.
  * @summary Emon Devices App
  * @see {@link http://openenergymonitor.org|OpenEnergyMonitor project}
  * @version 0.2.0
