@@ -10,8 +10,6 @@
  *
  */
 
-// const WifiWizard2 = require("../../plugins/wifiwizard2/www/WifiWizard2");
-
 /**
  * Display messages during debug based on logging levels
  * 
@@ -96,7 +94,7 @@ _SETTINGS = {
     deviceScanTimeout: 3000,
     deviceScanRepeat: 2000,
     deviceApScanRepeat: 5000,
-    deviceApScanMaxRetries: 8,
+    deviceApScanMaxRetries: 4,
     device_ssid_pattern: /^(smartplug|wifirelay|hpmon|openevse|meterreader).*$/g,
     apScanIntervalDelay: 4000
 }
@@ -172,7 +170,11 @@ var view = (function() {
          * @memberof view
          */
         resetOriginalText: function(elem) {
-            elem.innerText = elem.dataset.originalText;
+            if(elem.dataset.originalText) {
+                elem.innerText = elem.dataset.originalText;
+            } else {
+                logger.trace(`no original text to replace for ${elem.tagName}`);
+            }
         },
         /**
          * Store element's original innerText as dataset property.
@@ -202,6 +204,7 @@ var view = (function() {
          * @memberof view
          */
         find: function(selector) {
+            // return empty element if not found
             return document.querySelector(selector) || document.createElement('div');
         },
         /**
@@ -491,13 +494,12 @@ var view = (function() {
 
                     view.find("#dashboard_username").value = _app.getState("dashboard_username") || "";
                     view.find("#dashboard_password").value = _app.getState("dashboard_password") || "";
-
+                    document.addEventListener("input", controller.handleInput, false);
+                    controller.alterMqttSaveButton(view.find("#dashboard_username"));
                     controller.stopLoader();
                 break;
 
                 case "#saving":
-                    // todo: add ability to skip adding dashboard login
-
                     var dashboard_username = view.find("#mqtt #dashboard_username").value;
                     var dashboard_password = view.find("#mqtt #dashboard_password").value;
                     // todo: santize and store username and password inputs!!
@@ -526,86 +528,102 @@ var view = (function() {
                     controller.startLoader();
                     var savingButton = view.find('#indicator');
 
+                    // abort auth after 6s
+                    var auth_abort = setTimeout(function() {
+                        controller.show_saved_failed(savingButton, "Auth timed out!").then(()=>{
+                            view.changeView("#not_saved", savingButton);
+                        });
+                    }, 6000);
+
                     _app.authenticate(dashboard_username, dashboard_password).then(response=> {
                         _app.setState("dashboard_username", "");
                         _app.setState("dashboard_password", "");
                         logger.info(`/auth api response: ${response.data}`);
-                        // if http request successful, check response
-                        if(response.status >= 200 && response.status <= 300) {
-                            // auth successfull
-                            var data = false;
-                            try{
-                                data = JSON.parse(response.data);
-                                if(data.success === true) {
-                                    // auth successful
-                                    view.setText(link, "Authenticated ✔");
-                                } else {
-                                    // auth not successful
-                                    view.setText(link, "OK");
-                                }
-                                // allowing unsuccessful auth to continue to save settings to device
-                                _app.setState('authenticated', data.success===true);
-                                _app.setState("dashboard_username", dashboard_username);
-                                _app.setState("dashboard_password", dashboard_password);
-                                _app.setState("dashboard_userid", data.userid);
-                                _app.setState("dashboard_apikey_write", data.apikey_write);
-                            } catch(error) {
-                                throw `Error parsing authentication response! ${error}`;
-                            }
-                        } else {
-                            // auth http request not successful
-                            controller.saved_failed(savingButton, "Authentication service not responding");
-                        }
-
                         // todo: save dashboard_username and dashboard_password to localstorage
-                        // AUTH SUCCESS - reset loading indicator text & button.
-                        // move to #saving view
-                        link.classList.remove('blink');
-                        setTimeout(()=> {
-                            self.hideAll();
-                            view.resetOriginalText(link);
-                            self.show(new_view);
-                            link.removeAttribute('aria-disabled');
-                        }, 1800);
+                        clearTimeout(auth_abort);
 
-                        // connect to device hotspot and save values on device via api
-                        Devices.saveToDevice()
-                            .then(save_response=> {
-                                var abort = setTimeout(function(){
-                                    controller.show_saved_failed(savingButton, "Timed out!");
-                                }, 6000);
-                                
-                                _app.log('savetodevice success',save_response);
-                                // reset ajax loader animation
-                                view.setText(savingButton, save_response);
-                                // reset to original after wait
-                                controller.show_saved_success(savingButton).then(()=>{
-                                    Wifi.removeAccessPoint(_app.getState("selectedHotspot"));
-                                    _app.setState("selectedHotspot", false);
-                                    view.changeView("#saved");
-                                    clearTimeout(abort);
-                                });
+                        // if http request successful, check response
+                        if(_app.authenticatedSuccessfully(dashboard_username, dashboard_password, response)) {
+                            // auth successful
+                            view.setText(link, "Authenticated ✔");
+                            setTimeout(()=> {
+                                self.hideAll();
+                                view.resetOriginalText(link);
+                                self.show(new_view);
+                            }, 1800);
 
-                            })
-                            .catch(error=> {
-                                logger.error(`saveToDevice() failed!: ${error}`);
-                                controller.show_saved_failed(savingButton, error).then(()=>{
+                            // abort save after 10s
+                            var devices_abort = setTimeout(function() {
+                                controller.show_saved_failed(savingButton, "Device did not respond!").then(()=>{
                                     view.changeView("#not_saved", savingButton);
                                 });
-                            })
-                            .finally(()=> {
-                                savingButton.classList.remove("blink");
-                                savingButton.removeAttribute('aria-disabled');
-                            })
+                            }, 10000);
+
+                            // connect to device hotspot and save values on device via api
+                            Devices.saveToDevice()
+                                .then(save_response=> {
+                                    controller.onSaveToDevice(savingButton, save_response, devices_abort);
+                                })
+                                .catch(error=> {
+                                    // not timed out. other error
+                                    clearTimeout(devices_abort);
+                                    logger.error(`saveToDevice() failed!: ${error}`);
+                                    controller.show_saved_failed(savingButton, error).then(()=>{
+                                        view.changeView("#not_saved", savingButton);
+                                    });
+                                })
+                                .finally(()=> {
+                                    savingButton.classList.remove("blink");
+                                    savingButton.removeAttribute('aria-disabled');
+                                })
+                        } else {
+                            // auth failed
+                            view.setText(savingButton, "Failed");
+                            logger.error("Authentication failure!")
+                            savingButton.classList.remove("blink");
+                            savingButton.removeAttribute("aria-disabled");
+                            setTimeout(function(){
+                                view.resetOriginalText(savingButton);
+                            }, 1800);
+                        }
                     })
                     .catch(auth_response=>{
-                        logger.warn(`Web authentication failed! Continuing to save wifi settings: (${auth_response.status}) "${auth_response.error}"`);
-                        view.hideAll();
-                        view.show("#saving");
-                        // save network details to device
-                        Devices.saveToDevice().catch(status=> {
-                            logger.error(`Error saving settings to device! status: ${status}`);
-                        })
+                        clearTimeout(auth_abort);
+                        logger.error(auth_response);
+                        logger.warn(`Web authentication failed! : (${auth_response.status}) "${JSON.stringify(auth_response.data)}"`);
+                        var data = auth_response.data;
+                        try{
+                            if (typeof data === "string") {
+                                data = JSON.parse(auth_response.data);
+                            }
+                        } catch(error) {
+                            logger.trace(JSON.stringify(auth_response));
+                            logger.error(`Error parsing auth response!: ${error.message}`);
+                        }
+                        if(auth_response.status === 401) {
+                            // continue without mqtt authentication...
+                            view.hideAll();
+                            view.show("#saving");
+                            Devices.saveToDevice({mqtt: false}).then(save_response=>{
+                                controller.onSaveToDevice(savingButton, save_response, auth_abort);
+                            })
+                            .catch(status=> {
+                                logger.error(`Error saving settings to device! status: ${status}`);
+                            });
+                        } else if (data && data.success === false) {
+                            // http success - promise reject caught...
+                            view.setText(link, "Failed!");
+                            view.setText(view.find('[for="dashboard_username"] small'), data.message);
+                        }
+                        // remove error message on button and reset text
+                        setTimeout(function(){
+                            view.resetOriginalText(link);
+                        }, 1800);
+                    })
+                    .finally(()=>{
+                        controller.stopLoader();
+                        link.classList.remove('blink');
+                        link.removeAttribute('aria-disabled');
                     });
                 break;
                 /**
@@ -641,9 +659,21 @@ var view = (function() {
                         view.hideAll();
                         controller.firstPage();
                     }).catch(error=>{
+                        view.hideAll();
                         // still not connected. show error page
                         view.show("#disconnected");
                         logger.fatal(`Network problem!: ${error}`);
+                    });
+                break;
+                case "#reconnect":
+                    logger.trace("Attempting to re-enable wifi...");
+                    Wifi.enable().then(()=>{
+                        logger.info("Wifi Enabled!");
+                        controller.firstPage();
+                    }).catch(error=>{
+                        logger.fatal(`Error enabling Wifi!: ${error}`);
+                        // still not connected. show error page
+                        view.show("#disconnected");
                     });
                 break;
                 default:
@@ -652,8 +682,11 @@ var view = (function() {
             }
             logger.debug(`view: Changed to ${new_view}`);
         },
-        tick_item: function(selector){
-            view.find(selector).classList.add("done");
+        tick_item: function(selector) {
+            // add delay to allow user to read items
+            setTimeout(function(){
+                view.find(selector).classList.add("done");
+            }, 900)
         },
         cross_item: function(selector) {
             view.find(selector).classList.add("fail");
@@ -706,7 +739,7 @@ var controller = (function() {
          * @alias Controller.firstPage
          */
         firstPage: function() {
-            // view.hideAll();
+            view.hideAll();
             // default view
             if(!app.load("welcome_seen")) {
                 // slide in the welcome text
@@ -790,7 +823,7 @@ var controller = (function() {
                 logger.warn("-".repeat(20));
                 logger.warn("    App Reloaded");
                 logger.warn("-".repeat(20));
-                window.location.reload(true);
+                window.location.reload();
             
             } else {
                 // show the new view
@@ -802,6 +835,19 @@ var controller = (function() {
             var url = view.getClosest(event.target, "a").href;
             logger.info(`External link clicked: ${url}`);
             if(url) window.open(url, '_system', 'location=yes');
+        },
+        /**
+         * handle the onInput event of input fields.
+         * checks id of input field before triggering action
+         * @param {KeyboardEvent} - event triggers on key up of all elements.
+         */
+        handleInput: function(event) {
+            const target = event.target;
+            switch(target.id) {
+                case "dashboard_username":
+                    controller.alterMqttSaveButton(target);
+            }
+            
         },
         /**
          * called to stop wating timeouts once view is quit
@@ -828,6 +874,9 @@ var controller = (function() {
                 case "#saving":
                     var link = view.find("#saving #indicator");
                     view.resetOriginalText(link);
+                    break;
+                case "#mqtt":
+                    document.removeEventListener("input", controller.handleInput, false);
                     break;
             }
         },
@@ -860,28 +909,43 @@ var controller = (function() {
             app.setState("ajaxLoaderText", text);
             view.find("#loader-animation").title = text;
         },
+        onSaveToDevice: function(savingButton, save_response, abort) {
+            // successfully saved to device. stop timeout counter
+            clearTimeout(abort);
+            controller.show_saved_success(savingButton, save_response).then(()=>{
+                Wifi.removeAccessPoint(app.getState("selectedHotspot"));
+                app.setState("selectedHotspot", false);
+                view.changeView("#saved"); 
+            });
+        },
         /**
          * device settings successfully saved. show message and reset text after delay
+         * @alias Controller.show_saved_success
          */
-        show_saved_success: function(button) {
-            // move to next view
+        show_saved_success: function(button, response) {
+            app.log('savetodevice success', response);
+            // reset ajax loader animation
+            view.setText(button, response);
+            // progress after 5s delay
             return new Promise(resolve => {
                 setTimeout(function() {
                     view.find("#psk").value = "";
                     controller.stopLoader();
                     view.resetOriginalText(button);
                     resolve("Moving to success screen...");
-                }, 3000);
+                }, 5000);
             });
         },
         /**
          * device settings problem saving. show message and reset text after delay
+         * @alias Controller.show_saved_failed
          */
         show_saved_failed: function(button, error) {
-            view.setText(button, "Failed!");
             logger.error(`Failed to save to device: ${error}`);
+            // reset ajax loader animation
+            view.setText(button, "Failed!");
             var listItem = view.find("#connect_device");
-            // allow user to see error. then redirect to failed view
+            // progress to error message after 5s delay
             return new Promise(resolve => {
                 setTimeout(function() {
                     controller.stopLoader();
@@ -890,7 +954,23 @@ var controller = (function() {
                     resolve("Moving to fail screen...");
                 }, 5000);
             })
+        },
+        /**
+         * if input value not empty change the skip button to "Next"
+         * @param {HTMLElement} <input> that triggered the callback
+         * @alias Controller.alterMqttSaveButton
+         */
+        alterMqttSaveButton: function(formInput) {
+            const LABEL_SKIP = "Skip";
+            const button = view.find("#saving_button");
+
+            if(formInput.value.length > 0) {
+                view.resetOriginalText(button);
+            } else {
+                view.setText(button, LABEL_SKIP);
+            }
         }
+        
     }
     return _;
 })();
@@ -971,8 +1051,9 @@ var app = {
         // add mobile system events
         document.addEventListener("reload", Wifi.getStatus, false);//window.location.reload(true);
         document.addEventListener("connect", Wifi.getStatus, false);
-        document.addEventListener("offline", Wifi.getStatus, false);
-        document.addEventListener("online", Wifi.getStatus, false);
+        document.addEventListener("offline", Wifi.onOffline, false);
+        document.addEventListener("online", Wifi.onOnline, false);
+
         // load stored devices
         app.setState("devices", app.loadList("devices"));
         app.setState("accessPoints", Wifi.filterLatestAccessPoints(app.loadList("accessPoints")));
@@ -1034,7 +1115,7 @@ var app = {
             app.state[key] = value;
             return value;
         } catch (error) {
-            app.showError(error);
+            app.showError('setState:', error);
         }
     },
     
@@ -1147,21 +1228,66 @@ var app = {
      * @returns {(Promise<Success>|Promise<Fail>)}
      */
     authenticate: function(username, password) {
+        logger.trace("Auth started...");
+        // skip authenticate if username empty
+        if (username.trim().length===0) {
+            failed = {
+                status: 401,
+                error: "Empty username. Auth request not sent",
+                url: false,
+                headers: {},
+                data: {success: false, message: ""}
+            }
+            logger.trace(`Auth aborted! Empty Username`);
+            return Promise.reject(failed);
+        }
+
         return new Promise((resolve, reject) => {
             var auth_endpoint = "https://dashboard.energylocal.org.uk/user/auth.json";
             var headers = {};
             var body = {username: username, password: password};
+            logger.trace(`sending "${JSON.stringify(body)}" to: "${auth_endpoint}"`);
             cordova.plugin.http.post(auth_endpoint, body, headers,
                 /** @param {Success} response */
                 function(response) {
-                    resolve(response);
+                    var data = JSON.parse(response.data);
+                    logger.trace(`Received: ${JSON.stringify(data)}`);
+                    if(data.success) {
+                        resolve(response);
+                    } else {
+                        reject(response);
+                    }
                 },
                 /** @param {Fail} response */
-                function(response) { 
+                function(response) {
+                    logger.trace(`Failed: ${JSON.stringify(response)}`);
                     reject(response);
                 }
             );
         })
+    },
+    authenticatedSuccessfully: function(username, password, response) {
+        if(response.status >= 200 && response.status <= 300) {
+            // auth successful
+            var data = false;
+            try{
+                data = JSON.parse(response.data);
+                app.setState('authenticated', data.success===true);
+                app.setState("dashboard_username", username);
+                app.setState("dashboard_password", password);
+                app.setState("dashboard_userid", data.userid);
+                app.setState("dashboard_apikey_write", data.apikey_write);
+                logger.trace("Successfully read auth response json");
+                return true;
+            } catch(error) {
+                logger.error(`Error parsing authentication response! ${error}`);
+                return false;
+            }
+        } else {
+            // auth http request response code not within acceptible range
+            logger.fatal("Authentication service not responding correctly");
+            return false;
+        }
     }
 };
 
@@ -1175,7 +1301,7 @@ var Wifi = (function() {
     return {
         /**
          * request a scan and return a promise
-         * @alias Wifi.getAccessPoints
+         * @memberof Wifi
          * @returns {Promise<Network>} 
          */
         scan: function() {
@@ -1187,7 +1313,7 @@ var Wifi = (function() {
          * @param {String} password password for connection - not needed for open network
          * @param {String} algorithm "WPA"|"WEP" - not needed for open network
          * @returns {Promise<String>} WifiWIzard2.connect() promise
-         * @alias Wifi.connect
+         * @memberof Wifi
          * @see {@link https://github.com/tripflex/wifiwizard2#readme|WifiWizard2 Docs}
          */
         connect: function(ssid, password, algorithm) {
@@ -1205,10 +1331,18 @@ var Wifi = (function() {
             return WifiWizard2.connect(ssid, bindAll, password, algorithm);
         },
         /**
+         * Enables the wifi on the device
+         * @returns {Promise} 
+         * @memberof Wifi
+         */
+        enable: function() {
+            return WifiWizard2.enableWifi();
+        },
+        /**
          * disconnect from current SSID. if no ssid passed it will attempt to re-connect on previous connection
          * 
          * @returns {Promise}
-         * @alias Wifi.disconnect
+         * @memberof Wifi
          * @see [WifiWizard2 Docs]{@link https://github.com/tripflex/WifiWizard2#disconnect-vs-disable}
          * "...ssid is OPTIONAL .. if not passed, will disconnect current WiFi (almost all Android versions now will just automatically reconnect to last wifi after disconnecting)..."
          */
@@ -1220,7 +1354,7 @@ var Wifi = (function() {
          * adds lastSeen property to aid in caching
          * adds strength property
          * adds rating property
-         * @alias Wifi.setAccessPointTTL
+         * @memberof Wifi
          * @param {Object} accessPoints list of found accesspoints from WiFiWizard2.scan();
          * @see: "Destructing Assingment" https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
          * 
@@ -1247,7 +1381,7 @@ var Wifi = (function() {
         },
         /**
          * returns true if given access point in not already known by app
-         * @alias Wifi.apIsUnique
+         * @memberof Wifi
          * @returns {Boolean}
          * @param {Network} accessPoint Access Point Object
          */
@@ -1263,7 +1397,7 @@ var Wifi = (function() {
          * Display a list of Access Points to select from.
          * 
          * Only used in #accesspoints view
-         * @alias Wifi.displayAccessPoints
+         * @memberof Wifi
          */
         displayAccessPoints: function() {
             /** @type {Array.Network} */
@@ -1299,7 +1433,7 @@ var Wifi = (function() {
                 
                 logger.trace(`Displaying AP: ${title} (${ap.rating}/5)`)
                 item.innerHTML = `<a href="#accesspoint_password" data-ssid="${ap.SSID}" data-wpa="${wpa}" class="${css}">
-                                    <span>${title}<small class="badge text-muted">${wps}</small></span>
+                                    <span>${title}<!--small class="badge text-muted">${wps}</small--></span>
                                     <progress max="5" value="${ap.rating}" title="${ap.strength}">
                                         ${ap.level}dBm
                                     </progress>
@@ -1320,7 +1454,7 @@ var Wifi = (function() {
          * @param {Object} ap AccessPoint object as returned by WiFiWizard2 plugin
          * @returns {Array.<String>} "WPA","ESS","WPS" or empty strings if not set
          * @see {@link https://github.com/tripflex/wifiwizard2#readme|WiFiWizard2 docs}
-         * @alias Wifi.getApCapabilities
+         * @memberof Wifi
          */
         getApCapabilities: function(ap) {
             var capabilities = {
@@ -1357,7 +1491,7 @@ var Wifi = (function() {
          * 
          * reference table of values gained from metageek.com
          * @param {Network} ap
-         * @alias Wifi.getApStrengthAndRating
+         * @memberof Wifi
          * @returns {Array.<!String, !Number>} eg ["Very Good", 4]
          * @see [metageek.com - values referenced in "Ideal Signal Strength" table - metageek.com/wifi-signal-strength-basics]{@link https://www.metageek.com/training/resources/wifi-signal-strength-basics.html}
          */
@@ -1387,7 +1521,7 @@ var Wifi = (function() {
          * loads previous results from app state/local store
          * @param {Array} accessPoints - access points to add 
          * @param {Array} cache - list already stored from previous scan
-         * @alias Wifi.filterLatestAccessPoints
+         * @memberof Wifi
          * @returns {Array} filtered list
          */
         filterLatestAccessPoints: function(accessPoints, cache) {
@@ -1408,7 +1542,7 @@ var Wifi = (function() {
         /**
          * Once new device added, the saved accesspoint can be removed.
          * @param {String} ssid name of accesspoint to remove from list
-         * @alias Wifi.removeAccessPoint
+         * @memberof Wifi
          */
         removeAccessPoint: function(ssid) {
             const accessPoints = app.getState("accessPoints");
@@ -1421,7 +1555,7 @@ var Wifi = (function() {
         },
         /**
          * returns promise with bool as parameter in sucessful then()
-         * @alias Wifi.isWifiEnabled
+         * @memberof Wifi
          * @returns {Promise<Boolean>}
          */
         isWifiEnabled: function() {
@@ -1429,21 +1563,35 @@ var Wifi = (function() {
         },
         /**
          * toggle connectivity state and show result
-         * @alias Wifi.setIsConnected
+         * @memberof Wifi
          * @param {Boolean} isOnline - true = is online ok
          */
         setIsConnected: function(isOnline) {
             app.setState("online", isOnline);
             view.setText(view.find("#connected"), isOnline ? 'YES': 'NO');
         },
+        /**
+         * @memberof Wifi
+         * @param {String} ssid display the currently connect ssid in the sidebar
+         */
         setCurrentSSID: function(ssid) {
             app.setState("currentSSID", ssid);
             view.setText(view.find("#currentSSID"), ssid);
         },
+        /**
+         * Display given ip address in the sidebar
+         * @memberof Wifi
+         * @param {String} ip address to show in the sidebar
+         */
         setCurrentIP: function(ip) {
             app.setState("currentIP", ip);
             view.setText(view.find("#currentIP"), ip);
         },
+        /**
+         * Call the system api to get the curent ip address
+         * @memberof Wifi
+         * @returns {Promise}
+         */
         getWifiIP: function() {
             return WifiWizard2.getWifiIP();
         },
@@ -1491,9 +1639,31 @@ var Wifi = (function() {
                 Promise.all([promise1, promise2, promise3]).then((values) => {
                     resolve(network);
                 }).catch(error=> {
+                    Wifi.setIsConnected(false);
+                    Wifi.setCurrentIP("");
+                    Wifi.setCurrentSSID("");
                     reject(error);
                 });
             });
+        },
+        /**
+         * Show connection issue error message to user - Offline Event Callback
+         * @see [Cordova docs]{@link https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-network-information/index.html#offline}
+         * @memberof Wifi
+         */
+        onOffline: function() {
+            logger.info("offline");
+            view.changeView("#disconnected");
+        },
+        /**
+         * Show connection issue message to user - Online Event Callback
+         * @see [Cordova docs]{@link https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-network-information/index.html#online}
+         * @memberof Wifi
+         */
+        onOnline: function() {
+            logger.info("online");
+            // changing to this view tests the current connection
+            view.changeView("#disconnected");
         }
     }
 })();
@@ -1641,7 +1811,7 @@ var Devices = (function() {
                         }
                     }
                     // view.show("#add-device [data-reload]"); // show re-scan button
-                    app.showError(`wifi scan (${app.getState("deviceApScanRetries")-1})`);
+                    app.showError(`wifi scan (${app.getState("deviceApScanRetries")-1}): ${error}`);
                 });
         },
         /**
@@ -1863,9 +2033,16 @@ var Devices = (function() {
          * restore original ssid at end
          * 
          * shows progress to user of what has been completed
+         * @param {Object} options
          * @alias Devices.saveToDevice
          */
-        saveToDevice: function() {
+        saveToDevice: function(options) {
+            var default_options = {mqtt: true}
+            if(typeof options === "object") {
+                options = Object.assign({}, default_options, options);
+            } else {
+                options = default_options;
+            }
             return new Promise((resolve, reject) => {
                 // store settings on device
                 app.setState("deviceConnectionPsk", view.find("#psk").value);
@@ -1883,15 +2060,21 @@ var Devices = (function() {
                 // connect to device hotspot and save settings before reconnecting back to current wifi
                 view.hide("#password-confirm");
                 var selectedHotspot = app.getState("selectedHotspot");
-
+                var html = "";
                 // add grayed out items "todo". once done class "done" is added
-                view.find("#saving .log").innerHTML= `
+                html += `
                     <li id="connect_device">Connecting to ${selectedHotspot}</li>
-                    <li id="save_network_setting">Saving Network Settings</li>
-                    <li id="save_mqtt_settings">Saving Remote Settings</li>
+                    <li id="save_network_setting">Saving Network Settings</li>`;
+                // show this option if mqtt auth successful
+                if(options.mqtt !== false) {
+                    html += `<li id="save_mqtt_settings">Saving Remote Settings</li>`;
+                }
+                html += `
                     <li id="restart_device">Restarting ${selectedHotspot}</li>
-                    <li id="connect_original">Re-connecting WiFi</li>
-                `;
+                    <li id="connect_original">Re-connecting WiFi</li>`;
+
+                view.find("#saving .log").innerHTML= html;
+                
                 var currentItem = "#connect_device";
                 Wifi.connect(selectedHotspot).then(res=>{
                     view.tick_item(currentItem);
@@ -1899,28 +2082,29 @@ var Devices = (function() {
                     Devices.saveNetworkSettings(res).then(res=> {
                         currentItem = "#save_network_setting";
                         logger.info(`network settings saved on device: ${res}`);
-                            view.tick_item(currentItem);
-                            Devices.saveMqttSettings().then(res=>{
+                        view.tick_item(currentItem);
+                        Devices.saveMqttSettings(options.mqtt===false).then(res=>{
+                            if(res!=="skipped") {
                                 currentItem = "#save_mqtt_settings";
                                 logger.info(`mqtt settings saved on device: ${res}`);
                                 view.tick_item(currentItem);
-                                Devices.rebootDevice().then(res=>{
-                                    currentItem = "#restart_device";
-                                    logger.info(`device reboot started: ${res}`);
+                            }
+                            Devices.rebootDevice().then(res=>{
+                                currentItem = "#restart_device";
+                                logger.info(`device reboot started: ${res}`);
+                                view.tick_item(currentItem);
+                                Wifi.disconnect().then(res=>{
+                                    currentItem = "#connect_original";
+                                    logger.info(`device disconnected: ${res}`);
                                     view.tick_item(currentItem);
-                                    Wifi.disconnect().then(res=>{
-                                        currentItem = "#connect_original";
-                                        logger.info(`device disconnected: ${res}`);
-                                        view.tick_item(currentItem);
-                                        // response shown in clicked button
-                                        resolve('Saved!');
-                                    });
+                                    // response shown in clicked button
+                                    resolve('Saved!');
                                 });
                             });
+                        });
                     }).catch(error=> {
                         view.cross_item(currentItem); // mark as failed in view
                         logger.error(`Error Saving network settings! ${error}`);
-                        reject('emrys'+error);
                     });
                 });
             });
@@ -1943,7 +2127,7 @@ var Devices = (function() {
             
             return new Promise((resolve, reject) => {
                 // max 6s for device to respond
-                setTimeout(function(){
+                var device_abort = setTimeout(function(){
                     reject({
                         error: "Request Timeout!",
                         url: url,
@@ -1964,6 +2148,7 @@ var Devices = (function() {
                     // resolve to parent function with response from plugin function get()
                     cordova.plugin.http.get(url, params, headers, 
                         response=> {
+                            clearTimeout(device_abort);
                             logger.info(`http.get success: ${url}`)
                             if(response.status >= 200 && response.status <= 299) {
                                 logger.trace(`http.get.status: ${response.status}`);
@@ -1978,7 +2163,7 @@ var Devices = (function() {
                                 }
                             }
                         },
-                        error=> { reject(error) }
+                        error=> { clearTimeout(device_abort); reject(error) }
                     );
                 }
             });
@@ -2023,12 +2208,17 @@ var Devices = (function() {
          * pass settings to EmonESP device using the api
          * default ip address for device once connected to hotspot is:
          *    192.168.4.1  (? might be different for other device types?)
+         * @param {Boolean} skip this step if true
          * @returns {Promise} 
          * @alias Devices.saveMqttSettings
          * @see [EmonESP `handleSaveMqtt()` function]{@link https://github.com/openenergymonitor/EmonESP/blob/master/src/web_server.cpp#L218}
          * 
          */
-        saveMqttSettings: function() {
+        saveMqttSettings: function(skip) {
+            if (skip === true) {
+                logger.warn("Skipping saving MQTT details on device");
+                return Promise.resolve("skipped");
+            }
             return new Promise((resolve, reject) => {
                 var mqtt_topic = view.find("#mqtt #mqtt_topic").value || "";
                 var mqtt_server = view.find("#mqtt #mqtt_server").value || "dashboard.energylocal.org.uk";
@@ -2042,7 +2232,7 @@ var Devices = (function() {
                     var mqtt_password = app.getState("dashboard_apikey_write");
                 } else {
                     logger.trace(`auth`)
-                    app.showError(`web authentication failed!`);
+                    app.showError(`user not authenticated!`);
                 }
                 // save mqtt settings to device
                 var params = {
@@ -2097,7 +2287,7 @@ app.initialize();
  */
 
 /**
- * Simple js Object storing the unsuccesfull response of a request by the cordova http plugin
+ * Simple js Object storing the unsuccesful response of a request by the cordova http plugin
  * @typedef {Object} Fail
  * @property {Number} status - positive numbers are server reponses
  * @property {String} error - error response from the server as a string or an internal error message

@@ -1,6 +1,32 @@
 {
-  "name": "cordova-plugin-wifiwizard2",
-  "version": "3.1.1",
+  "_from": "git+https://github.com/tripflex/wifiwizard2.git",
+  "_id": "cordova-plugin-wifiwizard2@3.1.1",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/cordova-plugin-wifiwizard2",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "https://github.com/tripflex/wifiwizard2",
+    "rawSpec": "https://github.com/tripflex/wifiwizard2",
+    "saveSpec": "git+https://github.com/tripflex/wifiwizard2.git",
+    "fetchSpec": "https://github.com/tripflex/wifiwizard2.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "git+https://github.com/tripflex/wifiwizard2.git#0ec67cd9ef891c0f9892984dc8e51c1f837f00e8",
+  "_spec": "https://github.com/tripflex/wifiwizard2",
+  "_where": "/home/emrys/Documents/devices",
+  "author": {
+    "name": "Myles McNamara"
+  },
+  "bugs": {
+    "url": "https://github.com/tripflex/wifiwizard2/issues"
+  },
+  "bundleDependencies": false,
   "cordova": {
     "id": "wifiwizard2",
     "platforms": [
@@ -8,15 +34,12 @@
       "ios"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tripflex/wifiwizard2.git"
-  },
-  "author": "Myles McNamara",
-  "license": "Apache 2.0",
+  "deprecated": false,
   "description": "Cordova WiFi Manager for Android and iOS",
-  "bugs": {
-    "url": "https://github.com/tripflex/wifiwizard2/issues"
+  "devDependencies": {
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "cordova": "^5.0.0"
   },
   "engines": {
     "cordovaDependencies": {
@@ -31,9 +54,11 @@
     "cordova-android",
     "cordova-ios"
   ],
-  "devDependencies": {
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "cordova": "^5.0.0"
-  }
+  "license": "Apache 2.0",
+  "name": "cordova-plugin-wifiwizard2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tripflex/wifiwizard2.git"
+  },
+  "version": "3.1.1"
 }

@@ -20,7 +20,7 @@
             "type": "cordova",
             "request": "launch",
             "platform": "android",
-            "target": "chromium",
+            "target": "chrome",
             "simulatePort": 8000,
             "livereload": true,
             "sourceMaps": true,

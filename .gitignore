@@ -93,3 +93,4 @@ plugins/
 node_modules/
 .gradle/
 .idea/
+android-studio/

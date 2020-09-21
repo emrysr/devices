@@ -58,11 +58,13 @@ $ cordova plugin add cordova-plugin-zeroconf
 $ cordova plugin add https://github.com/tripflex/wifiwizard2
 $ cordova plugin add cordova-plugin-advanced-http
 $ cordova plugin add cordova-plugin-inappbrowser
+$ cordova plugin add cordova-plugin-device
+$ cordova plugin add cordova-plugin-network-information
 ```
 or as one liner...
 
 ```bash
-$ cordova plugin add cordova-plugin-zeroconf https://github.com/tripflex/wifiwizard2 cordova-plugin-advanced-http cordova-plugin-inappbrowser
+$ cordova plugin add cordova-plugin-zeroconf https://github.com/tripflex/wifiwizard2 cordova-plugin-advanced-http cordova-plugin-inappbrowser cordova-plugin-device cordova-plugin-network-information
 ```
 
 

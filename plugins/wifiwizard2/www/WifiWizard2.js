@@ -616,17 +616,12 @@ var WifiWizard2 = {
         }
         ssid = ssid.trim();
 
-        if(device.platform === "Android" && parseInt(device.version.split('.')[0]) >= 10){
-            // Do not add "" To the SSID, as the new method for Android Q does not support it
-        } 
-        else {
-            if (ssid.charAt(0) != '"') {
-                ssid = '"' + ssid;
-            }
+        if (ssid.charAt(0) != '"') {
+            ssid = '"' + ssid;
+        }
 
-            if (ssid.charAt(ssid.length - 1) != '"') {
-                ssid = ssid + '"';
-            }
+        if (ssid.charAt(ssid.length - 1) != '"') {
+            ssid = ssid + '"';
         }
 
         return ssid;

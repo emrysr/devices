@@ -299,7 +299,7 @@ nav.menu a:hover {
 
 
 .app > header {
-    padding: 0 0 0 1rem;
+    padding: 0 0 0 .6rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -312,10 +312,22 @@ nav.menu a:hover {
     margin: 0;
     font-size: 1.6rem;
 }
+.app > header .brand a{
+    margin: 0;
+    font-size: 1.6rem;
+    display: flex;
+}
+.app > header .brand a img.logo {
+    max-width: 100%;
+    height: 1.2em;
+    margin-right: .3em;
+}
+
 .app > header a[href="#sidebar"] {
     background: transparent;
     color: var(--color-primary);
 }
+
 
 
 .app main {
@@ -354,6 +366,11 @@ nav.menu a:hover {
 
 .form-group.rows label {
     margin-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+}
+.form-group.rows label small{
+    color: var(--color-secondary);
 }
 .form-group.rows {
     display: flex;
@@ -365,6 +382,7 @@ nav.menu a:hover {
     flex-grow: 1;
     width: calc( 100% - 2rem);
 }
+
 form details {
     color: var(--color-grey)
 }
@@ -634,7 +652,7 @@ article nav.links .button {
     transform: translate(0px, .2rem);
 }
 section header {
-    padding: 1rem 2rem;
+    padding: 1rem;
     background: var(--color-primary);
     color: #E9E9E9;
 }
@@ -713,8 +731,8 @@ ul.log li.done:before {
     display: inline-block;
     width: 1rem;
     height: 1rem;
-    line-height: 1rem;
-    font-size: 1.7rem;
+    line-height: .8rem;
+    font-size: 1.1rem;
     animation: fadeIn .3s var(--ease-in-cubic) forwards;
 }
 ul.log li.failed {

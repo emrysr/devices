@@ -14,8 +14,12 @@
 
             <!-- fixed top header -->
             <header>
-                <h1 class="brand"><a href="#welcome">Emon Devices</a></h1>
-                <a href="#sidebar" class="button btn-fw">☰</a>
+                <h1 class="brand">
+                    <a href="#welcome">
+                        <img src="img/logo.png" class="logo"> Emon Devices
+                    </a>
+                </h1>
+                    <a href="#sidebar" class="button btn-fw">☰</a>
             </header>
 
 
@@ -203,11 +207,11 @@
                         <form style="border-radius: var(--border-radius)">
                             <h3 style="text-align:center;margin-bottom:.6em;color:var(--color-primary)">Dashboard Login:</h3>
                             <div class="form-group rows">
-                                <label for="dashboard_username">Username</label>
+                                <label for="dashboard_username">Username<small></small></label>
                                 <input name="dashboard_username" id="dashboard_username" type="text" autocorrect="off" autocapitalize="none">
                             </div>
                             <div class="form-group rows">
-                                <label for="dashboard_password">Password</label>
+                                <label for="dashboard_password">Password<small></small></label>
                                 <div class="input-group">
                                     <input name="dashboard_password" id="dashboard_password" type="password" autocorrect="off" autocapitalize="none">
                                     <div>
@@ -217,6 +221,12 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <p class="text-light">
+                                <svg class="icon info-circle"><use xlink:href="#icon-notification"></use></svg> 
+                                <span id="mqtt_message">Leave empty to skip</span>
+                            </p>
+
                             <!-- <details>
                                 <summary class="text-light">advanced&hellip;</summary>
                                 <div class="form-group rows">
@@ -247,9 +257,10 @@
                         <nav>
                             <a href="#accesspoint_password" class="button cancel">Back</a>
                             <!-- <a href="#saving" class="button secondary">Skip</a> -->
-                            <a href="#saving" class="button">Login</a>
+                            <a id="saving_button" href="#saving" class="button">Next</a>
                         </nav>
                     </footer>
+
                 </section>
 
                 <section id="saving" class="d-none">
@@ -280,8 +291,8 @@
                     </article>
                     <footer>
                         <nav>
-                            <a href="#devices" class="button dark">Devices List</a>
-                            <a id="dashboard_link" href="https://dashboard.energylocal.org.uk" class="button secondary d-none" data-weblink>Online Dashboard...</a></p>
+                            <a href="#devices" class="button dark">Devices</a>
+                            <a id="dashboard_link" href="https://dashboard.energylocal.org.uk" class="button primary d-none" data-weblink>Dashboard...</a></p>
                         </nav>
                     </footer>
                 </section>
@@ -289,12 +300,12 @@
                 <section id="not_saved" class="d-none">
                     <div class="jumbotron">
                         <h2>Failed to add</h2>
-                        <p>Failed to add a new device. An error occured while saving the settings to the device</p>
+                        <p>An error occured while saving the settings to the device</p>
                     </div>
                     <article>
-                        <p style="text-align: center;">Please ensure that the device is in range and try again.</p>
+                        <p style="text-align: center;">Please ensure that the device is in range</p>
                         <p style="text-align: center;"><a href="#saving" class="button" style="font-size: larger">Try again</a></p>
-                        <p style="text-align: center;" class="text-light">If the problem persists please email me on <a href="mailto:emrys@openenergymonitor.org">emrys@openenergymonitor.org</a>.</p>
+                        <p style="text-align: center;" class="text-light">If the problem persists please contact us:<br> <a href="mailto:support@openenergymonitor.zendesk.com?subject=Issue%20with%20emon%20devices%20app" data-weblink>support@openenergymonitor.zendesk.com</a>.</p>
                     </article>
                     <footer>
                         <nav>
@@ -311,13 +322,13 @@
                     <article>
                         <p>Your device might be in flight mode or out of range of your access point?</p>
                         <nav class="links">
-                            <a href="#disconnected" class="button">Re-connect</a>
+                            <a href="#reconnect" class="button">Re-connect</a>
                         </nav>
                     </article>
                     <footer>
                         <nav>
                             <a href="#" class="button cancel">Back</a>
-                            <a href="#disconnected" class="button">Refresh</a>
+                            <a href="#reconnect" class="button">Refresh</a>
                         </nav>
                     </footer>
                 </section>
