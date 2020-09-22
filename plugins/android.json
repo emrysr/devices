@@ -13,19 +13,19 @@
     "cordova-plugin-browsersync": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
-    "cordova-plugin-device": {
-      "PACKAGE_NAME": "org.openenergymonitor.devices"
-    },
     "cordova-plugin-zeroconf": {
-      "PACKAGE_NAME": "org.openenergymonitor.devices"
-    },
-    "wifiwizard2": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
     "cordova-plugin-inappbrowser": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
+    },
     "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "org.openenergymonitor.devices"
+    },
+    "wifiwizard2": {
       "PACKAGE_NAME": "org.openenergymonitor.devices"
     }
   },

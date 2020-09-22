@@ -397,28 +397,6 @@ form details .form-group:first-of-type {
     padding: 1rem 2rem;
     background-color: var(--color-light)
 }
-/* 
-.tip-title {
-    margin: 0;
-    margin-bottom: .2em;
-    font-weight: bold;
-}
-.tip-title:first-child:first-letter {
-    font-family: emoji;
-    float: left;
-    font-size: 1.8rem;
-    line-height: 1.1;
-    margin: -.1rem .5rem .2rem .2rem;
-    padding: .1rem .3rem 0 .3rem;
-    border-radius: 50%;
-    font-weight: normal;
-    background: var(--color-light);
-    color: var(--color-primary);
-}
-#auth .tip-title:first-child:first-letter {
-    margin: -0.1em 0.5em 0.2em 0.2em;
-    padding: 0.1em 0.4em 0em 0.4em;
-} */
 #sidebar {
     position: fixed;
     display: flex;

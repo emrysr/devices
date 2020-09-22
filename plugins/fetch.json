@@ -71,14 +71,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "wifiwizard2": {
-    "source": {
-      "type": "registry",
-      "id": "https://github.com/tripflex/wifiwizard2"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-plugin-device": {
     "source": {
       "type": "registry",
@@ -90,7 +82,15 @@
   "cordova-plugin-network-information": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-network-information"
+      "id": "cordova-plugin-network-information@^2.0.2"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "wifiwizard2": {
+    "source": {
+      "type": "local",
+      "path": "/home/emrys/Documents/devices/node_modules/cordova-plugin-wifiwizard2"
     },
     "is_top_level": true,
     "variables": {}
