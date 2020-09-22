@@ -4,7 +4,7 @@
  * @description Mobile app that scans the local network for compatible devices. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.
  * @summary Emon Devices App
  * @see {@link http://openenergymonitor.org|OpenEnergyMonitor project}
- * @version 0.2.0
+ * @version 0.2.1
  * @license AGPL-3.0-or-later {@link https://raw.githubusercontent.com/emrysr/devices/master/LICENSE.txt|LICENSE.txt}
  * @copyright EmonCMS 2020 {@link https://raw.githubusercontent.com/emrysr/devices/master/COPYRIGHT.txt|COPYRIGHT.txt}
  *
