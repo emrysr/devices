@@ -1,10 +1,10 @@
 ## EmonCMS Devices App - Pair your new device
 
-[EmonCMS devices](https://github.com/emrysr/devices) create wifi hotspots when not connected. Once connected to these hotspots you can configure the device to connect to your local wifi connection.
+EmonCMS devices create Wi-Fi hotspots when not connected to a local network. Once you connect to these hotspots you can configure the device to connect to your local Wi-Fi connection.
 
-This app will discover these hotspots and connect your device to your wifi without manual configuration.
+This app will discover these hotspots and connect your device to your Wi-Fi without manual configuration.
 
-You can sign into your dashboard to allow your device to be controlled online as well as locally.
+You can also sign into your dashboard to allow your device to be controlled online as well as locally.
 
 Written with [Apache Cordova](https://cordova.apache.org/) - works on multiple devices, however main development done one Android 9. Other devices and versions should be compatible with this Cordova App.
 
