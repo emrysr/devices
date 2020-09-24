@@ -25,6 +25,15 @@
             "livereload": true,
             "sourceMaps": true,
             "cwd": "${workspaceFolder}"
-        }
+        },
+        {
+            "name": "Run android on emulator",
+            "type": "cordova",
+            "request": "launch",
+            "platform": "android",
+            "target": "emulator",
+            "sourceMaps": true,
+            "cwd": "${workspaceFolder}"
+        },
    ]
 }

@@ -4,12 +4,13 @@
  * @description Mobile app that scans the local network for compatible devices. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.
  * @summary Emon Devices App
  * @see {@link http://openenergymonitor.org|OpenEnergyMonitor project}
- * @version 0.2.1
  * @license AGPL-3.0-or-later {@link https://raw.githubusercontent.com/emrysr/devices/master/LICENSE.txt|LICENSE.txt}
  * @copyright EmonCMS 2020 {@link https://raw.githubusercontent.com/emrysr/devices/master/COPYRIGHT.txt|COPYRIGHT.txt}
+ * @version 0.2.2
  *
  */
 
+const APP_VERSION = "0.2.2";
 /**
  * Display messages during debug based on logging levels
  * 
@@ -110,6 +111,8 @@ var view = (function() {
         init: function (app) {
             logger.info("---VIEW METHODS INITIALIZED");
             _app = app;
+            var v = _app.hasOwnProperty("version") ? _app.version: '';
+            view.setText(view.find("#app_version"), 'v'+v);
         },
         /**
          * add list of devices to container
@@ -988,6 +991,7 @@ var controller = (function() {
  * @alias App
  */
 var app = {
+    version: typeof APP_VERSION !== "undefined" ? APP_VERSION: '',
     scan_retries: 0,
     scan_counter: 0,
     settings: Object.assign( {}, {
@@ -1213,12 +1217,16 @@ var app = {
     showError: function(error) {
         // todo: log errors
         logger.debug('call stack:', new Error().stack);
-        logger.error(error);
+        if(app.getState('debugMode')===true) {
+            logger.error(error);
+        }
     },
     log: function(message) {
         // todo: store log
         logger.debug('call stack:', new Error().stack);
-        logger.info(message);
+        if(app.getState('debugMode')===true) {
+            logger.info(message);
+        }
     },
     /**
      * get a response from the web service used to authenticate the user
@@ -1574,7 +1582,8 @@ var Wifi = (function() {
          * @memberof Wifi
          * @param {String} ssid display the currently connect ssid in the sidebar
          */
-        setCurrentSSID: function(ssid) {
+        setCurrentSSID: function(SSID) {
+            var ssid=SSID || "None";
             app.setState("currentSSID", ssid);
             view.setText(view.find("#currentSSID"), ssid);
         },
@@ -1583,7 +1592,8 @@ var Wifi = (function() {
          * @memberof Wifi
          * @param {String} ip address to show in the sidebar
          */
-        setCurrentIP: function(ip) {
+        setCurrentIP: function(IP) {
+            var ip=IP || "0.0.0.0";
             app.setState("currentIP", ip);
             view.setText(view.find("#currentIP"), ip);
         },
@@ -1640,8 +1650,8 @@ var Wifi = (function() {
                     resolve(network);
                 }).catch(error=> {
                     Wifi.setIsConnected(false);
-                    Wifi.setCurrentIP("");
-                    Wifi.setCurrentSSID("");
+                    Wifi.setCurrentIP();
+                    Wifi.setCurrentSSID();
                     reject(error);
                 });
             });
@@ -1999,8 +2009,15 @@ var Devices = (function() {
          * @see: [zeroconf plugin docs]{@link https://www.npmjs.com/package/cordova-plugin-zeroconf}
          */
         parseDevice: function(result) {
-            var action = result.action;
-            var service = result.service;
+            var action = "";
+            var service = {};
+            if(result.hasOwnProperty('action')) {
+                action = result.action
+            }
+            if(result.hasOwnProperty('service')) {
+                service = result.service
+            }
+            
             if (action == 'resolved') {
                 var ip = service.ipv4Addresses[0],
                     name = service.name.match(/(.*) \[.*\]*/) || [],

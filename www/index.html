@@ -349,7 +349,11 @@
                         <dt>Connected</dt><dd><span id="connected" class="badge"></span></dd>
                         <dt>WiFi</dt><dd><span id="currentSSID" class="badge"></span></dd>
                         <dt>IP Address</dt><dd><span id="currentIP" class="badge"></span></dd>
-                        <dt>Version</dt><dd><span class="badge">v0.2.0</span></dd>
+                        <dt>Version</dt><dd><span id="app_version" class="badge"></span></dd>
+                    </dl>
+                    <dl>
+                        <dt>Dashboard</dt>
+                        <dd><a href="https://dashboard.energylocal.org.uk" class="button" data-weblink>Login Link</a></dd>
                     </dl>
                     <!-- <dl>
                         <dt><label for="language">Language</label></dt>
@@ -359,11 +363,6 @@
                                 <option>Cymraeg</option>
                             </select>
                         </dd>
-                    </dl> -->
-                    
-                    <dl>
-                        <!-- to try differnet UI colours (not required)-->
-                    <!--
                         <dt><label for="colour">Theme</label></dt>
                         <dd>
                             <select id="colour" name="colour">
@@ -375,25 +374,31 @@
                                 <Option value="#ea510e">Orange</option>
                             </select>
                         </dd>
-                    -->
-                        <dt>Welcome</dt>
-                        <dd><a href="#welcome" class="button">Show</a></dd>
-                        <dt>Cache</dt>
-                        <dd><a href="#clear-cache" class="button">Clear</a></dd>
-                        <dt>Dashboard</dt>
-                        <dd><a href="https://dashboard.energylocal.org.uk" class="button" data-weblink>Login</a></dd>
-                        <dt>App</dt>
-                        <dd><a href="#reload" class="button">Reload</a></dd>
-                        
-                    </dl>
-
+                    </dl> -->
+                    <details>
+                        <summary style="opacity: .5">More...</summary>
+                        <dl>
+                            <dt>Intro</dt>
+                            <dd><a href="#welcome" class="button">Re-show Intro</a></dd>
+                            <dt>Cache</dt>
+                            <dd><a href="#clear-cache" class="button">Clear Cache</a></dd>
+                            <dt>Reload</dt>
+                            <dd><a href="#reload" class="button">Refresh app</a></dd>
+                        </dl>
+                    </details>
+                    
                     <blockquote>
-                        <p>This app is part of the OpenEnergyMonitor project: <a data-weblink href="https://openenergymonitor.org">https://openenergymonitor.org</a><br></p>
+                        <p style="padding:0">This app is part of the OpenEnergyMonitor project: <a data-weblink href="https://openenergymonitor.org">https://openenergymonitor.org</a><br></p>
                     </blockquote>
 
-                    <blockquote>
-                        <small>The source code is available on <a data-weblink href="https://github.com/emoncms/pair">GitHub</a></small><br>
-                        <small>icons by <a data-weblink href="https://openenergymonitor.org">http://openenergymonitor.org</a>, <a data-weblink href="https://icomoon.io/">icomoon.io</a> and Smart meter by Justin Blake from the <a data-weblink href="https://thenounproject.com/">Noun Project</a></small>
+                    <blockquote style="margin-top: 1em;">
+                        <small>Open Source Project:</small><br> 
+                        <small>The source code is available on <a data-weblink href="https://github.com/emoncms/devices-app">GitHub</a></small><br>
+                        <small>Icons by 
+                            <a data-weblink href="https://openenergymonitor.org">OpenEnergyMonitor</a>, 
+                            <a data-weblink href="https://icomoon.io/">icomoon</a> and 
+                            <a data-weblink title="Smart meter by Justin Blake from the Noun Project" href="https://thenounproject.com/justin.blake.315/collection/internet-of-things/?i=3085663">Justin Blake</a>
+                        </small>
                     </blockquote>
                 </article>
                 <footer>
