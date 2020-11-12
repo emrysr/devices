@@ -96,7 +96,7 @@ _SETTINGS = {
     deviceScanRepeat: 2000,
     deviceApScanRepeat: 5000,
     deviceApScanMaxRetries: 4,
-    device_ssid_pattern: /^(smartplug|wifirelay|hpmon|openevse|meterreader).*$/g,
+    device_ssid_pattern: /^(smartplug|wifirelay|hpmon|openevse|meterreader|emonpi|emoncms|emonbase).*$/g,
     apScanIntervalDelay: 4000
 }
 
@@ -994,6 +994,7 @@ var app = {
     version: typeof APP_VERSION !== "undefined" ? APP_VERSION: '',
     scan_retries: 0,
     scan_counter: 0,
+    // defaults overwritten by altering _SETTINGS
     settings: Object.assign( {}, {
                 log_level: logger.levels.TRACE,
                 defaultView: "#devices",
@@ -1001,7 +1002,7 @@ var app = {
                 deviceScanRepeat: 2000,
                 deviceApScanRepeat: 5000,
                 deviceApScanMaxRetries: 8,
-                device_ssid_pattern: /^(smartplug|wifirelay|hpmon|openevse|meterreader).*$/g,
+                device_ssid_pattern: /^(smartplug|wifirelay|hpmon|openevse|meterreader|emonpi|emoncms|emonbase).*$/g,
                 apScanIntervalDelay: 4000
             }, _SETTINGS
         )
@@ -1071,6 +1072,15 @@ var app = {
             view.changeView("#disconnected");
             logger.fatal(`Network problem!: ${error}`);
         });
+
+        // todo: update wifiwizard2 plugin once android 10 supported
+        //       - android 10 doesn't allow apps to create & drop wifi connections as
+        // hide links unsupported by android 10
+        if (device.platform === 'Android' && Number(device.version) > 9) {
+            document.querySelectorAll('.add-new-link').forEach(elem => {
+                elem.classList.add('d-none');
+            });
+        }
     },
     
     /**
