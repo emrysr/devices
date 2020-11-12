@@ -43,13 +43,23 @@
 
 
     <section>
-        <article><h2>EmonCMS Devices App - Pair your new device</h2>
-<p><a href="https://github.com/emrysr/devices">EmonCMS devices</a> create wifi hotspots when not connected. Once connected to these hotspots you can configure the device to connect to your local wifi connection.</p>
-<p>This app will discover these hotspots and connect your device to your wifi without manual configuration.</p>
-<p>You can sign into your dashboard to allow your device to be controlled online as well as locally.</p>
-<p>Written with <a href="https://cordova.apache.org/">Apache Cordova</a> - works on multiple devices, however main development done one Android 9. Other devices and versions should be compatible with this Cordova App.</p>
+        <article><h2>EmonCMS Devices App</h2>
 <blockquote>
-<p>:information_source: If any issues found running the app on iPhones please create a <a href="https://github.com/emrysr/devices/issues">github issue</a> :bug: to track problems and fixes</p>
+<p>READMEs: <a href="./README-debug.md">Debug</a> | <a href="./README-deploy.md">Deploy</a> | <a href="./README-jsdoc.md">Documentation</a> | <a href="./README-vscode-debugging.md">vscode</a></p>
+</blockquote>
+<p>This is a &quot;Companion App&quot; for <a href="https://github.com/emoncms/emoncms">EmonCMS</a> to discover compatible devices on your network.</p>
+<p>New devices can also be &quot;paired&quot; using this app.</p>
+<blockquote>
+<p>Currently Android 10+ users cannot &quot;Add new devices&quot; via the app - <a href="https://github.com/emoncms/cordova-emon-devices/issues/1">issue created</a></p>
+</blockquote>
+<p>New devices automatically create Wi-Fi hotspots when not connected to a local network.
+Once you connect to these hotspots you can configure the device to connect to your local Wi-Fi connection.</p>
+<p>This app will discover these hotspots and connect your device to your Wi-Fi without manual configuration.</p>
+<p>You can also sign into your dashboard to allow your device to be controlled online as well as locally.</p>
+<p>Written with <a href="https://cordova.apache.org">Apache Cordova</a> - works on multiple devices, however main development done one Android 9.
+Other devices and versions should be compatible with this Cordova App.</p>
+<blockquote>
+<p>:information_source: please post <a href="https://github.com/emoncms/cordova-emon-devices/issues">github issue</a> to track problems and fixes</p>
 </blockquote>
 <hr>
 <h2>Screenshots</h2>
@@ -76,15 +86,16 @@
     </tr>
 </table>
 <hr>
-<h2>Quick run</h2>
-<blockquote>
-<p>If Cordova not installed... <code>$ sudo npm install -g cordova</code></p>
-</blockquote>
-<pre class="prettyprint source lang-bash"><code>$ git clone https://github.com/emrysr/devices.git && cd devices
+<h1>Run on Android device</h1>
+<pre class="prettyprint source lang-bash"><code>$ git clone https://github.com/emoncms/cordova-emon-devices.git && cd devices
 $ cordova platform add android
 $ npm install
 $ cordova run android --device
 </code></pre>
+<blockquote>
+<p>Above commands assumes <a href="https://www.npmjs.com/get-npm">npm</a> and <a href="https://cordova.apache.org">cordova</a> are installed on the local machine and
+that the android device is in <a href="https://developer.android.com/studio/debug/dev-options">developer mode</a> with USB debugging enabled.</p>
+</blockquote>
 <h2>Required Cordova plugins</h2>
 <pre class="prettyprint source lang-bash"><code>$ cordova plugin add cordova-plugin-zeroconf
 $ cordova plugin add https://github.com/tripflex/wifiwizard2
@@ -96,8 +107,11 @@ $ cordova plugin add cordova-plugin-network-information
 <p>or as one liner...</p>
 <pre class="prettyprint source lang-bash"><code>$ cordova plugin add cordova-plugin-zeroconf https://github.com/tripflex/wifiwizard2 cordova-plugin-advanced-http cordova-plugin-inappbrowser cordova-plugin-device cordova-plugin-network-information
 </code></pre>
+<blockquote>
+<p>__⚠ issue with android 10 security policies not allowing apps to create/drop wifi connections. <a href="https://github.com/emoncms/cordova-emon-devices/issues/1">issue created</a></p>
+</blockquote>
 <hr>
-<h2>Compling Problems</h2>
+<h2>Issues compling</h2>
 <p>You may have problems compiling, try to remove then add the cordova platform to fix this:</p>
 <pre class="prettyprint source lang-bash"><code>$ cordova platform remove android
 $ cordova platform add android
@@ -108,59 +122,28 @@ $ cordova platform add android
 <blockquote>
 <p><strong>⚠ NOTE</strong> : The Cordova plugins will also need to be re-installed once you remove a platform</p>
 </blockquote>
-<h2>Github issue tracker</h2>
-<p>If you find any issues please add a new entry onto the github repo's issue tracker. Thanks</p>
-<blockquote>
-<p>:link: We use <strong><a href="https://github.com/emrysr/devices/issues">Github issues</a></strong> to track issues and create fixes.</p>
-</blockquote>
+<h1>Issues</h1>
+<p>If you find any issues please add them to the <a href="https://github.com/emoncms/cordova-emon-devices/issues">issue tracker</a></p>
 <hr>
-<h2>Documentation</h2>
-<h3>code documentation (jsdoc)</h3>
-<p>The code comments have been used to document the code using jsdoc in the <code>/docs</code> directory</p>
-<p>Changes to comments in <code>www/js/index.js</code> or the <code>README.md</code> can be automatically shown in the documentation by using jsdoc</p>
-<pre class="prettyprint source lang-bash"><code>$ jsdoc www/js/index.js README.md -d docs
-</code></pre>
-<p>The hosted github pages version is here: http://code.emrys.cymru/devices/</p>
+<h1>Code Documentation</h1>
+<p>using jsdoc to produce documentation
+moved the instructions to <a href="./README-jsdoc.md">README-docs.md</a></p>
+<hr>
+<h1>Deploy App`</h1>
+<p>You must increase the <code>android-versionCode</code> every time you want to push a new release to the Play Store.</p>
+<p>moved the instructions to <a href="./README-deploy.md">README-deploy.md</a></p>
 <hr>
 <h1>Debugging</h1>
-<h2>VS Code specific debugging</h2>
-<p>You can debug running Cordova apps using the vscode debug tools. The web browser based simulator expects responses when the app uses any plugin api.
-I've created a <a href="https://github.com/emrysr/devices/blob/master/README-vscode-debugging.md">list of example responses</a> for you to use during debugging.</p>
-<blockquote>
-<p>there more details on vscode setup in the <a href="https://github.com/emrysr/wifiscan#using-vscode">wifi-scan</a> repo I based this work on</p>
-</blockquote>
-<h2>adb (Android Debug Bridge)</h2>
-<p>you can interrogate the connected device's activity log (and filter by specific tags) using the <code>logcat</code> and <code>grep</code> commands</p>
-<pre class="prettyprint source"><code>adb logcat -v tag | grep -i -e 'connectivityservice\|wifiwizard2\|WifiService\|ssid\|wifi'
-</code></pre>
-<blockquote>
-<p>this works for any android device connected (in developer mode with usb debugging turned on)</p>
-</blockquote>
-<h2>Android Studio</h2>
-<p>Android studio has a feature where you can connect to and read from a device's log. Was not done as part of my development work.</p>
+<p>Using vscode code debugging tools</p>
+<p>moved the instructions to <a href="./README-debug.md">README-testing.md</a></p>
 <hr>
-<h2>Scripts to scan local network devices</h2>
-<h3>Avahi Utils</h3>
-<blockquote>
-<p>&quot;...service discovery on a local network via the mDNS/DNS-SD protocol suite...&quot;</p>
-</blockquote>
-<p>This is used to find devices on the network</p>
-<h4>Install it with:</h4>
-<pre class="prettyprint source lang-bash"><code>$ sudo apt install avahi-utils
-</code></pre>
-<h4>Scan your network:</h4>
-<pre class="prettyprint source lang-bash"><code>$ avahi-browse -a
-</code></pre>
-<h4>Simulate a device on the network.</h4>
-<p>the paramerters are:
-<code>name</code>, <code>type</code>, <code>port</code>, <code>TXT</code></p>
-<pre class="prettyprint source lang-bash"><code>$ avahi-publish-service &quot;Dev Laptop&quot; _http._tcp. 80 v=10.2.0 platform=emoncms path=/emoncms
-</code></pre>
-<hr>
-<h1>todo</h1>
+<h1>Todo</h1>
+<p>Please use the <a href="https://github.com/emoncms/cordova-emon-devices/issues">repo issues tracker</a> to suggest new features</p>
 <ul>
-<li>translation - i18n label placeholders and translations</li>
-</ul></article>
+<li>Translation - i18n label placeholders and translations</li>
+<li>Upgrade the WiFiWizard2 plugin once android 10 is supported.</li>
+</ul>
+<hr></article>
     </section>
 
 
@@ -184,7 +167,7 @@ I've created a <a href="https://github.com/emrysr/devices/blob/master/README-vsc
     <div class="container-overview">
     
         
-            <div class="description">Mobile app that scans the local network for device. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.</div>
+            <div class="description">Mobile app that scans the local network for compatible devices. Connects to new device hotspot and pairs it. Adds the device to the user's online dashboard.</div>
         
 
         
@@ -194,7 +177,7 @@ I've created a <a href="https://github.com/emrysr/devices/blob/master/README-vsc
 
     
     <dt class="tag-version">Version:</dt>
-    <dd class="tag-version"><ul class="dummy"><li>0.2.0</li></ul></dd>
+    <dd class="tag-version"><ul class="dummy"><li>0.2.3</li></ul></dd>
     
 
     
@@ -293,7 +276,7 @@ I've created a <a href="https://github.com/emrysr/devices/blob/master/README-vsc
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Mon Sep 21 2020 23:12:10 GMT+0100 (Amser Haf Prydain)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Thu Nov 12 2020 15:16:00 GMT+0000 (Amser Safonol Greenwich)
 </footer>
 
 <script> prettyPrint(); </script>

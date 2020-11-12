@@ -1,11 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget 
-    version="0.2.2"
-    android-versionCode="5" 
+    version="0.2.3"
+    android-versionCode="6" 
     id="org.openenergymonitor.devices"
     
     xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" 
     xmlns:android="http://schemas.android.com/apk/res/android">
+    
     <name>Emon Devices</name>
     <description>
         Pair new EmonCMS devices to your local wifi without manually configuring each device
@@ -31,11 +32,11 @@
     <allow-intent href="tel:*" />
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" launch-external="yes"/>
+    <allow-intent href="geo:*" />
 
     <access origin="mailto:*" launch-external="true" />
     <access origin="*" />
 
-    <allow-intent href="geo:*" />
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="AndroidPersistentFileLocation" value="Compatibility" />

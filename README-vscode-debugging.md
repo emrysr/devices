@@ -1,17 +1,22 @@
-# vscode debugging
-This can be done an with Android Device or Simulated Android in a Browser.
+# Debugging
+> This page is part of the [EmonCMS Devices README][parent-page]
+
+
+Debugging [EmonCMS devices][repo] can be done with Android Device or Simulated Android in a Browser.
+
+
 
 ## Cordova Tools vscode Extentions
 Just search for and install the `Cordova Tools` extention from within vscode to enable the required features.
-> :link: [Visual Studio Marketplace msjsdiag.cordova-tools][extention docs]
+> Visual Studio Marketplace [msjsdiag.cordova-tools][extention docs] extention
 
 Once the extention is installed you can press `F5` to start debugging
 
 ## Debugging Cordova apps with vscode
-> :link: how to [live-preview your code in a browser][microsoft docs]
-<cite>microsoft.com</cite>
+> How to [live-preview your code][microsoft docs] in a browser
+<cite>- microsoft.com</cite>
 
-If you're vscode to live-preview your code in a browser there are a few "external" api calls that require responses.
+If you use vscode to `live-preview` your code in a browser there are a few api calls that require responses to be supplied.
 
 [<img src="vscode-debug-screenshot.png" width="700" alt="Dashboard"/>](vscode-debug-screenshot.png?raw=true)
 <br><em>Screenshot of simulator (left), simulator asking for response (center) and vscode in debug screen (left)</em>
@@ -125,9 +130,9 @@ This just requires a success or fail response to test. Value is not important.
 
 --------------------
 
-> Please update this file if you have additional examples that might be usefull to others.
-
-
+> Please edit this file if you have additional examples that might be useful to others.
 
 [extention docs]: <https://marketplace.visualstudio.com/items?itemName=msjsdiag.cordova-tools>
 [microsoft docs]: <https://docs.microsoft.com/en-us/visualstudio/cross-platform/tools-for-cordova/run-your-app/simulate-in-browser?view=toolsforcordova-2017>
+[parent-page]: ./README.md
+[repo]: https://github.com/emoncms/cordova-emon-devices

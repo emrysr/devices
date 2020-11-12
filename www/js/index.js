@@ -6,11 +6,11 @@
  * @see {@link http://openenergymonitor.org|OpenEnergyMonitor project}
  * @license AGPL-3.0-or-later {@link https://raw.githubusercontent.com/emrysr/devices/master/LICENSE.txt|LICENSE.txt}
  * @copyright EmonCMS 2020 {@link https://raw.githubusercontent.com/emrysr/devices/master/COPYRIGHT.txt|COPYRIGHT.txt}
- * @version 0.2.2
+ * @version 0.2.3
  *
  */
 
-const APP_VERSION = "0.2.2";
+const APP_VERSION = "0.2.3";
 /**
  * Display messages during debug based on logging levels
  * 
