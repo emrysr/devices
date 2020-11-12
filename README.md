@@ -112,7 +112,7 @@ moved the instructions to [README-docs.md][child-jsdoc-docs]
 
 ---
 
-# Deploy App`
+# Deploy App
 
 You must increase the `android-versionCode` every time you want to push a new release to the Play Store.
 
@@ -137,15 +137,14 @@ Please use the [repo issues tracker][issues] to suggest new features
 
 ---
 
-[dashboard]: https://dashboard.energylocal.org.uk
-[emoncms]: https://github.com/emoncms/emoncms
-[android-docs]: https://developer.android.com/studio/debug/dev-options
-[npm-docs]: https://www.npmjs.com/get-npm
-[cordova-docs]: https://cordova.apache.org
+[dashboard]: <https://dashboard.energylocal.org.uk>
+[emoncms]: <https://github.com/emoncms/emoncms>
+[android-docs]: <https://developer.android.com/studio/debug/dev-options>
+[npm-docs]: <https://www.npmjs.com/get-npm>
+[cordova-docs]: <https://cordova.apache.org>
 
-[issues]: https://github.com/emoncms/cordova-emon-devices/issues
-
-[child-debug-docs]: ./README-debug.md
-[child-deploy-docs]: ./README-deploy.md
-[child-jsdoc-docs]: ./README-jsdoc.md
-[child-vscode-docs]: ./README-vscode-debugging.md
+[issues]: <https://github.com/emoncms/cordova-emon-devices/issues>
+[child-debug-docs]: <./README-debug.md>
+[child-deploy-docs]: <./README-deploy.md>
+[child-jsdoc-docs]: <./README-jsdoc.md>
+[child-vscode-docs]: <./README-vscode-debugging.md>
