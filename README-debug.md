@@ -65,7 +65,7 @@ $ avahi-publish-service "Dev Laptop" _http._tcp. 80 v=10.2.0 platform=emoncms pa
 
 
 ---
-[parent-page]: <./README.md>
+[parent-page]: <https://github.com/emoncms/cordova-emon-devices/README.md>
 
 [vscode]: https://code.visualstudio.com/
 [wifiscan-docs]: https://github.com/emrysr/wifiscan#using-vscode

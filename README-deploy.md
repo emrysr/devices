@@ -103,5 +103,5 @@ once google approve the app it should show up in the app store.
 
 [play-console]: <https://play.google.com/console/developers>
 [sign-apk-tips]: <https://stackoverflow.com/questions/10930331/how-to-sign-an-already-compiled-apk>
-[parent-page]: <./README.md>
-[jsdoc]: <./README-jsdoc.md>
+[parent-page]: <https://github.com/emoncms/cordova-emon-devices/README.md>
+[jsdoc]: <https://github.com/emoncms/cordova-emon-devices/README-jsdoc.md>

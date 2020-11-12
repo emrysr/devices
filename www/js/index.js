@@ -7,7 +7,6 @@
  * @license AGPL-3.0-or-later {@link https://raw.githubusercontent.com/emrysr/devices/master/LICENSE.txt|LICENSE.txt}
  * @copyright EmonCMS 2020 {@link https://raw.githubusercontent.com/emrysr/devices/master/COPYRIGHT.txt|COPYRIGHT.txt}
  * @version 0.2.3
- *
  */
 
 const APP_VERSION = "0.2.3";
@@ -1312,7 +1311,7 @@ var app = {
 
 
 /**
- * Collection of methods and properties for managing Wifi access points
+ * Collection of methods and properties for managing connections Wifi access points
  * @class
  */
 var Wifi = (function() {

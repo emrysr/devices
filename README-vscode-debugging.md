@@ -134,5 +134,5 @@ This just requires a success or fail response to test. Value is not important.
 
 [extention docs]: <https://marketplace.visualstudio.com/items?itemName=msjsdiag.cordova-tools>
 [microsoft docs]: <https://docs.microsoft.com/en-us/visualstudio/cross-platform/tools-for-cordova/run-your-app/simulate-in-browser?view=toolsforcordova-2017>
-[parent-page]: ./README.md
+[parent-page]: https://github.com/emoncms/cordova-emon-devices/README.md
 [repo]: https://github.com/emoncms/cordova-emon-devices

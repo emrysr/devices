@@ -5,7 +5,8 @@
   "description": "Find and add EmonCMS compatible devices on your network",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "keywords": [
     "ecosystem:cordova",
@@ -22,6 +23,7 @@
     "q": "^1.5.1"
   },
   "devDependencies": {
+    "clean-jsdoc-theme": "^2.2.13",
     "cordova-android": "^9.0.0",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-advanced-http": "^3.0.1",
@@ -32,7 +34,8 @@
     "cordova-plugin-whitelist": "^1.3.4",
     "cordova-plugin-wifiwizard2": "file:../../test/WifiWizard2",
     "cordova-plugin-zeroconf": "^1.4.2",
-    "es6-promise-plugin": "^4.1.0"
+    "es6-promise-plugin": "^4.1.0",
+    "jaguarjs-jsdoc": "^1.1.0"
   },
   "cordova": {
     "plugins": {

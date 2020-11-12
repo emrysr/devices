@@ -1,6 +1,7 @@
 ## EmonCMS Devices App
+> [Debug][child-debug-docs] | [Deploy][child-deploy-docs] | [Documentation][child-jsdoc-docs] | [vscode][child-vscode-docs]
 
-> READMEs: [Debug][child-debug-docs] | [Deploy][child-deploy-docs] | [Documentation][child-jsdoc-docs] | [vscode][child-vscode-docs]
+![feature image](screenshots/feature-graphic.png)
 
 This is a "Companion App" for [EmonCMS][emoncms] to discover compatible devices on your network. 
 
@@ -144,7 +145,7 @@ Please use the [repo issues tracker][issues] to suggest new features
 [cordova-docs]: <https://cordova.apache.org>
 
 [issues]: <https://github.com/emoncms/cordova-emon-devices/issues>
-[child-debug-docs]: <./README-debug.md>
-[child-deploy-docs]: <./README-deploy.md>
-[child-jsdoc-docs]: <./README-jsdoc.md>
-[child-vscode-docs]: <./README-vscode-debugging.md>
+[child-debug-docs]: <https://github.com/emoncms/cordova-emon-devices/blob/main/README-debug.md>
+[child-deploy-docs]: <https://github.com/emoncms/cordova-emon-devices/blob/main/README-deploy.md>
+[child-jsdoc-docs]: <https://github.com/emoncms/cordova-emon-devices/blob/main/README-jsdoc.md>
+[child-vscode-docs]: <https://github.com/emoncms/cordova-emon-devices/blob/main/README-vscode-debugging.md>

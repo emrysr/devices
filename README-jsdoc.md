@@ -8,20 +8,23 @@ To update the documentation add or alter the comments in `www/js/index.js`  and 
 Once [jsdoc][jsdoc-docs] runs a set to flat html files are created in the [./docs][docs] 
 directory showing all the functions, object, arguents and comments available
 
-Update the docs like this:
+Update the docs using `npm run`:
 ```bash
-$ jsdoc www/js/index.js README.md -d docs
+$ npm run docs
 ```
 
-Install jsdoc via npm:
+## Config
+the settings for jsdoc are in `./.jsdocs.json`
 
-```bash
-$ npm install --save-dev jsdoc
-```
+## Images
+> images must be coppied to the `/docs` directory manually
 
+
+## Hosted
 A hosted version (v0.2.3) hosted github pages version is here: http://code.emrys.cymru/devices/
+
 
 ---
 
 [jsdoc-docs]: https://jsdoc.app/about-tutorials.html
-[parent-page]: ./README.md
+[parent-page]: https://github.com/emoncms/cordova-emon-devices/main/README.md

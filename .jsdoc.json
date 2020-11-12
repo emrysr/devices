@@ -1,0 +1,21 @@
+{
+    "applicationName": "EmonCMS Devices",
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "opts": {
+        "destination": "./docs",
+        "recurse": true,
+        "template": "node_modules/clean-jsdoc-theme",
+        "theme_opts": {
+            "theme": "light",
+            "title": "EmonCMS Devices"
+        }
+    },
+    "source": {
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_",
+        "include": ["./www/js/index.js", "README.md"]
+    }
+}
